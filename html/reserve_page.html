@@ -1,0 +1,46 @@
+<html lang='en'>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+<head>
+    <script>
+        // Params
+        alert( my_options.event_name );
+
+        function Search() {
+            $.ajax({
+                type: 'POST',
+                url: 'https://allthing-can.com/test.php',
+                data: {
+                    'type': 'search',
+                    'id': $('#search_id').val()
+                },
+                dataType: 'json',
+                success: function (str) {
+                    document.getElementById('result').innerHTML = str.name;
+                },
+                error: function (e) {
+                    alert('something error');
+                },
+                beforeSned: function() {
+
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    My name is <span id='result'></span>.<hr />
+    <input id='search_id' />
+<button onclick='Search()'>Search</button>
+
+<p><?php echo "test" ?></p>
+
+</body>
+</html>
+
+<!--
+<div>
+    <iframe height='100%' width='100%' frameborder='0' src='https://allthing-can.com/test.php'></iframe>
+</div> 
+-->
+
