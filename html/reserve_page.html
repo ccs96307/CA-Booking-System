@@ -2,22 +2,22 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
 <head>
     <script>
-        // Params
-        alert( my_options.event_name );
-
         function Search() {
             $.ajax({
                 type: 'POST',
-                url: 'https://allthing-can.com/test.php',
+                url: '../test.php',
                 data: {
                     'type': 'search',
-                    'id': $('#search_id').val()
+                    'id': $('#search_id').val(),
+                    '_mon': $('#current_mon').text(),
+                    '_tue': $('#current_tue').text()
                 },
                 dataType: 'json',
                 success: function (str) {
                     document.getElementById('result').innerHTML = str.name;
                 },
                 error: function (e) {
+                    alert(e);
                     alert('something error');
                 },
                 beforeSned: function() {
@@ -25,22 +25,218 @@
                 }
             });
         }
+
+        function Init() {
+            $.ajax({
+                type: 'POST',
+                url: 'https://allthing-can.com/test.php',
+                data: {
+                    'type': 'search',
+                    'id': $('#search_id').val(),
+                    '_mon': $('#current_mon').text(),
+                    '_tue': $('#current_tue').text()
+                },
+                dataType: 'json',
+                success: function (str) {
+                    document.getElementById('result').innerHTML = str.name;
+                },
+                error: function (e) {
+                    alert(e);
+                    alert('something error');
+                },
+                beforeSned: function() {
+
+                }
+            });
+        }
+
     </script>
 </head>
 
+
+<style>
+table, tr, td {
+    border: 1px solid black;
+    text-align: center;
+}
+
+caption {
+    text-align: center;
+}
+</style>
+
+
+
+
+
 <body>
+    <!-- UTC --!>
+    <select>
+    <option></option>
+    </select>
+
+    <!-- Teacher Checkboxs --!>
+    <input type='checkbox' id='checkbox_teacher_id_1' name='checkbox_teacher_name_1' onclick='checkbox_event()'>
+    <label id='checkbox_label_1' for='checkbox_teacher_name_1'>Clay</label>
+
+    <!-- Change date button --!>
+    <div style='display: flex; justify-content: space-between;'>
+        <button onclick='prev()'>PREV</button>
+        <button onclick='go_back_to_today()'>Go Back To Today</button>
+        <button onclick='next()'>NEXT</button>
+    </div>
+    
+    <!-- Weekly calendar --!>
+    <table>
+        <caption id='current_month'><h3></h3></caption>
+        <tr>
+            <td>Mon</td>
+            <td>Tue</td>
+            <td>Wed</td>
+            <td>Thu</td>
+            <td>Fri</td>
+            <td style='color: red'>Sat</td>
+            <td style='color: red'>Sun</td>
+        </tr>
+        <tr>
+            <td id='current_mon'></td>
+            <td id='current_tue'></td>
+            <td id='current_wed'></td>
+            <td id='current_thu'></td>
+            <td id='current_fri'></td>
+            <td id='current_sat'></td>
+            <td id='current_sun'></td>
+        </tr>
+    </table>
+
     My name is <span id='result'></span>.<hr />
     <input id='search_id' />
 <button onclick='Search()'>Search</button>
 
-<p><?php echo "test" ?></p>
-
 </body>
+
+<script>
+    // Settings
+    const _months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+    ];
+
+    const _weekdays = [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thrusday',
+        'Friday',
+        'Saturday',
+    ];
+
+    // Init
+    var _date = new Date();
+    _date.setDate(_date.getDate()-_date.getDay()+1);
+
+    // Format method
+    function formatDate(format_date) {
+        let month = (1 + format_date.getMonth()).toString().padStart(2, '0');
+        let day = format_date.getDate().toString().padStart(2, '0');
+
+        return month + '/' + day;
+    }
+
+    // Checkbox events
+    function checkbox_event() {
+        var checkbox = document.getElementById('checkbox_teacher_id_1');
+        var label = document.getElementById('checkbox_label_1');
+
+        // If checked
+        if (checkbox.checked == true) {
+            label.innerHTML = 'Atlas';
+        }
+        else {
+            label.innerHTML = 'Clay';
+        }
+    }
+
+    // Set date
+    function setWeekDate(direction) {
+        // Direction
+        if (direction == -1) {
+            _date.setDate(_date.getDate()-14);
+        }
+
+        // Months and Years
+        const months = [];
+        const years = [];
+
+        // Current weekday
+        months[0] = _date.getMonth();
+        years[0] = _date.getFullYear();
+        
+        let weekday_ids = [
+            'current_mon',
+            'current_tue',
+            'current_wed',
+            'current_thu',
+            'current_fri',
+            'current_sat',
+            'current_sun'
+        ];
+
+        for (let i=0; i<7; ++i) {
+            document.getElementById(weekday_ids[i]).innerHTML = formatDate(_date);
+            _date.setDate(_date.getDate()+1);
+
+            if (months[0] != _date.getMonth()) months[1] = _date.getMonth();
+            if (years[0] != _date.getFullYear()) years[1] = _date.getFullYear();
+        }
+
+        // Current Month and Year
+        if (months.length == 2 && years.length == 2) {
+            document.getElementById('current_month').innerHTML = _months[months[0]] + ' ' + years[0] + ' - ' + _months[months[1]] + years[1];
+        }
+        else if (months.length == 2) {
+            document.getElementById('current_month').innerHTML = _months[months[0]] + ' ' + years[0] + ' - ' + _months[months[1]] + years[0];         
+        }
+        else {
+            document.getElementById('current_month').innerHTML = _months[_date.getMonth()] + ' ' + _date.getFullYear();
+        }
+    }
+
+    // Move display week event
+    function next() {
+        setWeekDate(1);
+        Search();
+    }
+
+    function prev() {
+        setWeekDate(-1);
+        Search();
+    }
+
+    function go_back_to_today() {
+        _date = new Date();
+        _date.setDate(_date.getDate()-_date.getDay()+1);
+        setWeekDate(1);
+        Search();
+    }
+
+    // Load the script
+    window.onload = function() {
+        setWeekDate(1);
+    }
+
+</script>
+
+
 </html>
-
-<!--
-<div>
-    <iframe height='100%' width='100%' frameborder='0' src='https://allthing-can.com/test.php'></iframe>
-</div> 
--->
-
