@@ -18,7 +18,7 @@ along with "CA Booking System". If not, see https://www.gnu.org/licenses/gpl-3.0
  * Plugin Name:       CA Booking System
  * Plugin URI:    
  * Description:       A easy-to-use booking system
- * Version:           0.0.3
+ * Version:           0.0.4
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Clay Atlas
@@ -58,9 +58,7 @@ function register_ca_booking_system_settings() {
     // Sample data
     $test_array = array(
         'teacher'         => 'Clay',
-        'year'            => '2021',
-        'Mon'             => '12',
-        'Day'             => '20',
+        'date'            => '2021',
         'start_time'      => '0800',
         'end_time'        => '0900',
         'price'           => '29',
@@ -70,17 +68,15 @@ function register_ca_booking_system_settings() {
         'student_comment' => 'I am not sure whether I book it or not'
     );
 
-    $ca_booking_list = array(
-        $test_array,
-    );
+    $ca_booking_list = array();
     
-    // Register our settings
+    // Register our settings ()
     register_setting( 'tnt-settings-group', 'event_name' );
-    register_setting( 'tnt-settings-group', 'ca_booking_list', $ca_booking_list );
+    register_setting( 'tnt-settings-group', 'ca_booking_list');
 
     // Update
     // update_option( 'event_name' , 'Hello' );
-    // update_option( 'ca_reserve_list', $ca_reserve_list );
+    // update_option( 'ca_booking_list', $ca_booking_list );
     // array_push( $ca_reserve_list, $test_array );
     // update_option( 'ca_reserve_list', $ca_reserve_list );
 }
@@ -98,12 +94,12 @@ function ca_booking_system_setting_page() {
         <table class="form-table">
             <p>
                 <?php 
-                    $users = get_users( array( 'fields' => array( 'ID' ) ) );
+                   /* $users = get_users( array( 'fields' => array( 'ID' ) ) );
 
                     foreach( $users as $user ) {
                         $capabilities = get_user_meta( $user->ID )['wp_capabilities'];
                         if (preg_match( '/um_teacher/', implode(',', $capabilities) )) {
-                    //        echo json_encode(get_user_meta( $user->ID ));
+                            echo json_encode(get_user_meta( $user->ID ));
                         }
                     }
 
@@ -118,15 +114,25 @@ function ca_booking_system_setting_page() {
                     foreach ($post_array as $keyval) {
                         $keyval = explode( "=", $keyval );
                         if (count($keyval) == 2) {
-                     //       echo $keyval[0] . ": " . $keyval[1] . "<br />";
+                            echo $keyval[0] . ": " . $keyval[1] . "<br />";
                             
                         }
                     }
-
+                    */
                     //echo json_encode(get_option( 'ca_reserve_list' ));
+    
                     //global $new_whitelist_options;
                     //$option_names = $new_whitelist_options[ 'tnt-settings-group' ];
                     //echo json_encode( $option_names );
+
+                    $bookings = get_option( 'ca_booking_list' );
+                    echo json_encode( $bookings );
+                    
+                    foreach( $bookings as $key ) {
+                        $data = get_option( $key );
+                        echo json_encode( $data );
+                    }
+
                     
                     //echo file_get_contents('./html/reserve_page.html');
                     //echo dirname( __DIR__ . '/html/reserve_page.html' );
@@ -148,7 +154,7 @@ function ca_booking_system_setting_page() {
 add_filter( 'the_content', 'ca_booking_system_page_init' );
 
 function ca_booking_system_page_init( $content ) {
-    if ( get_the_title() == 'Reserve System Test' ) {
+    if ( get_the_title() == 'Booking System' ) {
         // Variable
         $current_user = wp_get_current_user();
         $all_users = get_users( array( 'role__in' => array( 'author', '' )) );

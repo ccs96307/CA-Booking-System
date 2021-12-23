@@ -97,15 +97,7 @@ caption {
             <td id='current_sun'></td>
         </tr>
         <tr>
-            <td>
-                <button>TEST</button><br>
-                <button>TEST</button><br>
-                <button>TEST</button><br>
-                <button>TEST</button><br>
-                <button>TEST</button><br>
-                <button>TEST</button><br>
-                <button>TEST</button><br>
-
+            <td id="test_td">
             </td>
         </tr>
     </table>
@@ -144,6 +136,8 @@ caption {
 
 <script>
     // Settings
+    var booking_data;
+
     const _months = [
         'January',
         'February',
@@ -202,6 +196,8 @@ caption {
 
     // AJAX
     function Search() {
+        alert(booking_data);
+
         $.ajax({
             type: 'POST',
             url: '../test.php',
@@ -225,35 +221,37 @@ caption {
         });
     }
 
-    function Add_New_Course(tname, start_time, end_time, price) {
+    function Add_New_Course(tname, _date, start_time, end_time, price) {
         var selected_utc = document.getElementById("UTC_Timezone").value;
         var utc_offset = -1 * parseInt(selected_utc.split("UTC")[1]);
-        var start_time_timesteps = start_time.getTime();
-        var end_time_timesteps = end_time.getTime();
+        var start_time_timestamps = start_time.getTime();
+        var end_time_timestamps = end_time.getTime();
 
-        start_time.setTime(start_time_timesteps + utc_offset * 1000 * 60 * 60);
-        end_time.setTime(end_time_timesteps + utc_offset * 1000 * 60 * 60);
+        start_time.setTime(start_time_timestamps + utc_offset * 1000 * 60 * 60);
+        end_time.setTime(end_time_timestamps + utc_offset * 1000 * 60 * 60);
+        
+        // Time
+        var _st = start_time.getHours().toString() + ":" + start_time.getMinutes().toString();
+        var _et = end_time.getHours().toString() + ":" + end_time.getMinutes().toString();
 
-        alert(start_time);
-        alert(end_time);
-
-        $ajax({
+        $.ajax({
             type: "POST",
             url: "../test.php",
             data: {
                 "type": "add_new_course",
                 "teacher_name": tname,
-                "start_time": start_time,
-                "end_time": end_time,
+                "date": _date,
+                "start_time": _st,
+                "end_time": _et,
                 "price": price,
             },
             dataType: "json",
-            success: function() {
-                alert("Finished!");
+            success: function(results) {
+                alert(results.message);
             },
-            error: function(e) {
+            error: function (e) {
                 alert(e);
-                alert("Add new course error!");
+                alert('something error');
             },
             beforeSend: function() {
 
@@ -282,6 +280,10 @@ caption {
                     document.getElementById("tname").value = init_data.current_user_name;
                     document.getElementById("tname").disabled = true;
                 }
+
+                booking_data = init_data.booking_data;
+                convertBookingDataUTC();
+                setWeekDate(1);
             },
             error: function (e) {
                 alert(e);
@@ -351,6 +353,52 @@ caption {
         }
     }
 
+    // Convert UTC
+    function convertBookingDataUTC() {
+        for (let i=0; i<booking_data.length; ++i) {
+            var _date = booking_data[i]["date"];
+            var _st = booking_data[i]["start_time"];
+            var _et = booking_data[i]["end_time"];
+            
+            var _start_time = new Date(_date);
+            _start_time.setHours(parseInt(_st.split(":")[0], parseInt(_st.split(":")[1]), 0));
+                
+            var _end_time = new Date(_date);
+            _end_time.setHours(parseInt(_et.split(":")[0], parseInt(_et.split(":")[1]), 0));
+
+            // Current UTC
+            var selected_utc = document.getElementById("UTC_Timezone").value;
+            var utc_offset = parseInt(selected_utc.split("UTC")[1]);
+
+            if (_end_time < _start_time) {
+                // Add one day
+                _end_time.setTime(_end_time.getTime() + 1 * 1000 *  60 * 24);
+            }
+
+            // Convert
+            _start_time.setTime(_start_time.getTime() + utc_offset * 1000 * 60 * 60);
+            _end_time.setTime(_end_time.getTime() + utc_offset * 1000 * 60 * 60);
+
+            // Save
+            // Date
+            var y = _start_time.getFullYear().toString();
+            var m = _start_time.getMonth() + 1;
+            if (m < 10) m = "0" + m.toString();
+            else m = m.toString();
+            var d = _start_time.getDate();
+            if (d < 10) d = "0" + d.toString();
+            var _date = y + "-" + m + "-" + d;
+
+            // Time
+            var _st = _start_time.getHours().toString() + ":" + _start_time.getMinutes().toString();
+            var _et = _end_time.getHours().toString() + ":" + _end_time.getMinutes().toString();
+
+            booking_data[i]["date"] = _date;
+            booking_data[i]["start_time"] = _st;
+            booking_data[i]["end_time"] = _et;
+        }
+    }
+
     // Set date
     function setWeekDate(direction) {
         // Direction
@@ -382,6 +430,29 @@ caption {
 
             if (months[0] != _date.getMonth()) months[1] = _date.getMonth();
             if (years[0] != _date.getFullYear()) years[1] = _date.getFullYear();
+
+            // Display Course info
+            var y = _date.getFullYear();
+            var m = _date.getMonth() + 1;
+            if (m < 10) m = "0" + m.toString();
+            else m = m.toString();
+            var d = _date.getDate();
+            if (d < 10) d = "0" + d.toString();
+            else d = d.toString();
+            cur_date = y + "-" + m + "-" + d;
+
+            // Button template
+            var td_container = document.getElementById("test_td");
+            var book_button = document.createElement("input");
+            book_button.type = "button";
+
+            //td_container.appendChild(book_button);
+
+            for (var j=0; j<booking_data.length; ++j) {
+                if (cur_date == booking_data[j]["date"]) {
+                    td_container.appendChild(book_button);
+                }
+            }
         }
 
         // Current Month and Year
@@ -432,6 +503,16 @@ caption {
         });
     });
 
+    // Determine a text is a number or not
+    function isNumber(inputData) {
+        if (parseFloat(inputData).toString() == "NaN") {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
     // Add new course
     function add_new_course() {
         // Instance
@@ -442,16 +523,19 @@ caption {
 
         // Check
         if (datepicker_object.value == "") {
-            alert("Date field cannot be empty!");
+            alert("The date field cannot be empty!");
         }
         else if (course_start_time_object.value == "") {
-            alert("Start time field cannot be empty!");
+            alert("The start time field cannot be empty!");
         }
         else if (course_end_time_object.value == "") {
-            alert("End time field cannot be empty!");
+            alert("The end time field cannot be empty!");
         }
         else if (course_price_object.value == "") {
-            alert("Price field cannot be empty!");
+            alert("The price field cannot be empty!");
+        }
+        else if (isNumber(course_price_object.value) == false) {
+            alert("The price must be a number!");
         }
         else {
             var start_time = course_start_time_object.value;
@@ -471,6 +555,7 @@ caption {
             if (start_time < end_time) {
                 Add_New_Course(
                     document.getElementById("tname").value,
+                    datepicker_object.value,
                     start_time,
                     end_time,
                     course_price_object.value,
@@ -488,13 +573,17 @@ caption {
         }
     }
 
+    // Show the class on the week widget
+    function show_course_on_widget() {
+        
+    }
+
 
     // Load the script
     window.onload = function() {
-        setWeekDate(1);
-        
         // Init
         Init();
+        
         var offset = new Date().getTimezoneOffset();
         
         document.getElementById("timezone_field").innerHTML = "Location: " + Intl.DateTimeFormat().resolvedOptions().timeZone + " (" + _offset2UTC[offset.toString()] + ")";
