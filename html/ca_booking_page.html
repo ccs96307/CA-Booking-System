@@ -20,17 +20,77 @@ table, tr, td {
 caption {
     text-align: center;
 }
+
+
+.btn-pop {
+    background-color: #ffd475;  
+    border-radius: 10px;
+    border:0px;
+    zoom:200%;
+}
+        
+#background-pop{
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+       
+#div-pop{
+    background:#ffffff;
+    width:30%;
+    z-index: 1;
+    margin: 12% auto;
+    overflow: auto;
+}
+        
+.div-top{
+    width: 100%;
+    height: auto;
+    background-color: #28a3e7;
+    color: #ffffff;
+}
+        
+.div-top div {
+    padding: 3px 5px 5px 8px;
+ }
+        
+span {
+    color: white;
+    margin-bottom: 10px ;
+    margin-left: 20px ;
+    cursor: pointer;
+    float: right;
+}
+       
+.div-content {
+    width: auto;
+    height: 200px;
+    overflow: auto;
+}
+        
+.div-footer {
+    text-align: center;
+    background-color: darkgray;
+}
+
+
 </style>
+
 
 <body>
     <!-- Personal Info --!>
     <dl>
-        <dt id="user_name_field">Username:</dt>
-        <dt id="user_role_field">Role:</dt>
-        <dt id="timezone_field">Location:</dt>
-        <dt id="local_utc_field">UTC: 
+        <dt id="user_name_field">Username: </dt>
+        <dt id="user_role_field">Role: </dt>
+        <dt id="user_email_field">Email: </dt>
+        <dt id="timezone_field">Location: </dt>
+        <dt id="local_utc_field">UTC:
             <!-- UTC --!>
-            <select id="UTC_Timezone">
+            <select id="UTC_Timezone" onchange="utc_change_event()">
                 <option>UTC-12</option>
                 <option>UTC-11</option>
                 <option>UTC-10</option>
@@ -64,8 +124,8 @@ caption {
 
     <!-- Teacher Checkboxs --!>
     <div id='checkbox_container'>
-        <input type='checkbox' id='checkbox_teacher_id_1' name='checkbox_teacher_name_1' onclick='checkbox_event()'>
-        <label id='checkbox_label_1' for='checkbox_teacher_name_1'>Clay</label>
+        <!--<input type='checkbox' id='checkbox_teacher_id_1' name='checkbox_teacher_name_1' onclick='checkbox_event()'>
+        <label id='checkbox_label_1' for='checkbox_teacher_name_1'>Clay</label>--!>
     </div>
     
     <!-- Change date button --!>
@@ -97,8 +157,13 @@ caption {
             <td id='current_sun'></td>
         </tr>
         <tr>
-            <td id="test_td">
-            </td>
+            <td id="current_mon_container"></td>
+            <td id="current_tue_container"></td>
+            <td id="current_wed_container"></td>
+            <td id="current_thu_container"></td>
+            <td id="current_fri_container"></td>
+            <td id="current_sat_container"></td>
+            <td id="current_sun_container"></td>
         </tr>
     </table>
 
@@ -124,10 +189,41 @@ caption {
         <button style="float: right;" onclick="add_new_course()">CREATE</button>
     </div>
 
+    <!-- Pop booking window --!>
+    <div id="background-pop">
+        <div id="div-pop">
+            <div class="div-top">
+                <span id="close-button">[X]</span>
+                <div>Check your user information...</div>
+            </div>
+            <div class="div-content">
+                <p>Username:<input type="text" id="pay_user_name"></p>
+                <p>Email:<input type="text" id="pay_user_email"></p>
+            
+                <!-- Auto generate PayPal button --!>
+                <div style='margin-left: auto;margin-right: auto;width:170px'>
+                    <form action='https://www.sandbox.paypal.com/cgi-bin/webscr' method='post'>
+                        <input type='hidden' name='cmd' value='_xclick' />
+                        <input type='hidden' name='business' value='sb-3lpsb8564015@business.example.com' />
+                        <input type='hidden' id='ca_booking_name' name='item_name' value='THIS_IS_A_COURSE_WITH_DATETIEM!!!!' />
+                        <input type='hidden' name='currency_code' value='USD' />
+                        <input type='hidden' id='ca_booking_value' name='amount' value='0.99' />
+                        <input type='hidden' name='lc' value='EN_US'>
+                        <input type='hidden' name='no_note' value=''>
+                        <input type='hidden' name='paymentaction' value='sale'>
+                        <input type='hidden' name='return' value='' />
+                        <input type='hidden' name='bn' value='WPPlugin_SP'>
+                        <input type='hidden' name='cancel_return' value='' />
+                        <input style='border: none;' class='paypalbuttonimage' type='image' 
+                            src='https://www.paypalobjects.com/webstatic/en_US/i/buttons/buy-logo-medium.png' border='0' name='submit'
+                            alt='Make your payments with PayPal. It is free, secure, effective.'>
+                        <img alt='' border='0' style='border:none;display:none;' src='https://www.paypal.com/EN_US/i/scr/pixel.gif' width='1' height='1'>
+                    </form>
+                </div>
 
-    My name is <span id='result'></span>.<hr />
-    <input id='search_id' />
-<button onclick='Search()'>Search</button>
+            </div>
+        </div>
+    </div>
 
 </body>
 
@@ -137,6 +233,8 @@ caption {
 <script>
     // Settings
     var booking_data;
+    var booking_keys;
+    var current_utc;
 
     const _months = [
         'January',
@@ -195,21 +293,34 @@ caption {
     };
 
     // AJAX
-    function Search() {
-        alert(booking_data);
-
+    function Init() {
         $.ajax({
             type: 'POST',
             url: '../test.php',
             data: {
-                'type': 'search',
-                'id': $('#search_id').val(),
-                '_mon': $('#current_mon').text(),
-                '_tue': $('#current_tue').text()
+                'type': 'init',
             },
             dataType: 'json',
-            success: function (str) {
-                document.getElementById('result').innerHTML = str.name;
+            success: function (init_data) {
+                document.getElementById("user_name_field").innerHTML = "Username: " + init_data.current_user_name;
+                document.getElementById("user_role_field").innerHTML = "Role: " + init_data.current_user_role;
+                document.getElementById("user_email_field").innerHTML = "Email: " + init_data.current_user_email;
+
+                checkbox_init(init_data.teachers);
+
+                // If user role is teacher, he/she can add the new course on the booking system
+                if (init_data.current_user_role == "um_teacher") {
+                    document.getElementById("teacher_course_settings").style.display = 'block';
+                    document.getElementById("tname").value = init_data.current_user_name;
+                    document.getElementById("tname").disabled = true;
+                }
+
+                booking_data = init_data.booking_data;
+                booking_keys = init_data.booking_keys;
+                
+                convertBookingDataUTC();
+                setWeekDate(1);
+                current_utc = document.getElementById("UTC_Timezone").value;
             },
             error: function (e) {
                 alert(e);
@@ -220,6 +331,7 @@ caption {
             }
         });
     }
+
 
     function Add_New_Course(tname, _date, start_time, end_time, price) {
         var selected_utc = document.getElementById("UTC_Timezone").value;
@@ -259,31 +371,36 @@ caption {
         });
     }
 
-    function Init() {
+    function before_booking_check(book_course_key, book_user_name, book_user_email) {
+        var book_course_key = book_course_key;
+        var book_user_name = book_user_name;
+        var book_user_email = book_user_email;
+
+        alert("Before Send AJAX");
+
         $.ajax({
             type: 'POST',
             url: '../test.php',
             data: {
-                'type': 'init',
+                'type': 'before_booking_check',
+                'book_course_key': book_course_key,
+                'book_user_name': book_user_name,
+                'book_user_email': book_user_email,
             },
             dataType: 'json',
-            success: function (init_data) {
-                document.getElementById('result').innerHTML = init_data.teachers;
-                document.getElementById("user_name_field").innerHTML = "Username: " + init_data.current_user_name;
-                document.getElementById("user_role_field").innerHTML = "Role: " + init_data.current_user_role;
-
-                checkbox_init(init_data.teachers);
-
-                // If user role is teacher, he/she can add the new course on the booking system
-                if (init_data.current_user_role == "um_teacher") {
-                    document.getElementById("teacher_course_settings").style.display = 'block';
-                    document.getElementById("tname").value = init_data.current_user_name;
-                    document.getElementById("tname").disabled = true;
+            success: function (check_results) {
+                if (check_results.results == "ok") {
+                    payEvent(ca_booking_name, ca_booking_value);
                 }
-
-                booking_data = init_data.booking_data;
-                convertBookingDataUTC();
-                setWeekDate(1);
+                else if (check_results.results == "wait for payment") {
+                    payEvent(ca_booking_name, ca_booking_value);
+                }
+                else if (check_results.results == "not you") {
+                    alert("The course is booked by other people!");
+                }
+                else {
+                    alert("The course is booked.");
+                }
             },
             error: function (e) {
                 alert(e);
@@ -297,7 +414,12 @@ caption {
 
     // Init
     var _date = new Date();
-    _date.setDate(_date.getDate()-_date.getDay()+1);
+    if (_date.getDay() == 0) {
+        _date.setDate(_date.getDate() - 6);
+    }
+    else {
+        _date.setDate(_date.getDate()-_date.getDay()+1);
+    }
 
     // Format method
     function formatDate(format_date) {
@@ -356,6 +478,7 @@ caption {
     // Convert UTC
     function convertBookingDataUTC() {
         for (let i=0; i<booking_data.length; ++i) {
+        //for (var key in booking_data) {
             var _date = booking_data[i]["date"];
             var _st = booking_data[i]["start_time"];
             var _et = booking_data[i]["end_time"];
@@ -369,11 +492,6 @@ caption {
             // Current UTC
             var selected_utc = document.getElementById("UTC_Timezone").value;
             var utc_offset = parseInt(selected_utc.split("UTC")[1]);
-
-            if (_end_time < _start_time) {
-                // Add one day
-                _end_time.setTime(_end_time.getTime() + 1 * 1000 *  60 * 24);
-            }
 
             // Convert
             _start_time.setTime(_start_time.getTime() + utc_offset * 1000 * 60 * 60);
@@ -399,11 +517,64 @@ caption {
         }
     }
 
+    // Convert UTC from current to new
+    function utc_change_event() {
+        remove_all_display_booking_data();
+        var selected_utc = document.getElementById("UTC_Timezone").value;
+        var new_utc = parseInt(selected_utc.split("UTC")[1]);
+        var old_utc = parseInt(current_utc.split("UTC")[1]);
+        var utc_offset = new_utc - old_utc;
+
+        // Update
+        current_utc = selected_utc;
+        
+        for (let i=0; i<booking_data.length; ++i) {
+        //for (var key in booking_data) {
+            var _date = booking_data[i]["date"];
+            var _st = booking_data[i]["start_time"];
+            var _et = booking_data[i]["end_time"];
+            
+            var _start_time = new Date(_date);
+            _start_time.setHours(parseInt(_st.split(":")[0], parseInt(_st.split(":")[1]), 0));
+                
+            var _end_time = new Date(_date);
+            _end_time.setHours(parseInt(_et.split(":")[0], parseInt(_et.split(":")[1]), 0));
+            
+            // Convert
+            _start_time.setTime(_start_time.getTime() + utc_offset * 1000 * 60 * 60);
+            _end_time.setTime(_end_time.getTime() + utc_offset * 1000 * 60 * 60);
+
+            // Save
+            // Date
+            var y = _start_time.getFullYear().toString();
+            var m = _start_time.getMonth() + 1;
+            if (m < 10) m = "0" + m.toString();
+            else m = m.toString();
+            var d = _start_time.getDate();
+            if (d < 10) d = "0" + d.toString();
+            var _date = y + "-" + m + "-" + d;
+
+            // Time
+            var _st = _start_time.getHours().toString() + ":" + _start_time.getMinutes().toString();
+            var _et = _end_time.getHours().toString() + ":" + _end_time.getMinutes().toString();
+
+            booking_data[i]["date"] = _date;
+            booking_data[i]["start_time"] = _st;
+            booking_data[i]["end_time"] = _et;
+        }
+
+        setWeekDate(0);
+    }
+
+
     // Set date
     function setWeekDate(direction) {
         // Direction
         if (direction == -1) {
             _date.setDate(_date.getDate()-14);
+        }
+        if (direction == 0) {
+            _date.setDate(_date.getDate()-7);
         }
 
         // Months and Years
@@ -442,17 +613,48 @@ caption {
             cur_date = y + "-" + m + "-" + d;
 
             // Button template
-            var td_container = document.getElementById("test_td");
-            var book_button = document.createElement("input");
-            book_button.type = "button";
-
-            //td_container.appendChild(book_button);
+            var button_num = 0;
+            var td_container = document.getElementById(weekday_ids[i]+"_container");
+            //var book_button = document.createElement("input");
+            //book_button.type = "button";
 
             for (var j=0; j<booking_data.length; ++j) {
+            //for (var key in booking_data)
                 if (cur_date == booking_data[j]["date"]) {
+                    var st_h = booking_data[j]["start_time"].split(":")[0];
+                    var st_m = booking_data[j]["start_time"].split(":")[1];
+                    var et_h = booking_data[j]["end_time"].split(":")[0];
+                    var et_m = booking_data[j]["end_time"].split(":")[1];
+                    
+                    if (parseInt(st_h) < 10) st_h = "0" + st_h;
+                    if (parseInt(st_m) < 10) st_m = "0" + st_m;
+                    if (parseInt(et_h) < 10) et_h = "0" + et_h;
+                    if (parseInt(et_m) < 10) et_m = "0" + et_m;
+
+                    var book_button = document.createElement("input");
+                    book_button.type = "button";
+                    book_button.value = st_h + ":" + st_m + "-" + et_h + ":" + et_m + "\n$" + booking_data[j]["price"] + " USD";
+
+                    if (booking_data[j]["status"] == "booked") {
+                        book_button.value += "\n(booked)";
+                    }
+                    else if (booking_data[j]["status"] == "booking") {
+                        book_button.value += "\n(waiting for payment...)";
+                    }
+                    
+                    // Attribute "name" is store the key and data index
+                    // ------------------------------------------------
+                    book_button.name = j.toString();
+                    // ------------------------------------------------
+
+                    book_button.onclick = bookButtonEvent;
+
                     td_container.appendChild(book_button);
+                    ++button_num;
                 }
             }
+            
+            // TODO: if button_num == 0 set a message
         }
 
         // Current Month and Year
@@ -476,21 +678,42 @@ caption {
 
     // Move display week event
     function next() {
+        remove_all_display_booking_data();
         setWeekDate(1);
-        Search();
     }
 
     function prev() {
+        remove_all_display_booking_data();
         setWeekDate(-1);
-        Search();
     }
 
     function go_back_to_today() {
+        remove_all_display_booking_data();
         _date = new Date();
         _date.setDate(_date.getDate()-_date.getDay()+1);
         setWeekDate(1);
-        Search();
     }
+
+    function remove_all_display_booking_data() {
+        
+        let weekday_ids = [
+            'current_mon',
+            'current_tue',
+            'current_wed',
+            'current_thu',
+            'current_fri',
+            'current_sat',
+            'current_sun'
+        ];
+
+        for (let i=0; i<7; ++i) {
+            var td_container = document.getElementById(weekday_ids[i]+"_container");
+            while (td_container.lastElementChild) {
+                td_container.removeChild(td_container.lastElementChild);
+            }
+        }
+    }
+
 
     // Calendar widget
     $(function() {
@@ -505,12 +728,7 @@ caption {
 
     // Determine a text is a number or not
     function isNumber(inputData) {
-        if (parseFloat(inputData).toString() == "NaN") {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return parseFloat(inputData).toString() != "NaN";
     }
 
     // Add new course
@@ -566,6 +784,7 @@ caption {
                 course_start_time_object.value = "";
                 course_end_time_object.value = "";
                 course_price_object.value = "";
+                window.location.reload();
             }
             else {
                 alert("結束時間不可以設定得比開始時間早！");
@@ -573,11 +792,64 @@ caption {
         }
     }
 
-    // Show the class on the week widget
-    function show_course_on_widget() {
+    // Book button event
+    function bookButtonEvent() {
+        alert("Enter bookButtonEvent!");
+        alert(this.name);
+
+        ca_booking_name = booking_keys[parseInt(this.name)];
+        ca_booking_value = booking_data[parseInt(this.name)]["price"];
+
+        if (document.getElementById("user_name_field").innerHTML == "Username: null") {
+            alert("you must be logged in for booking.");
+            location.replace("https://allthing-can.com/login/");
+        }
+        else {
+            //window.confirm("Do you want to book?");
+            if (window.confirm("Do you want to book?") == true) {
+                alert("YES!");
+                
+                var book_user_name = document.getElementById("user_name_field").innerHTML.split(" ")[1];
+                var book_user_email = document.getElementById("user_email_field").innerHTML.split(" ")[1];
         
+                before_booking_check(ca_booking_name, book_user_name, book_user_email);
+            } 
+            else {
+                alert("CANCEL!");
+            }
+        }
     }
 
+    function payEvent(ca_booking_name, ca_booking_value) {
+        // PayPal button
+        document.getElementById("ca_booking_name").value = ca_booking_name;
+        document.getElementById("ca_booking_value").value = ca_booking_value;
+
+        // Show or Hide
+        var div = document.getElementById("background-pop");
+        var close = document.getElementById("close-button");
+
+        // User info
+        var book_user_name = document.getElementById("user_name_field").innerHTML.split(" ")[1];
+        var book_user_email = document.getElementById("user_email_field").innerHTML.split(" ")[1];
+        document.getElementById("pay_user_name").value = book_user_name;
+        document.getElementById("pay_user_email").value = book_user_email;
+
+        div.style.display = "block";
+
+        close.onclick = function close() {
+            div.style.display = "none";
+        }
+
+        window.onclick = function close(e) {
+            if (e.target == div) {
+                div.style.display = "none";
+            }
+        }
+
+        // Book event
+        book(ca_book_name, book_user_name, book_user_email);
+    }
 
     // Load the script
     window.onload = function() {
@@ -590,13 +862,6 @@ caption {
 
         offset = -1 * offset / 60;
         autoSelectLocalUTC(offset);
-
-        // Parsing URL
-        let param_url = new URL(location.href);
-        let params = param_url.searchParams;
-        for (let pair of params.entries()) {
-            alert(pair[1]);
-        }
     }
 
 </script>

@@ -18,7 +18,7 @@ along with "CA Booking System". If not, see https://www.gnu.org/licenses/gpl-3.0
  * Plugin Name:       CA Booking System
  * Plugin URI:    
  * Description:       A easy-to-use booking system
- * Version:           0.0.4
+ * Version:           0.0.5
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Clay Atlas
@@ -56,29 +56,43 @@ function create_ca_booking_menu() {
 
 function register_ca_booking_system_settings() {
     // Sample data
-    $test_array = array(
-        'teacher'         => 'Clay',
-        'date'            => '2021',
-        'start_time'      => '0800',
-        'end_time'        => '0900',
-        'price'           => '29',
-        'status'          => '1',
-        'student_name'    => 'Chen Tung Chi',
-        'sudent_email'    => 'skyonsame@gmail.com',
-        'student_comment' => 'I am not sure whether I book it or not'
+    $course_1on1 = array(
+        'teacher_name'         => 'Clay',
+        'date'                 => '2021-10-20',
+        'start_time'           => '8:0',
+        'end_time'             => '9:0',
+        'price'                => '10',
+        'status'               => 'open', // open; processing; close;
+        'student_name'         => 'Chen Tung Chi',
+        'sudent_email'         => 'skyonsame@gmail.com',
+        'student_comment'      => 'I am not sure whether I book it or not'
+    );
+
+    $course_group = array(
+        'teacher_name'           => 'Clay',
+        'date'                   => '2021-12-02',
+        'start_time'             => '',
+        'end_time'               => '',
+        'price'                  => '30',
+        'status'                 => 'open', // open; processing; close;
+        'max_student'            => '30',
+        'current_student_number' => '5',
+        'student_names'          => array( '1', '2', '3', '4', '5' ),
+        'student_emails'         => array( '1', '2', '3', '4', '5' ),
+        'student_comments'       => array( '', '', '', '', '' ),
     );
 
     $ca_booking_list = array();
     
     // Register our settings ()
     register_setting( 'tnt-settings-group', 'event_name' );
-    register_setting( 'tnt-settings-group', 'ca_booking_list');
+    register_setting( 'tnt-settings-group', 'ca_booking_list_1on1');
+    register_setting( 'tnt-settings-group', 'ca_booking_list_group' );
 
     // Update
     // update_option( 'event_name' , 'Hello' );
-    // update_option( 'ca_booking_list', $ca_booking_list );
     // array_push( $ca_reserve_list, $test_array );
-    // update_option( 'ca_reserve_list', $ca_reserve_list );
+    //update_option( 'ca_booking_list_1on1', $ca_booking_list );
 }
 
 
@@ -93,49 +107,72 @@ function ca_booking_system_setting_page() {
         
         <table class="form-table">
             <p>
-                <?php 
-                   /* $users = get_users( array( 'fields' => array( 'ID' ) ) );
+                    <?php
 
-                    foreach( $users as $user ) {
-                        $capabilities = get_user_meta( $user->ID )['wp_capabilities'];
-                        if (preg_match( '/um_teacher/', implode(',', $capabilities) )) {
-                            echo json_encode(get_user_meta( $user->ID ));
+                    $ipn_data = get_option( 'event_name' );
+                    
+                    $ca_payment = false;
+                    $ca_course_key = "";
+                    foreach ( $ipn_data as $_data ) {
+                        if ( $_data == "payment_status=Completed" ) {
+                            $ca_payment = true;
                         }
+
+                        $item_name = explode( "=", $_data )[0];
+                        $item_value = explode( "=", $_data )[1];
+
+                        if ( $item_name == "item_name" ) {
+                            $item_value = str_replace( '+', ' ', $item_value );
+                            $item_value = str_replace( '%3A', ':', $item_value );
+                            $item_value = str_replace( '%28', '(', $item_value );
+                            $item_value = str_replace( '%29', ')', $item_value );
+
+                            echo $item_value . "<br>";
+                            echo json_encode( get_option( $item_value ) );
+                            //echo json_encode( get_option( "ca_booking_list_1on1" ) );
+                        }    
+                        //echo $item_name . "=" . $item_value . "<br>";
+                        
                     }
 
-                    $current_user = wp_get_current_user();
-                    echo json_encode(get_user_meta( $current_user->ID )["nickname"][0]);
-                    $matches = array();
-                    preg_match('/\"(.*)\"/', implode(",", get_user_meta( $current_user->ID )["wp_capabilities"]), $matches);
-                    echo json_encode($matches[1]);
-
-
-                    $post_array = get_option( 'event_name' );
-                    foreach ($post_array as $keyval) {
-                        $keyval = explode( "=", $keyval );
-                        if (count($keyval) == 2) {
-                            echo $keyval[0] . ": " . $keyval[1] . "<br />";
-                            
-                        }
-                    }
-                    */
-                    //echo json_encode(get_option( 'ca_reserve_list' ));
-    
-                    //global $new_whitelist_options;
-                    //$option_names = $new_whitelist_options[ 'tnt-settings-group' ];
-                    //echo json_encode( $option_names );
-
-                    $bookings = get_option( 'ca_booking_list' );
+                    /*$bookings = get_option( 'ca_booking_list_1on1' );
                     echo json_encode( $bookings );
                     
                     foreach( $bookings as $key ) {
                         $data = get_option( $key );
-                        echo json_encode( $data );
-                    }
 
+                        $data["status"] = "open";
+                        update_option( $key, $data );
+                        echo json_encode( $data );
+                    }*/
+
+                    // Get user info
+                    /*$current_user = wp_get_current_user();
                     
-                    //echo file_get_contents('./html/reserve_page.html');
-                    //echo dirname( __DIR__ . '/html/reserve_page.html' );
+                    echo 'Username: ' . $current_user->user_login . '<br>';
+                    echo 'Email: ' . $current_user->user_email . '<br>';
+                    echo 'User first name: ' . $current_user->user_firstname . '<br>';
+                    echo 'User last name: ' . $current_user->user_lastname . '<br>';
+                    echo 'User display name: ' . $current_user->display_name . '<br>';
+                    echo 'User ID: ' . $current_user->ID . '<br>';
+                    echo 'User Role: ' . json_encode($current_user->roles) . '<br>';
+                    
+    
+                    // Get all users info
+                    $users = get_users( array( 'fields' => array( 'ID' ) ) );
+                    
+                    foreach ( $users as $user ) {
+                        $_user = get_userdata($user->ID);
+
+                        echo 'Username: ' . $_user->user_login . '<br>';
+                        echo 'Email: ' . $_user->user_email . '<br>';
+                        echo 'User first name: ' . $_user->user_firstname . '<br>';
+                        echo 'User last name: ' . $_user->user_lastname . '<br>';
+                        echo 'User display name: ' . $_user->display_name . '<br>';
+                        echo 'User ID: ' . $_user->ID . '<br>';
+                        echo 'User Role: ' . json_encode($_user->roles) . '<br><br>';
+                    }*/
+
                 ?>
             </p>
         </table>
@@ -155,10 +192,6 @@ add_filter( 'the_content', 'ca_booking_system_page_init' );
 
 function ca_booking_system_page_init( $content ) {
     if ( get_the_title() == 'Booking System' ) {
-        // Variable
-        $current_user = wp_get_current_user();
-        $all_users = get_users( array( 'role__in' => array( 'author', '' )) );
-
         // Content
         $content = file_get_contents( __DIR__ . '/html/ca_booking_page.html' );
     }
@@ -167,8 +200,8 @@ function ca_booking_system_page_init( $content ) {
 }
 
 
-// Paypal IPN
 
+// Paypal IPN
 add_action( 'wp_ajax_ca_paypal_ipn', 'ca_paypal_ipn_callback' );
 add_action( 'wp_ajax_nopriv_ca_paypal_ipn', 'ca_paypal_ipn_callback' );
 
@@ -278,7 +311,45 @@ function ca_paypal_ipn_callback() {
     }
 
     // Save testing data
-    update_option( "event_name", $raw_post_array );
+    $ipn_data = $raw_post_array;
+    $new_array = get_option( "event_name" );
+    if ( is_array( $new_array ) != 1 ) {
+        $new_array = array();
+    }
+
+    // Validation
+    $ca_payment = false;
+    $ca_course_key = "";
+    
+    foreach ( $ipn_data as $_data ) {
+        if ( $_data == "payment_status=Completed" ) {
+            $ca_payment = true;
+        }
+
+        $item_name = explode( "=", $_data )[0];
+        $item_value = explode( "=", $_data )[1];
+
+        if ( $item_name == "item_name" ) {
+            $item_value = str_replace( '+', ' ', $item_value );
+            $item_value = str_replace( '%3A', ':', $item_value );
+            $item_value = str_replace( '%28', '(', $item_value );
+            $item_value = str_replace( '%29', ')', $item_value );
+
+            $ca_course_data = get_option( $item_value );
+
+            // Change status
+            if ( $ca_course_data["status"] == "booking" && $ca_payment = true) {
+                $ca_course_data["status"] = "booked";
+
+                // Save to database
+                update_option( $item_value, $ca_course_data );        
+            }
+        }
+    }
+
+    // Record LOG
+    array_push( $new_array, $ipn_data );
+    update_option( "event_name", $new_array );
 }
 
 
