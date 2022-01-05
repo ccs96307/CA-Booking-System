@@ -109,7 +109,7 @@ function ca_booking_system_setting_page() {
             <p>
                     <?php
 
-                    $ipn_data = get_option( 'event_name' );
+                    /*$ipn_data = get_option( 'event_name' );
                     
                     $ca_payment = false;
                     $ca_course_key = "";
@@ -127,24 +127,22 @@ function ca_booking_system_setting_page() {
                             $item_value = str_replace( '%28', '(', $item_value );
                             $item_value = str_replace( '%29', ')', $item_value );
 
-                            echo $item_value . "<br>";
-                            echo json_encode( get_option( $item_value ) );
+                            //echo $item_value . "<br>";
+                            //echo json_encode( get_option( $item_value ) );
                             //echo json_encode( get_option( "ca_booking_list_1on1" ) );
                         }    
                         //echo $item_name . "=" . $item_value . "<br>";
                         
-                    }
+                    }*/
 
-                    /*$bookings = get_option( 'ca_booking_list_1on1' );
+                    $bookings = get_option( 'ca_booking_list_1on1' );
                     echo json_encode( $bookings );
                     
                     foreach( $bookings as $key ) {
                         $data = get_option( $key );
-
-                        $data["status"] = "open";
-                        update_option( $key, $data );
-                        echo json_encode( $data );
-                    }*/
+                        echo json_encode( $key ) . " ";
+                        echo json_encode( $data ) . "<br>";
+                    }
 
                     // Get user info
                     /*$current_user = wp_get_current_user();
@@ -184,9 +182,6 @@ function ca_booking_system_setting_page() {
 }
 
 
-
-
-
 // Try to edit the reseve page
 add_filter( 'the_content', 'ca_booking_system_page_init' );
 
@@ -199,6 +194,15 @@ function ca_booking_system_page_init( $content ) {
     return $content;
 }
 
+
+
+// Allow AJAX post to backend PHP processing file
+add_action( 'wp_head', 'ca_booking_system_process_url' );
+function ca_booking_system_process_url() {
+    echo '<script type="text/javascript">
+            var ca_process_url = "' . plugin_dir_url( __FILE__ ) . 'process.php' . '";
+          </script>';
+}
 
 
 // Paypal IPN

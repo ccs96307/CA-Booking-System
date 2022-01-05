@@ -1,12 +1,10 @@
-<html lang='en'>
-<!--<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>--!>
+<html lang="en">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.9.1.js"></script>
 <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
 <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
-
 
 <head>
 </head>
@@ -82,15 +80,15 @@ span {
 
 
 <body>
-    <!-- Personal Info --!>
+    <!-- Personal Info -->
     <dl>
         <dt id="user_name_field">Username: </dt>
         <dt id="user_role_field">Role: </dt>
         <dt id="user_email_field">Email: </dt>
         <dt id="timezone_field">Location: </dt>
         <dt id="local_utc_field">UTC:
-            <!-- UTC --!>
-            <select id="UTC_Timezone" onchange="utc_change_event()">
+            <!-- UTC -->
+            <select id="UTC_Timezone" onchange="utcChangeEvent()">
                 <option>UTC-12</option>
                 <option>UTC-11</option>
                 <option>UTC-10</option>
@@ -122,39 +120,39 @@ span {
         </dt>
     </dl>
 
-    <!-- Teacher Checkboxs --!>
-    <div id='checkbox_container'>
+    <!-- Teacher Checkboxs -->
+    <div id="checkbox_container">
         <!--<input type='checkbox' id='checkbox_teacher_id_1' name='checkbox_teacher_name_1' onclick='checkbox_event()'>
-        <label id='checkbox_label_1' for='checkbox_teacher_name_1'>Clay</label>--!>
+        <label id='checkbox_label_1' for='checkbox_teacher_name_1'>Clay</label>-->
     </div>
     
-    <!-- Change date button --!>
-    <div style='display: flex; justify-content: space-between;'>
-        <button onclick='prev()'>PREV</button>
-        <button onclick='go_back_to_today()'>Go Back To Today</button>
-        <button onclick='next()'>NEXT</button>
+    <!-- Change date button -->
+    <div style="display: flex; justify-content: space-between;">
+        <button onclick="prevDateEvent()">PREV</button>
+        <button onclick="goBackTodayEvent()">Go Back To Today</button>
+        <button onclick="nextDateEvent()">NEXT</button>
     </div>
     
-    <!-- Weekly calendar --!>
+    <!-- Weekly calendar -->
     <table>
-        <caption id='current_month'><h3></h3></caption>
+        <caption id="current_month"><h3></h3></caption>
         <tr>
             <td>Mon</td>
             <td>Tue</td>
             <td>Wed</td>
             <td>Thu</td>
             <td>Fri</td>
-            <td style='color: red'>Sat</td>
-            <td style='color: red'>Sun</td>
+            <td style="color: red">Sat</td>
+            <td style="color: red">Sun</td>
         </tr>
         <tr>
-            <td id='current_mon'></td>
-            <td id='current_tue'></td>
-            <td id='current_wed'></td>
-            <td id='current_thu'></td>
-            <td id='current_fri'></td>
-            <td id='current_sat'></td>
-            <td id='current_sun'></td>
+            <td id="current_mon"></td>
+            <td id="current_tue"></td>
+            <td id="current_wed"></td>
+            <td id="current_thu"></td>
+            <td id="current_fri"></td>
+            <td id="current_sat" style="color: red"></td>
+            <td id="current_sun" style="color: red"></td>
         </tr>
         <tr>
             <td id="current_mon_container"></td>
@@ -167,7 +165,7 @@ span {
         </tr>
     </table>
 
-    <!-- Teacher can set the course info --!>
+    <!-- Teacher can set the course info -->
     <div style="display: none" id="teacher_course_settings">
     <dl>
         <dt>
@@ -189,7 +187,7 @@ span {
         <button style="float: right;" onclick="add_new_course()">CREATE</button>
     </div>
 
-    <!-- Pop booking window --!>
+    <!-- Pop booking window -->
     <div id="background-pop">
         <div id="div-pop">
             <div class="div-top">
@@ -200,7 +198,8 @@ span {
                 <p>Username:<input type="text" id="pay_user_name"></p>
                 <p>Email:<input type="text" id="pay_user_email"></p>
             
-                <!-- Auto generate PayPal button --!>
+                <!-- Auto generate PayPal button -->
+                <!-- TODO action URL need to switch with admin backend settings -->
                 <div style='margin-left: auto;margin-right: auto;width:170px'>
                     <form action='https://www.sandbox.paypal.com/cgi-bin/webscr' method='post'>
                         <input type='hidden' name='cmd' value='_xclick' />
@@ -224,10 +223,7 @@ span {
             </div>
         </div>
     </div>
-
 </body>
-
-
 
 
 <script>
@@ -250,7 +246,6 @@ span {
         'November',
         'December'
     ];
-
     const _weekdays = [
         'Sunday',
         'Monday',
@@ -260,8 +255,6 @@ span {
         'Friday',
         'Saturday',
     ];
-
-    
     const _offset2UTC = {
         "0": "UTC+0",
         "60": "UTC-1",
@@ -292,15 +285,20 @@ span {
         "-840": "UTC+14",
     };
 
+    // Initialize the today date and move it to monday
+    var _date = new Date();
+    if (_date.getDay() == 0) _date.setDate(_date.getDate() - 6);
+    else _date.setDate(_date.getDate()-_date.getDay()+1);
+
     // AJAX
     function Init() {
         $.ajax({
-            type: 'POST',
-            url: '../test.php',
+            type: "POST",
+            url: ca_process_url,
             data: {
-                'type': 'init',
+                "type": "init",
             },
-            dataType: 'json',
+            dataType: "json",
             success: function (init_data) {
                 document.getElementById("user_name_field").innerHTML = "Username: " + init_data.current_user_name;
                 document.getElementById("user_role_field").innerHTML = "Role: " + init_data.current_user_role;
@@ -317,21 +315,19 @@ span {
 
                 booking_data = init_data.booking_data;
                 booking_keys = init_data.booking_keys;
+                alert(booking_data);
+                alert(booking_keys);
                 
                 convertBookingDataUTC();
                 setWeekDate(1);
                 current_utc = document.getElementById("UTC_Timezone").value;
             },
-            error: function (e) {
-                alert(e);
-                alert('something error');
+            error: function (xhr, s, error) {
+                alert(xhr.status);
+                alert(xhr.readyState);
             },
-            beforeSned: function() {
-
-            }
         });
     }
-
 
     function Add_New_Course(tname, _date, start_time, end_time, price) {
         var selected_utc = document.getElementById("UTC_Timezone").value;
@@ -348,7 +344,7 @@ span {
 
         $.ajax({
             type: "POST",
-            url: "../test.php",
+            url: ca_process_url,
             data: {
                 "type": "add_new_course",
                 "teacher_name": tname,
@@ -361,33 +357,28 @@ span {
             success: function(results) {
                 alert(results.message);
             },
-            error: function (e) {
-                alert(e);
-                alert('something error');
+            error: function (xhr, s, error) {
+                alert(xhr.status);
+                alert(xhr.readyState);
             },
-            beforeSend: function() {
-
-            }
         });
     }
 
-    function before_booking_check(book_course_key, book_user_name, book_user_email) {
+    function Before_Booking_Check(book_course_key, book_user_name, book_user_email) {
         var book_course_key = book_course_key;
         var book_user_name = book_user_name;
         var book_user_email = book_user_email;
 
-        alert("Before Send AJAX");
-
         $.ajax({
-            type: 'POST',
-            url: '../test.php',
+            type: "POST",
+            url: ca_process_url,
             data: {
-                'type': 'before_booking_check',
-                'book_course_key': book_course_key,
-                'book_user_name': book_user_name,
-                'book_user_email': book_user_email,
+                "type": "before_booking_check",
+                "book_course_key": book_course_key,
+                "book_user_name": book_user_name,
+                "book_user_email": book_user_email,
             },
-            dataType: 'json',
+            dataType: "json",
             success: function (check_results) {
                 if (check_results.results == "ok") {
                     payEvent(ca_booking_name, ca_booking_value);
@@ -402,23 +393,11 @@ span {
                     alert("The course is booked.");
                 }
             },
-            error: function (e) {
-                alert(e);
-                alert('something error');
+            error: function (xhr, s, error) {
+                alert(xhr.status);
+                alert(xhr.readyState);
             },
-            beforeSned: function() {
-
-            }
         });
-    }
-
-    // Init
-    var _date = new Date();
-    if (_date.getDay() == 0) {
-        _date.setDate(_date.getDate() - 6);
-    }
-    else {
-        _date.setDate(_date.getDate()-_date.getDay()+1);
     }
 
     // Format method
@@ -429,27 +408,12 @@ span {
         return month + '/' + day;
     }
 
-    // Checkbox events
-    function checkbox_event() {
-        var checkbox = document.getElementById('checkbox_teacher_id_1');
-        var label = document.getElementById('checkbox_label_1');
-
-        // If checked
-        if (checkbox.checked == true) {
-            label.innerHTML = 'Atlas';
-        }
-        else {
-            label.innerHTML = 'Clay';
-        }
-    }
-
     // Checkbox init
     function checkbox_init(names) {
+        var container = document.getElementById("checkbox_container");
+
         // Add checkboxs
         for (var i=0; i<names.length; ++i) {
-            // Container
-            var container = document.getElementById("checkbox_container");
-
             // Checkbox
             var checkbox = document.createElement("input");
             checkbox.type = "checkbox";
@@ -457,7 +421,7 @@ span {
             checkbox.value = i;
             checkbox.id = i;
             checkbox.onclick = function() {
-                // TODO
+                // TODO: Filter the different teacher's courses
             };
         
             // Label
@@ -518,7 +482,7 @@ span {
     }
 
     // Convert UTC from current to new
-    function utc_change_event() {
+    function utcChangeEvent() {
         remove_all_display_booking_data();
         var selected_utc = document.getElementById("UTC_Timezone").value;
         var new_utc = parseInt(selected_utc.split("UTC")[1]);
@@ -675,19 +639,18 @@ span {
         document.getElementById('UTC_Timezone').selectedIndex = n;
     }
 
-
     // Move display week event
-    function next() {
+    function nextDateEvent() {
         remove_all_display_booking_data();
         setWeekDate(1);
     }
 
-    function prev() {
+    function prevDateEvent() {
         remove_all_display_booking_data();
         setWeekDate(-1);
     }
 
-    function go_back_to_today() {
+    function goBackTodayEvent() {
         remove_all_display_booking_data();
         _date = new Date();
         _date.setDate(_date.getDate()-_date.getDay()+1);
@@ -695,7 +658,6 @@ span {
     }
 
     function remove_all_display_booking_data() {
-        
         let weekday_ids = [
             'current_mon',
             'current_tue',
@@ -795,7 +757,6 @@ span {
     // Book button event
     function bookButtonEvent() {
         alert("Enter bookButtonEvent!");
-        alert(this.name);
 
         ca_booking_name = booking_keys[parseInt(this.name)];
         ca_booking_value = booking_data[parseInt(this.name)]["price"];
@@ -812,7 +773,7 @@ span {
                 var book_user_name = document.getElementById("user_name_field").innerHTML.split(" ")[1];
                 var book_user_email = document.getElementById("user_email_field").innerHTML.split(" ")[1];
         
-                before_booking_check(ca_booking_name, book_user_name, book_user_email);
+                Before_Booking_Check(ca_booking_name, book_user_name, book_user_email);
             } 
             else {
                 alert("CANCEL!");
