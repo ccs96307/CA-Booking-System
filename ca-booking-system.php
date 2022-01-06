@@ -18,7 +18,7 @@ along with "CA Booking System". If not, see https://www.gnu.org/licenses/gpl-3.0
  * Plugin Name:       CA Booking System
  * Plugin URI:    
  * Description:       A easy-to-use booking system
- * Version:           0.0.5
+ * Version:           0.0.6
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Clay Atlas
@@ -92,7 +92,7 @@ function register_ca_booking_system_settings() {
     // Update
     // update_option( 'event_name' , 'Hello' );
     // array_push( $ca_reserve_list, $test_array );
-    //update_option( 'ca_booking_list_1on1', $ca_booking_list );
+    // update_option( 'ca_booking_list_group', NULL );
 }
 
 
@@ -135,7 +135,23 @@ function ca_booking_system_setting_page() {
                         
                     }*/
 
+
                     $bookings = get_option( 'ca_booking_list_1on1' );
+                    if ( is_null( $bookings) ) echo "It is NULL!<br>";
+
+                    echo json_encode( $bookings );
+                    
+                    foreach( $bookings as $key ) {
+                        $data = get_option( $key );
+                        echo json_encode( $key ) . " ";
+                        echo json_encode( $data ) . "<br>";
+                    }
+
+                    echo "======================================" . "<br>";
+
+                    $bookings = get_option( 'ca_booking_list_group' );
+                    
+                    if ( empty( $bookings) ) echo "It is NULL!<br>";
                     echo json_encode( $bookings );
                     
                     foreach( $bookings as $key ) {

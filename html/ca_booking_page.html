@@ -75,6 +75,85 @@ span {
     background-color: darkgray;
 }
 
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 90px;
+  height: 34px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: black;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: gray;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(55px);
+  -ms-transform: translateX(55px);
+  transform: translateX(55px);
+}
+
+/*------ ADDED CSS ---------*/
+.on {
+  display: none;
+}
+
+.on, .off {
+  color: white;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  font-size: 10px;
+  font-family: Verdana, sans-serif;
+}
+
+.off {
+    left: 50%;
+}
+
+input:checked+ .slider .on
+{display: block;}
+
+input:checked + .slider .off
+{display: none;}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;}
+
 
 </style>
 
@@ -122,9 +201,16 @@ span {
 
     <!-- Teacher Checkboxs -->
     <div id="checkbox_container">
-        <!--<input type='checkbox' id='checkbox_teacher_id_1' name='checkbox_teacher_name_1' onclick='checkbox_event()'>
-        <label id='checkbox_label_1' for='checkbox_teacher_name_1'>Clay</label>-->
     </div>
+
+    <!-- 1on1 or Group Switcher -->
+    <label class="switch">
+        <input type="checkbox" id="togBtn" onclick="courseTypeChange()">
+        <div class="slider round">
+            <span class="on">Group</span>
+            <span class="off">1on1</span>
+        </div>
+    </label>
     
     <!-- Change date button -->
     <div style="display: flex; justify-content: space-between;">
@@ -180,6 +266,9 @@ span {
         <dt>
             <p>End Time:<input type="text" class="timepicker" id="course_end_time"></p>
         </dt>
+        <dt style="display: none" id="student_max_num_field">
+            <p>Student Max Number:<input type="text"></p>
+        </dt>
         <dt>
             <p>Price:<input type="text" id="course_price"></p>
         </dt>
@@ -231,6 +320,7 @@ span {
     var booking_data;
     var booking_keys;
     var current_utc;
+    var is_1on1 = true;
 
     const _months = [
         'January',
@@ -287,8 +377,8 @@ span {
 
     // Initialize the today date and move it to monday
     var _date = new Date();
-    if (_date.getDay() == 0) _date.setDate(_date.getDate() - 6);
-    else _date.setDate(_date.getDate()-_date.getDay()+1);
+    // if (_date.getDay() == 0) _date.setDate(_date.getDate() - 6);
+    // else _date.setDate(_date.getDate()-_date.getDay()+1);
 
     // AJAX
     function Init() {
@@ -297,9 +387,20 @@ span {
             url: ca_process_url,
             data: {
                 "type": "init",
+                "is_1on1": is_1on1,
             },
             dataType: "json",
             success: function (init_data) {
+                remove_all_display_booking_data();
+                
+                if (is_1on1) alert("1on1");
+                else alert("Group!");
+
+                // Date set to monday (the start point of a new week)
+                _date = new Date();
+                if (_date.getDay() == 0) _date.setDate(_date.getDate() - 6);
+                else _date.setDate(_date.getDate()-_date.getDay()+1);
+
                 document.getElementById("user_name_field").innerHTML = "Username: " + init_data.current_user_name;
                 document.getElementById("user_role_field").innerHTML = "Role: " + init_data.current_user_role;
                 document.getElementById("user_email_field").innerHTML = "Email: " + init_data.current_user_email;
@@ -308,16 +409,27 @@ span {
 
                 // If user role is teacher, he/she can add the new course on the booking system
                 if (init_data.current_user_role == "um_teacher") {
-                    document.getElementById("teacher_course_settings").style.display = 'block';
+                    document.getElementById("teacher_course_settings").style.display = "block";
                     document.getElementById("tname").value = init_data.current_user_name;
                     document.getElementById("tname").disabled = true;
                 }
 
+                if (is_1on1) {
+                    document.getElementById("student_max_num_field").style.display = "none";
+                }
+                else {
+                    document.getElementById("student_max_num_field").style.display = "block";
+                }
+
+                alert(init_data.booking_data);
+                alert(init_data.booking_keys);
+
                 booking_data = init_data.booking_data;
                 booking_keys = init_data.booking_keys;
-                alert(booking_data);
-                alert(booking_keys);
-                
+
+                alert("return is_1on1:");
+                alert(init_data.is_1on1);
+
                 convertBookingDataUTC();
                 setWeekDate(1);
                 current_utc = document.getElementById("UTC_Timezone").value;
@@ -325,11 +437,75 @@ span {
             error: function (xhr, s, error) {
                 alert(xhr.status);
                 alert(xhr.readyState);
+                alert(xhr.responseText);
+                alert(xhr.statusText);
             },
         });
     }
 
-    function Add_New_Course(tname, _date, start_time, end_time, price) {
+    function Group_Init() {
+        $.ajax({
+            type: "POST",
+            url: ca_process_url,
+            data: {
+                "type": "group_init",
+                "is_1on1": is_1on1,
+            },
+            dataType: "json",
+            success: function (init_data) {
+                remove_all_display_booking_data();
+                
+                if (is_1on1) alert("1on1");
+                else alert("Group!");
+
+                // Date set to monday (the start point of a new week)
+                _date = new Date();
+                if (_date.getDay() == 0) _date.setDate(_date.getDate() - 6);
+                else _date.setDate(_date.getDate()-_date.getDay()+1);
+
+                document.getElementById("user_name_field").innerHTML = "Username: " + init_data.current_user_name;
+                document.getElementById("user_role_field").innerHTML = "Role: " + init_data.current_user_role;
+                document.getElementById("user_email_field").innerHTML = "Email: " + init_data.current_user_email;
+
+                checkbox_init(init_data.teachers);
+
+                // If user role is teacher, he/she can add the new course on the booking system
+                if (init_data.current_user_role == "um_teacher") {
+                    document.getElementById("teacher_course_settings").style.display = "block";
+                    document.getElementById("tname").value = init_data.current_user_name;
+                    document.getElementById("tname").disabled = true;
+                }
+
+                if (is_1on1) {
+                    document.getElementById("student_max_num_field").style.display = "none";
+                }
+                else {
+                    document.getElementById("student_max_num_field").style.display = "block";
+                }
+
+                alert(init_data.booking_data);
+                alert(init_data.booking_keys);
+
+                booking_data = init_data.booking_data;
+                booking_keys = init_data.booking_keys;
+
+                alert("return is_1on1:");
+                alert(init_data.is_1on1);
+
+                convertBookingDataUTC();
+                setWeekDate(1);
+                current_utc = document.getElementById("UTC_Timezone").value;
+            },
+            error: function (xhr, s, error) {
+                alert(xhr.status);
+                alert(xhr.readyState);
+                alert(xhr.responseText);
+                alert(xhr.statusText);
+            },
+        });
+    }
+
+    function Add_New_Course_1on1(tname, _date, start_time, end_time, price) {
         var selected_utc = document.getElementById("UTC_Timezone").value;
         var utc_offset = -1 * parseInt(selected_utc.split("UTC")[1]);
         var start_time_timestamps = start_time.getTime();
@@ -346,7 +522,7 @@ span {
             type: "POST",
             url: ca_process_url,
             data: {
-                "type": "add_new_course",
+                "type": "add_new_course_1on1",
                 "teacher_name": tname,
                 "date": _date,
                 "start_time": _st,
@@ -360,11 +536,51 @@ span {
             error: function (xhr, s, error) {
                 alert(xhr.status);
                 alert(xhr.readyState);
+                alert(xhr.responseText);
+                alert(xhr.statusText);
             },
         });
     }
 
-    function Before_Booking_Check(book_course_key, book_user_name, book_user_email) {
+    function Add_New_Course_Group(tname, _date, start_time, end_time, student_max_num, price) {
+        var selected_utc = document.getElementById("UTC_Timezone").value;
+        var utc_offset = -1 * parseInt(selected_utc.split("UTC")[1]);
+        var start_time_timestamps = start_time.getTime();
+        var end_time_timestamps = end_time.getTime();
+
+        start_time.setTime(start_time_timestamps + utc_offset * 1000 * 60 * 60);
+        end_time.setTime(end_time_timestamps + utc_offset * 1000 * 60 * 60);
+        
+        // Time
+        var _st = start_time.getHours().toString() + ":" + start_time.getMinutes().toString();
+        var _et = end_time.getHours().toString() + ":" + end_time.getMinutes().toString();
+
+        $.ajax({
+            type: "POST",
+            url: ca_process_url,
+            data: {
+                "type": "add_new_course_group",
+                "teacher_name": tname,
+                "date": _date,
+                "start_time": _st,
+                "end_time": _et,
+                "student_max_num": student_max_num,
+                "price": price,
+            },
+            dataType: "json",
+            success: function(results) {
+                alert(results.message);
+            },
+            error: function (xhr, s, error) {
+                alert(xhr.status);
+                alert(xhr.readyState);
+                alert(xhr.responseText);
+                alert(xhr.statusText);
+            },
+        });
+    }
+
+    function Before_Booking_Check_1on1(book_course_key, book_user_name, book_user_email) {
         var book_course_key = book_course_key;
         var book_user_name = book_user_name;
         var book_user_email = book_user_email;
@@ -373,7 +589,7 @@ span {
             type: "POST",
             url: ca_process_url,
             data: {
-                "type": "before_booking_check",
+                "type": "before_booking_check_1on1",
                 "book_course_key": book_course_key,
                 "book_user_name": book_user_name,
                 "book_user_email": book_user_email,
@@ -396,6 +612,46 @@ span {
             error: function (xhr, s, error) {
                 alert(xhr.status);
                 alert(xhr.readyState);
+                alert(xhr.responseText);
+                alert(xhr.statusText);
+            },
+        });
+    }
+
+    function Before_Booking_Check_Group(book_course_key, book_user_name, book_user_email) {
+        var book_course_key = book_course_key;
+        var book_user_name = book_user_name;
+        var book_user_email = book_user_email;
+
+        $.ajax({
+            type: "POST",
+            url: ca_process_url,
+            data: {
+                "type": "before_booking_check_group",
+                "book_course_key": book_course_key,
+                "book_user_name": book_user_name,
+                "book_user_email": book_user_email,
+            },
+            dataType: "json",
+            success: function (check_results) {
+                if (check_results.results == "ok") {
+                    payEvent(ca_booking_name, ca_booking_value);
+                }
+                else if (check_results.results == "wait for payment") {
+                    payEvent(ca_booking_name, ca_booking_value);
+                }
+                else if (check_results.results == "not you") {
+                    alert("The course is booked by other people!");
+                }
+                else {
+                    alert("The course is booked.");
+                }
+            },
+            error: function (xhr, s, error) {
+                alert(xhr.status);
+                alert(xhr.readyState);
+                alert(xhr.responseText);
+                alert(xhr.statusText);
             },
         });
     }
@@ -411,6 +667,9 @@ span {
     // Checkbox init
     function checkbox_init(names) {
         var container = document.getElementById("checkbox_container");
+        while (container.lastElementChild) {
+            container.removeChild(container.lastElementChild);
+        }
 
         // Add checkboxs
         for (var i=0; i<names.length; ++i) {
@@ -598,12 +857,19 @@ span {
                     var book_button = document.createElement("input");
                     book_button.type = "button";
                     book_button.value = st_h + ":" + st_m + "-" + et_h + ":" + et_m + "\n$" + booking_data[j]["price"] + " USD";
-
-                    if (booking_data[j]["status"] == "booked") {
-                        book_button.value += "\n(booked)";
+                    
+                    if (is_1on1) {
+                        if (booking_data[j]["status"] == "booked") {
+                            book_button.value += "\n(booked)";
+                        }
+                        else if (booking_data[j]["status"] == "booking") {
+                            book_button.value += "\n(waiting for payment...)";
+                        }
                     }
-                    else if (booking_data[j]["status"] == "booking") {
-                        book_button.value += "\n(waiting for payment...)";
+                    else {
+                        var student_num = "0";
+                        var max_student_num = booking_data[j]["student_max_num"];
+                        book_button.value += "\b(" + student_num + "/" + max_student_num + ")";
                     }
                     
                     // Attribute "name" is store the key and data index
@@ -651,6 +917,8 @@ span {
     }
 
     function goBackTodayEvent() {
+        alert(booking_data);
+        alert(booking_keys);
         remove_all_display_booking_data();
         _date = new Date();
         _date.setDate(_date.getDate()-_date.getDay()+1);
@@ -700,6 +968,7 @@ span {
         var course_start_time_object = document.getElementById("course_start_time");
         var course_end_time_object = document.getElementById("course_end_time");
         var course_price_object = document.getElementById("course_price");
+        var course_student_max_number_object = document.getElementById("student_max_num_field");
 
         // Check
         if (datepicker_object.value == "") {
@@ -713,6 +982,9 @@ span {
         }
         else if (course_price_object.value == "") {
             alert("The price field cannot be empty!");
+        }
+        else if (is_1on1 && course_student_max_number_object.value == "") {
+            alert("The student max number cannot be empty!");
         }
         else if (isNumber(course_price_object.value) == false) {
             alert("The price must be a number!");
@@ -731,15 +1003,34 @@ span {
             start_time.setHours(start_hour, start_min, 0);
             end_time.setHours(end_hour, end_min, 0);
 
+            // Max student number
+            var student_max_num = 0;
+            if (!is_1on1) {
+                student_max_num = course_student_max_number_object.value;
+            }
+
             // Check
             if (start_time < end_time) {
-                Add_New_Course(
-                    document.getElementById("tname").value,
-                    datepicker_object.value,
-                    start_time,
-                    end_time,
-                    course_price_object.value,
-                );
+                if (is_1on1) {
+                    Add_New_Course_1on1(
+                        document.getElementById("tname").value,
+                        datepicker_object.value,
+                        start_time,
+                        end_time,
+                        course_price_object.value,
+                    );
+                }
+                else {
+                    Add_New_Course_Group(
+                        document.getElementById("tname").value,
+                        datepicker_object.value,
+                        start_time,
+                        end_time,
+                        student_max_num,
+                        course_price_object.value,
+                    );
+                }
+
                 var successed_message = "The course " + datepicker_object.value + " " + course_start_time_object.value + "-" + course_end_time_object.value + " ($" + course_price_object.value + " USD) is add to the booking system!";
                 alert(successed_message);
                 datepicker_object.value = "";
@@ -773,7 +1064,7 @@ span {
                 var book_user_name = document.getElementById("user_name_field").innerHTML.split(" ")[1];
                 var book_user_email = document.getElementById("user_email_field").innerHTML.split(" ")[1];
         
-                Before_Booking_Check(ca_booking_name, book_user_name, book_user_email);
+                Before_Booking_Check_1on1(ca_booking_name, book_user_name, book_user_email);
             } 
             else {
                 alert("CANCEL!");
@@ -812,15 +1103,20 @@ span {
         book(ca_book_name, book_user_name, book_user_email);
     }
 
+    // Change the course type (1on1 or Group)
+    function courseTypeChange() {
+        is_1on1 = !is_1on1;
+        if (is_1on1) Init();
+        else Group_Init();
+    }
+
     // Load the script
     window.onload = function() {
         // Init
         Init();
         
         var offset = new Date().getTimezoneOffset();
-        
         document.getElementById("timezone_field").innerHTML = "Location: " + Intl.DateTimeFormat().resolvedOptions().timeZone + " (" + _offset2UTC[offset.toString()] + ")";
-
         offset = -1 * offset / 60;
         autoSelectLocalUTC(offset);
     }
