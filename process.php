@@ -29,21 +29,13 @@ if ($_POST["type"] == "init") {
     $current_user = wp_get_current_user();
 
     // Get booking data
-    $ca_booking_list = array();
     $ca_booking_data = array();
-
-    if ( $is_1on1 == true) {
-        $ca_booking_list = get_option( "ca_booking_list_1on1" );
-    }
-    else {
-        $ca_booking_list = get_option( "ca_booking_list_group" );
-    }
+    $ca_booking_keys = get_option( "ca_booking_list_1on1" );
 
     $results["is_1on1"] = $is_1on1;
 
-    foreach ($ca_booking_list as $key) {
+    foreach ($ca_booking_keys as $key) {
         array_push( $ca_booking_data, get_option( $key ) );
-        array_push( $ca_booking_keys, $key );
     }
 
     // Return results
@@ -77,16 +69,13 @@ if ($_POST["type"] == "group_init") {
     $current_user = wp_get_current_user();
 
     // Get booking data
-    $ca_booking_list = array();
     $ca_booking_data = array();
-
-    $ca_booking_list = get_option( "ca_booking_list_group" );
+    $ca_booking_keys = get_option( "ca_booking_list_group" );
 
     $results["is_1on1"] = $is_1on1;
 
-    foreach ($ca_booking_list as $key) {
+    foreach ($ca_booking_keys as $key) {
         array_push( $ca_booking_data, get_option( $key ) );
-        array_push( $ca_booking_keys, $key );
     }
 
     // Return results
@@ -269,8 +258,8 @@ else if ($_POST["type"] == "before_booking_check_group") {
     $course_data = get_option( $book_course_key );
     
     // If the student is booked
-    if ( in_array($book_user_name, $course_data["names"]) ) {
-        $student_book_index = array_search( $book_user_name, $course_data["names"]);
+    if ( in_array($book_user_name, $course_data["student_names"]) ) {
+        $student_book_index = array_search( $book_user_name, $course_data["student_names"]);
 
         // Payment or not
         if ( $course_data["student_payment"][$student_book_index] == true) {
@@ -283,13 +272,13 @@ else if ($_POST["type"] == "before_booking_check_group") {
 
     // If the student not book and the course can be booked
     else if ( count($course_data["names"]) < $course_data["student_max_num"]) {
-        $course_data["student_names"] = $book_user_name;
-        $course_data["student_emails"] = $book_user_email;
-        $course_data["student_payment"] = false;
+        array_push( $course_data["student_names"], $book_user_name );
+        array_push( $course_data["student_emails"], $book_user_email );
+        array_push( $course_data["student_payment"], false );
 
         update_option( $book_course_key, $course_data );
 
-        $results["results"] = "group course book ok";
+        $results["results"] = "group course can book";
     }
 
     // The student not book but the course could not be booked

@@ -267,7 +267,7 @@ input:checked + .slider .off
             <p>End Time:<input type="text" class="timepicker" id="course_end_time"></p>
         </dt>
         <dt style="display: none" id="student_max_num_field">
-            <p>Student Max Number:<input type="text"></p>
+            <p>Student Max Number:<input type="text" id="student_max_num"></p>
         </dt>
         <dt>
             <p>Price:<input type="text" id="course_price"></p>
@@ -302,6 +302,7 @@ input:checked + .slider .off
                         <input type='hidden' name='return' value='' />
                         <input type='hidden' name='bn' value='WPPlugin_SP'>
                         <input type='hidden' name='cancel_return' value='' />
+                        <input type="hidden" id='ca_booking_username' name="custom" value="mycustomvalue">
                         <input style='border: none;' class='paypalbuttonimage' type='image' 
                             src='https://www.paypalobjects.com/webstatic/en_US/i/buttons/buy-logo-medium.png' border='0' name='submit'
                             alt='Make your payments with PayPal. It is free, secure, effective.'>
@@ -393,8 +394,9 @@ input:checked + .slider .off
             success: function (init_data) {
                 remove_all_display_booking_data();
                 
-                if (is_1on1) alert("1on1");
-                else alert("Group!");
+                alert("1on1");
+                alert(init_data.booking_data);
+                alert(init_data.booking_keys);
 
                 // Date set to monday (the start point of a new week)
                 _date = new Date();
@@ -421,14 +423,8 @@ input:checked + .slider .off
                     document.getElementById("student_max_num_field").style.display = "block";
                 }
 
-                alert(init_data.booking_data);
-                alert(init_data.booking_keys);
-
                 booking_data = init_data.booking_data;
                 booking_keys = init_data.booking_keys;
-
-                alert("return is_1on1:");
-                alert(init_data.is_1on1);
 
                 convertBookingDataUTC();
                 setWeekDate(1);
@@ -453,10 +449,8 @@ input:checked + .slider .off
             },
             dataType: "json",
             success: function (init_data) {
-                remove_all_display_booking_data();
-                
-                if (is_1on1) alert("1on1");
-                else alert("Group!");
+                remove_all_display_booking_data();                
+                alert("Group!");
 
                 // Date set to monday (the start point of a new week)
                 _date = new Date();
@@ -483,14 +477,8 @@ input:checked + .slider .off
                     document.getElementById("student_max_num_field").style.display = "block";
                 }
 
-                alert(init_data.booking_data);
-                alert(init_data.booking_keys);
-
                 booking_data = init_data.booking_data;
                 booking_keys = init_data.booking_keys;
-
-                alert("return is_1on1:");
-                alert(init_data.is_1on1);
 
                 convertBookingDataUTC();
                 setWeekDate(1);
@@ -580,10 +568,10 @@ input:checked + .slider .off
         });
     }
 
-    function Before_Booking_Check_1on1(book_course_key, book_user_name, book_user_email) {
-        var book_course_key = book_course_key;
-        var book_user_name = book_user_name;
-        var book_user_email = book_user_email;
+    function Before_Booking_Check_1on1(book_course_key, book_value, book_user_name, book_user_email) {
+        // var book_course_key = book_course_key;
+        // var book_user_name = book_user_name;
+        // var book_user_email = book_user_email;
 
         $.ajax({
             type: "POST",
@@ -597,10 +585,10 @@ input:checked + .slider .off
             dataType: "json",
             success: function (check_results) {
                 if (check_results.results == "ok") {
-                    payEvent(ca_booking_name, ca_booking_value);
+                    payEvent(book_course_key, book_value);
                 }
                 else if (check_results.results == "wait for payment") {
-                    payEvent(ca_booking_name, ca_booking_value);
+                    payEvent(book_course_key, book_value);
                 }
                 else if (check_results.results == "not you") {
                     alert("The course is booked by other people!");
@@ -618,10 +606,10 @@ input:checked + .slider .off
         });
     }
 
-    function Before_Booking_Check_Group(book_course_key, book_user_name, book_user_email) {
-        var book_course_key = book_course_key;
-        var book_user_name = book_user_name;
-        var book_user_email = book_user_email;
+    function Before_Booking_Check_Group(book_course_key, book_value, book_user_name, book_user_email) {
+        // var book_course_key = book_course_key;
+        // var book_user_name = book_user_name;
+        // var book_user_email = book_user_email;
 
         $.ajax({
             type: "POST",
@@ -634,17 +622,11 @@ input:checked + .slider .off
             },
             dataType: "json",
             success: function (check_results) {
-                if (check_results.results == "ok") {
-                    payEvent(ca_booking_name, ca_booking_value);
-                }
-                else if (check_results.results == "wait for payment") {
-                    payEvent(ca_booking_name, ca_booking_value);
-                }
-                else if (check_results.results == "not you") {
-                    alert("The course is booked by other people!");
+                if (check_results.results == "group course can book" || check_results.results == "you need to pay!") {
+                    payEvent(book_course_key, book_value);
                 }
                 else {
-                    alert("The course is booked.");
+                    alert(check_results.results);
                 }
             },
             error: function (xhr, s, error) {
@@ -867,7 +849,7 @@ input:checked + .slider .off
                         }
                     }
                     else {
-                        var student_num = "0";
+                        var student_num = booking_data[j]["student_names"].length.toString();
                         var max_student_num = booking_data[j]["student_max_num"];
                         book_button.value += "\b(" + student_num + "/" + max_student_num + ")";
                     }
@@ -968,7 +950,7 @@ input:checked + .slider .off
         var course_start_time_object = document.getElementById("course_start_time");
         var course_end_time_object = document.getElementById("course_end_time");
         var course_price_object = document.getElementById("course_price");
-        var course_student_max_number_object = document.getElementById("student_max_num_field");
+        var course_student_max_num_object = document.getElementById("student_max_num");
 
         // Check
         if (datepicker_object.value == "") {
@@ -983,7 +965,7 @@ input:checked + .slider .off
         else if (course_price_object.value == "") {
             alert("The price field cannot be empty!");
         }
-        else if (is_1on1 && course_student_max_number_object.value == "") {
+        else if (is_1on1 && course_student_max_num_object.value == "") {
             alert("The student max number cannot be empty!");
         }
         else if (isNumber(course_price_object.value) == false) {
@@ -1006,7 +988,7 @@ input:checked + .slider .off
             // Max student number
             var student_max_num = 0;
             if (!is_1on1) {
-                student_max_num = course_student_max_number_object.value;
+                student_max_num = course_student_max_num_object.value;
             }
 
             // Check
@@ -1048,9 +1030,9 @@ input:checked + .slider .off
     // Book button event
     function bookButtonEvent() {
         alert("Enter bookButtonEvent!");
-
-        ca_booking_name = booking_keys[parseInt(this.name)];
-        ca_booking_value = booking_data[parseInt(this.name)]["price"];
+        
+        var ca_booking_name = booking_keys[parseInt(this.name)];
+        var ca_booking_value = booking_data[parseInt(this.name)]["price"];
 
         if (document.getElementById("user_name_field").innerHTML == "Username: null") {
             alert("you must be logged in for booking.");
@@ -1064,7 +1046,12 @@ input:checked + .slider .off
                 var book_user_name = document.getElementById("user_name_field").innerHTML.split(" ")[1];
                 var book_user_email = document.getElementById("user_email_field").innerHTML.split(" ")[1];
         
-                Before_Booking_Check_1on1(ca_booking_name, book_user_name, book_user_email);
+                if (is_1on1) {
+                    Before_Booking_Check_1on1(ca_booking_name, ca_booking_value, book_user_name, book_user_email);
+                }
+                else {
+                    Before_Booking_Check_Group(ca_booking_name, ca_booking_value, book_user_name, book_user_email);
+                }
             } 
             else {
                 alert("CANCEL!");
@@ -1073,6 +1060,10 @@ input:checked + .slider .off
     }
 
     function payEvent(ca_booking_name, ca_booking_value) {
+        alert("Eneter pay event!");
+        alert(ca_booking_name);
+        alert(ca_booking_value);
+
         // PayPal button
         document.getElementById("ca_booking_name").value = ca_booking_name;
         document.getElementById("ca_booking_value").value = ca_booking_value;
@@ -1085,6 +1076,7 @@ input:checked + .slider .off
         var book_user_name = document.getElementById("user_name_field").innerHTML.split(" ")[1];
         var book_user_email = document.getElementById("user_email_field").innerHTML.split(" ")[1];
         document.getElementById("pay_user_name").value = book_user_name;
+        document.getElementById("ca_booking_username").value = book_user_name;
         document.getElementById("pay_user_email").value = book_user_email;
 
         div.style.display = "block";

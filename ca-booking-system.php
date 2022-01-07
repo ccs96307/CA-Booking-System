@@ -107,45 +107,44 @@ function ca_booking_system_setting_page() {
         
         <table class="form-table">
             <p>
-                    <?php
-
-                    /*$ipn_data = get_option( 'event_name' );
+                <?php
+                    $ipn_data = get_option( 'event_name' );
                     
                     $ca_payment = false;
                     $ca_course_key = "";
                     foreach ( $ipn_data as $_data ) {
-                        if ( $_data == "payment_status=Completed" ) {
-                            $ca_payment = true;
-                        }
+                        echo json_encode($_data) . "<br>";
+                        // if ( $_data == "payment_status=Completed" ) {
+                        //     $ca_payment = true;
+                        // }
 
-                        $item_name = explode( "=", $_data )[0];
-                        $item_value = explode( "=", $_data )[1];
+                        // $item_name = explode( "=", $_data )[0];
+                        // $item_value = explode( "=", $_data )[1];
 
-                        if ( $item_name == "item_name" ) {
-                            $item_value = str_replace( '+', ' ', $item_value );
-                            $item_value = str_replace( '%3A', ':', $item_value );
-                            $item_value = str_replace( '%28', '(', $item_value );
-                            $item_value = str_replace( '%29', ')', $item_value );
+                        // if ( $item_name == "item_name" ) {
+                        //     $item_value = str_replace( '+', ' ', $item_value );
+                        //     $item_value = str_replace( '%3A', ':', $item_value );
+                        //     $item_value = str_replace( '%28', '(', $item_value );
+                        //     $item_value = str_replace( '%29', ')', $item_value );
 
-                            //echo $item_value . "<br>";
-                            //echo json_encode( get_option( $item_value ) );
-                            //echo json_encode( get_option( "ca_booking_list_1on1" ) );
-                        }    
-                        //echo $item_name . "=" . $item_value . "<br>";
+                        //     //echo $item_value . "<br>";
+                        //     //echo json_encode( get_option( $item_value ) );
+                        //     //echo json_encode( get_option( "ca_booking_list_1on1" ) );
+                        // }    
+                        // echo $item_name . "=" . $item_value . "<br>";
                         
-                    }*/
-
-
-                    $bookings = get_option( 'ca_booking_list_1on1' );
-                    if ( is_null( $bookings) ) echo "It is NULL!<br>";
-
-                    echo json_encode( $bookings );
-                    
-                    foreach( $bookings as $key ) {
-                        $data = get_option( $key );
-                        echo json_encode( $key ) . " ";
-                        echo json_encode( $data ) . "<br>";
                     }
+
+                    // $bookings = get_option( 'ca_booking_list_1on1' );
+                    // if ( is_null( $bookings) ) echo "It is NULL!<br>";
+
+                    // echo json_encode( $bookings );
+                    
+                    // foreach( $bookings as $key ) {
+                    //     $data = get_option( $key );
+                    //     echo json_encode( $key ) . " ";
+                    //     echo json_encode( $data ) . "<br>";
+                    // }
 
                     echo "======================================" . "<br>";
 
@@ -159,34 +158,6 @@ function ca_booking_system_setting_page() {
                         echo json_encode( $key ) . " ";
                         echo json_encode( $data ) . "<br>";
                     }
-
-                    // Get user info
-                    /*$current_user = wp_get_current_user();
-                    
-                    echo 'Username: ' . $current_user->user_login . '<br>';
-                    echo 'Email: ' . $current_user->user_email . '<br>';
-                    echo 'User first name: ' . $current_user->user_firstname . '<br>';
-                    echo 'User last name: ' . $current_user->user_lastname . '<br>';
-                    echo 'User display name: ' . $current_user->display_name . '<br>';
-                    echo 'User ID: ' . $current_user->ID . '<br>';
-                    echo 'User Role: ' . json_encode($current_user->roles) . '<br>';
-                    
-    
-                    // Get all users info
-                    $users = get_users( array( 'fields' => array( 'ID' ) ) );
-                    
-                    foreach ( $users as $user ) {
-                        $_user = get_userdata($user->ID);
-
-                        echo 'Username: ' . $_user->user_login . '<br>';
-                        echo 'Email: ' . $_user->user_email . '<br>';
-                        echo 'User first name: ' . $_user->user_firstname . '<br>';
-                        echo 'User last name: ' . $_user->user_lastname . '<br>';
-                        echo 'User display name: ' . $_user->display_name . '<br>';
-                        echo 'User ID: ' . $_user->ID . '<br>';
-                        echo 'User Role: ' . json_encode($_user->roles) . '<br><br>';
-                    }*/
-
                 ?>
             </p>
         </table>
@@ -349,6 +320,11 @@ function ca_paypal_ipn_callback() {
         $item_name = explode( "=", $_data )[0];
         $item_value = explode( "=", $_data )[1];
 
+        // Book username
+        if ( $item_name == "custom" ) {
+            $ca_book_username = $item_value;
+        }
+
         if ( $item_name == "item_name" ) {
             $item_value = str_replace( '+', ' ', $item_value );
             $item_value = str_replace( '%3A', ':', $item_value );
@@ -358,18 +334,29 @@ function ca_paypal_ipn_callback() {
             $ca_course_data = get_option( $item_value );
 
             // Change status
-            if ( $ca_course_data["status"] == "booking" && $ca_payment = true) {
-                $ca_course_data["status"] = "booked";
+            if ( preg_match("/group/", $item_value) == 1 && $ca_payment == true ) {
+                // Pass customize variable to get the user name or ID
+                $student_book_index = array_search( $ca_book_username, $ca_course_data["student_names"] );
+                $ca_course_data["student_payment"][$student_book_index] = true;
 
                 // Save to database
-                update_option( $item_value, $ca_course_data );        
+                update_option( $item_value, $ca_course_data );
+            }
+            else {
+                if ( $ca_course_data["status"] == "booking" && $ca_payment == true ) {
+                    $ca_course_data["status"] = "booked";
+
+                    // Save to database
+                    update_option( $item_value, $ca_course_data );        
+                }
             }
         }
     }
 
     // Record LOG
-    array_push( $new_array, $ipn_data );
-    update_option( "event_name", $new_array );
+    // array_push( $new_array, $ipn_data );
+    // update_option( "event_name", $new_array );
+    update_option( "event_name", $ipn_data );
 }
 
 
