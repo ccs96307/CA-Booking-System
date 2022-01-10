@@ -75,90 +75,23 @@ span {
     background-color: darkgray;
 }
 
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 90px;
-  height: 34px;
+.selected_button {
+    background-color: white;
+    border: solid;
+    color: black;
 }
-
-.switch input {display:none;}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: black;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: gray;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(55px);
-  -ms-transform: translateX(55px);
-  transform: translateX(55px);
-}
-
-/*------ ADDED CSS ---------*/
-.on {
-  display: none;
-}
-
-.on, .off {
-  color: white;
-  position: absolute;
-  transform: translate(-50%,-50%);
-  top: 50%;
-  font-size: 10px;
-  font-family: Verdana, sans-serif;
-}
-
-.off {
-    left: 50%;
-}
-
-input:checked+ .slider .on
-{display: block;}
-
-input:checked + .slider .off
-{display: none;}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;}
-
 
 </style>
 
 
 <body>
+    <!-- Switch to different table mode -->
+    <div>
+        <button class="selected_button" style="width: 200px;" id="button_1on1" onclick="changeTableMode(1)">1on1</button>
+        <button style="width: 200px;" id="button_group" onclick="changeTableMode(2)">group</button>
+        <button style="width: 200px;" id="button_history" onclick="changeTableMode(3)">Booking History</button>
+    </div>
+
     <!-- Personal Info -->
     <dl>
         <dt id="user_name_field">Username: </dt>
@@ -199,18 +132,34 @@ input:checked + .slider .off
         </dt>
     </dl>
 
+    <div id="student_book_history_info">
+        <div>
+            <label>查看需要預約的課程種類:</label>
+            <button class="selected_button" style="width: 200px;" id="student_book_histroy_button_1on1" onclick="bookHistoryMode(1)">1on1</button>
+            <button style="width: 200px;" id="student_book_histroy_button_group" onclick="bookHistoryMode(2)">group</button>        
+        </div>
+        <table id="student_book_history_table">
+            <tr>
+                <td>課程名稱</td>
+                <td>課程時間</td>
+                <td>授課老師</td>
+            </tr>
+            <tr>
+                <td id="book_history_course_name_container"></td>
+                <td id="book_history_course_time_container"></td>
+                <td id="book_history_course+teacher_container"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="teacher_book_history_info">
+    </div>
+
+
+    <div id="course_info_fields">
     <!-- Teacher Checkboxs -->
     <div id="checkbox_container">
     </div>
-
-    <!-- 1on1 or Group Switcher -->
-    <label class="switch">
-        <input type="checkbox" id="togBtn" onclick="courseTypeChange()">
-        <div class="slider round">
-            <span class="on">Group</span>
-            <span class="off">1on1</span>
-        </div>
-    </label>
     
     <!-- Change date button -->
     <div style="display: flex; justify-content: space-between;">
@@ -275,6 +224,7 @@ input:checked + .slider .off
     </dl>
         <button style="float: right;" onclick="add_new_course()">CREATE</button>
     </div>
+    </div>
 
     <!-- Pop booking window -->
     <div id="background-pop">
@@ -321,7 +271,7 @@ input:checked + .slider .off
     var booking_data;
     var booking_keys;
     var current_utc;
-    var is_1on1 = true;
+    var table_mode = 1;
 
     const _months = [
         'January',
@@ -388,16 +338,11 @@ input:checked + .slider .off
             url: ca_process_url,
             data: {
                 "type": "init",
-                "is_1on1": is_1on1,
             },
             dataType: "json",
             success: function (init_data) {
                 remove_all_display_booking_data();
                 
-                alert("1on1");
-                alert(init_data.booking_data);
-                alert(init_data.booking_keys);
-
                 // Date set to monday (the start point of a new week)
                 _date = new Date();
                 if (_date.getDay() == 0) _date.setDate(_date.getDate() - 6);
@@ -415,13 +360,9 @@ input:checked + .slider .off
                     document.getElementById("tname").value = init_data.current_user_name;
                     document.getElementById("tname").disabled = true;
                 }
-
-                if (is_1on1) {
-                    document.getElementById("student_max_num_field").style.display = "none";
-                }
-                else {
-                    document.getElementById("student_max_num_field").style.display = "block";
-                }
+                    
+                // Hide the student max num field
+                document.getElementById("student_max_num_field").style.display = "none";
 
                 booking_data = init_data.booking_data;
                 booking_keys = init_data.booking_keys;
@@ -445,12 +386,10 @@ input:checked + .slider .off
             url: ca_process_url,
             data: {
                 "type": "group_init",
-                "is_1on1": is_1on1,
             },
             dataType: "json",
             success: function (init_data) {
                 remove_all_display_booking_data();                
-                alert("Group!");
 
                 // Date set to monday (the start point of a new week)
                 _date = new Date();
@@ -470,12 +409,7 @@ input:checked + .slider .off
                     document.getElementById("tname").disabled = true;
                 }
 
-                if (is_1on1) {
-                    document.getElementById("student_max_num_field").style.display = "none";
-                }
-                else {
-                    document.getElementById("student_max_num_field").style.display = "block";
-                }
+                document.getElementById("student_max_num_field").style.display = "block";
 
                 booking_data = init_data.booking_data;
                 booking_keys = init_data.booking_keys;
@@ -840,7 +774,7 @@ input:checked + .slider .off
                     book_button.type = "button";
                     book_button.value = st_h + ":" + st_m + "-" + et_h + ":" + et_m + "\n$" + booking_data[j]["price"] + " USD";
                     
-                    if (is_1on1) {
+                    if (table_mode == 1) {
                         if (booking_data[j]["status"] == "booked") {
                             book_button.value += "\n(booked)";
                         }
@@ -848,7 +782,7 @@ input:checked + .slider .off
                             book_button.value += "\n(waiting for payment...)";
                         }
                     }
-                    else {
+                    else if (table_mode == 2) {
                         var student_num = booking_data[j]["student_names"].length.toString();
                         var max_student_num = booking_data[j]["student_max_num"];
                         book_button.value += "\b(" + student_num + "/" + max_student_num + ")";
@@ -965,7 +899,7 @@ input:checked + .slider .off
         else if (course_price_object.value == "") {
             alert("The price field cannot be empty!");
         }
-        else if (is_1on1 && course_student_max_num_object.value == "") {
+        else if (table_mode == 1 && course_student_max_num_object.value == "") {
             alert("The student max number cannot be empty!");
         }
         else if (isNumber(course_price_object.value) == false) {
@@ -987,13 +921,13 @@ input:checked + .slider .off
 
             // Max student number
             var student_max_num = 0;
-            if (!is_1on1) {
+            if (table_mode == 2) {
                 student_max_num = course_student_max_num_object.value;
             }
 
             // Check
             if (start_time < end_time) {
-                if (is_1on1) {
+                if (table_mode == 1) {
                     Add_New_Course_1on1(
                         document.getElementById("tname").value,
                         datepicker_object.value,
@@ -1002,7 +936,7 @@ input:checked + .slider .off
                         course_price_object.value,
                     );
                 }
-                else {
+                else if (table_mode == 2) {
                     Add_New_Course_Group(
                         document.getElementById("tname").value,
                         datepicker_object.value,
@@ -1046,10 +980,10 @@ input:checked + .slider .off
                 var book_user_name = document.getElementById("user_name_field").innerHTML.split(" ")[1];
                 var book_user_email = document.getElementById("user_email_field").innerHTML.split(" ")[1];
         
-                if (is_1on1) {
+                if (table_mode == 1) {
                     Before_Booking_Check_1on1(ca_booking_name, ca_booking_value, book_user_name, book_user_email);
                 }
-                else {
+                else if (table_mode == 2) {
                     Before_Booking_Check_Group(ca_booking_name, ca_booking_value, book_user_name, book_user_email);
                 }
             } 
@@ -1096,10 +1030,97 @@ input:checked + .slider .off
     }
 
     // Change the course type (1on1 or Group)
-    function courseTypeChange() {
-        is_1on1 = !is_1on1;
-        if (is_1on1) Init();
-        else Group_Init();
+    function changeTableMode(mode) {
+        table_mode = mode;
+
+        var button_1on1 = document.getElementById("button_1on1");
+        var button_group = document.getElementById("button_group");
+        var button_history = document.getElementById("button_history");
+        const button_list = [button_1on1, button_group, button_history];
+
+        button_list.forEach(removeAllButtonClass);
+
+        function removeAllButtonClass(button) {
+            if (button.classList.contains("selected_button")) {
+                button.classList.remove("selected_button");
+            }
+        }
+
+        if (mode == 1) button_1on1.classList.add("selected_button");
+        else if (mode == 2) button_group.classList.add("selected_button");
+        else if (mode == 3) button_history.classList.add("selected_button");
+
+        var course_info_fields = document.getElementById("course_info_fields");
+        if (table_mode == 1) {
+            course_info_fields.style.display = "block";
+            Init();
+        }
+        else if (table_mode == 2) {
+            course_info_fields.style.display = "block";
+            Group_Init();
+        }
+        else if (table_mode == 3) {
+            course_info_fields.style.display = "none";
+        }
+    }
+
+    function bookHistoryMode(mode) {
+        // Change button color
+        var student_book_history_button_on1 = document.getElementById("student_book_histroy_button_1on1");
+        var student_book_histroy_button_group = document.getElementById("student_book_histroy_button_group");
+
+
+        const button_list = [student_book_history_button_on1, student_book_histroy_button_group];
+        button_list.forEach(removeAllButtonClass);
+
+        function removeAllButtonClass(button) {
+            if (button.classList.contains("selected_button")) {
+                button.classList.remove("selected_button");
+            }
+        }
+
+        if (mode == 1) student_book_histroy_button_1on1.classList.add("selected_button");
+        else if (mode == 2) student_book_histroy_button_group.classList.add("selected_button");
+
+        function setBookHistoryTable(data) {
+            let table_container = document.getElementById("student_book_history_table");
+            let new_row = table_container.insertRow(-1);
+            let course_cell = new_row.insertCell(0);
+            let time_cell = new_row.insertCell(1);
+            let teacher_cell = new_row.insertCell(2);
+
+            let course_name = document.createTextNode(data[0]);
+            let course_time = document.createTextNode(data[1]);
+            let course_teacher = document.createTextNode(data[2]);
+
+            course_cell.appendChild(course_name);
+            time_cell.appendChild(course_time);
+            teacher_cell.appendChild(course_teacher);
+        }
+
+        $.ajax({
+            type: "POST",
+            url: ca_process_url,
+            data: {
+                "type": "get_student_book_history",
+            },
+            dataType: "json",
+            success: function(results) {
+                alert(results.message);
+                if (mode == 1) {
+                    results.one_by_one_data.forEach(setBookHistoryTable);
+                }
+                else {
+                    results.group_data.forEach(setBookHistoryTable);
+                }
+            },
+            error: function (xhr, s, error) {
+                alert(xhr.status);
+                alert(xhr.readyState);
+                alert(xhr.responseText);
+                alert(xhr.statusText);
+            },
+        });
     }
 
     // Load the script
@@ -1112,6 +1133,8 @@ input:checked + .slider .off
         offset = -1 * offset / 60;
         autoSelectLocalUTC(offset);
     }
+
+
 
 </script>
 
