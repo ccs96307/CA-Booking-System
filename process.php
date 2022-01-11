@@ -1,18 +1,13 @@
 <?php
 // Use the WordPress core function
-//$path = preg_replace('/wp-content(?!.*wp-content).*/', '', __DIR__);
-//require_once( $path . 'wp-load.php' );
 require_once( "../../../wp-load.php" );
 
 // Return results
 $results = array();
 
-// According to different type, we can give different processing
+// According to different type, we can process different requirements
 // Init event
 if ($_POST["type"] == "init") {
-    // Init
-    $is_1on1 = $_POST["is_1on1"];
-
     // Get teacher list
     $users = get_users( array( 'fields' => array( 'ID' ) ) );
     $teachers = array();
@@ -29,13 +24,16 @@ if ($_POST["type"] == "init") {
     $current_user = wp_get_current_user();
 
     // Get booking data
-    $ca_booking_data = array();
-    $ca_booking_keys = get_option( "ca_booking_list_1on1" );
+    $ca_booking_data_1on1 = array();
+    $ca_booking_data_group = array();
+    $ca_booking_keys_1on1 = get_option( "ca_booking_list_1on1" );
+    $ca_booking_keys_group = get_option( "ca_booking_list_group" );
 
-    $results["is_1on1"] = $is_1on1;
-
-    foreach ($ca_booking_keys as $key) {
-        array_push( $ca_booking_data, get_option( $key ) );
+    foreach ($ca_booking_keys_1on1 as $key) {
+        array_push( $ca_booking_data_1on1, get_option( $key ) );
+    }
+    foreach ($ca_booking_keys_group as $key) {
+        array_push( $ca_booking_data_group, get_option( $key ) );
     }
 
     // Return results
@@ -43,54 +41,13 @@ if ($_POST["type"] == "init") {
     $results["current_user_name"] = $current_user->user_login;
     $results["current_user_role"] = $current_user->roles;
     $results["current_user_email"] = $current_user->user_email;
-    $results["booking_data"] = $ca_booking_data;
-    $results["booking_keys"] = $ca_booking_keys;
+    $results["booking_data_1on1"] = $ca_booking_data_1on1;
+    $results["booking_keys_1on1"] = $ca_booking_keys_1on1;
+    $results["booking_data_group"] = $ca_booking_data_group;
+    $results["booking_keys_group"] = $ca_booking_keys_group;    
 
     echo json_encode($results);
 }
-
-if ($_POST["type"] == "group_init") {
-    // Init
-    $is_1on1 = $_POST["is_1on1"];
-
-    // Get teacher list
-    $users = get_users( array( 'fields' => array( 'ID' ) ) );
-    $teachers = array();
-
-    foreach( $users as $user ) {
-        $_user = get_userdata( $user->ID );
-
-        if ( in_array("um_teacher", $_user->roles) == true ) {
-            array_push( $teachers, $_user->user_login );
-        }
-    }
-
-    // Get current user info
-    $current_user = wp_get_current_user();
-
-    // Get booking data
-    $ca_booking_data = array();
-    $ca_booking_keys = get_option( "ca_booking_list_group" );
-
-    $results["is_1on1"] = $is_1on1;
-
-    foreach ($ca_booking_keys as $key) {
-        array_push( $ca_booking_data, get_option( $key ) );
-    }
-
-    // Return results
-    $results["teachers"] = $teachers;
-    $results["current_user_name"] = $current_user->user_login;
-    $results["current_user_role"] = $current_user->roles;
-    $results["current_user_email"] = $current_user->user_email;
-    $results["booking_data"] = $ca_booking_data;
-    $results["booking_keys"] = $ca_booking_keys;
-
-    echo json_encode($results);
-}
-
-
-
 
 // Before user actually booking, we need to check the dataset booking data again
 else if ($_POST["type"] == "before_booking_check_1on1") {
@@ -287,6 +244,12 @@ else if ($_POST["type"] == "before_booking_check_group") {
     }
 
     echo json_encode($results);
+}
+
+
+// get_student_book_history
+else if ( $_POST["type"] == "get_student_book_history" ) {
+
 }
 
  

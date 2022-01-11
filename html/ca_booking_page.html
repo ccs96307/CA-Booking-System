@@ -98,8 +98,9 @@ span {
         <dt id="user_role_field">Role: </dt>
         <dt id="user_email_field">Email: </dt>
         <dt id="timezone_field">Location: </dt>
+        
+        <!-- UTC -->
         <dt id="local_utc_field">UTC:
-            <!-- UTC -->
             <select id="UTC_Timezone" onchange="utcChangeEvent()">
                 <option>UTC-12</option>
                 <option>UTC-11</option>
@@ -132,7 +133,7 @@ span {
         </dt>
     </dl>
 
-    <div id="student_book_history_info">
+    <div style="display: none" id="student_book_history_info">
         <div>
             <label>查看需要預約的課程種類:</label>
             <button class="selected_button" style="width: 200px;" id="student_book_histroy_button_1on1" onclick="bookHistoryMode(1)">1on1</button>
@@ -268,8 +269,10 @@ span {
 
 <script>
     // Settings
-    var booking_data;
-    var booking_keys;
+    let booking_data_1on1;
+    let booking_keys_1on1;
+    let booking_data_group;
+    let booking_keys_group;
     var current_utc;
     var table_mode = 1;
 
@@ -328,8 +331,6 @@ span {
 
     // Initialize the today date and move it to monday
     var _date = new Date();
-    // if (_date.getDay() == 0) _date.setDate(_date.getDate() - 6);
-    // else _date.setDate(_date.getDate()-_date.getDay()+1);
 
     // AJAX
     function Init() {
@@ -364,57 +365,13 @@ span {
                 // Hide the student max num field
                 document.getElementById("student_max_num_field").style.display = "none";
 
-                booking_data = init_data.booking_data;
-                booking_keys = init_data.booking_keys;
+                alert(init_data.booking_data_group);
 
-                convertBookingDataUTC();
-                setWeekDate(1);
-                current_utc = document.getElementById("UTC_Timezone").value;
-            },
-            error: function (xhr, s, error) {
-                alert(xhr.status);
-                alert(xhr.readyState);
-                alert(xhr.responseText);
-                alert(xhr.statusText);
-            },
-        });
-    }
+                booking_data_1on1 = convertBookingDataUTC(init_data.booking_data_1on1);
+                booking_keys_1on1 = init_data.booking_keys_1on1;
+                booking_data_group = convertBookingDataUTC(init_data.booking_data_group);
+                booking_keys_group = init_data.booking_keys_group;
 
-    function Group_Init() {
-        $.ajax({
-            type: "POST",
-            url: ca_process_url,
-            data: {
-                "type": "group_init",
-            },
-            dataType: "json",
-            success: function (init_data) {
-                remove_all_display_booking_data();                
-
-                // Date set to monday (the start point of a new week)
-                _date = new Date();
-                if (_date.getDay() == 0) _date.setDate(_date.getDate() - 6);
-                else _date.setDate(_date.getDate()-_date.getDay()+1);
-
-                document.getElementById("user_name_field").innerHTML = "Username: " + init_data.current_user_name;
-                document.getElementById("user_role_field").innerHTML = "Role: " + init_data.current_user_role;
-                document.getElementById("user_email_field").innerHTML = "Email: " + init_data.current_user_email;
-
-                checkbox_init(init_data.teachers);
-
-                // If user role is teacher, he/she can add the new course on the booking system
-                if (init_data.current_user_role == "um_teacher") {
-                    document.getElementById("teacher_course_settings").style.display = "block";
-                    document.getElementById("tname").value = init_data.current_user_name;
-                    document.getElementById("tname").disabled = true;
-                }
-
-                document.getElementById("student_max_num_field").style.display = "block";
-
-                booking_data = init_data.booking_data;
-                booking_keys = init_data.booking_keys;
-
-                convertBookingDataUTC();
                 setWeekDate(1);
                 current_utc = document.getElementById("UTC_Timezone").value;
             },
@@ -615,9 +572,8 @@ span {
     }
 
     // Convert UTC
-    function convertBookingDataUTC() {
+    function convertBookingDataUTC(booking_data) {
         for (let i=0; i<booking_data.length; ++i) {
-        //for (var key in booking_data) {
             var _date = booking_data[i]["date"];
             var _st = booking_data[i]["start_time"];
             var _et = booking_data[i]["end_time"];
@@ -654,6 +610,8 @@ span {
             booking_data[i]["start_time"] = _st;
             booking_data[i]["end_time"] = _et;
         }
+
+        return booking_data;
     }
 
     // Convert UTC from current to new
@@ -667,11 +625,10 @@ span {
         // Update
         current_utc = selected_utc;
         
-        for (let i=0; i<booking_data.length; ++i) {
-        //for (var key in booking_data) {
-            var _date = booking_data[i]["date"];
-            var _st = booking_data[i]["start_time"];
-            var _et = booking_data[i]["end_time"];
+        for (let i=0; i<booking_data_1on1.length; ++i) {
+            var _date = booking_data_1on1[i]["date"];
+            var _st = booking_data_1on1[i]["start_time"];
+            var _et = booking_data_1on1[i]["end_time"];
             
             var _start_time = new Date(_date);
             _start_time.setHours(parseInt(_st.split(":")[0], parseInt(_st.split(":")[1]), 0));
@@ -697,9 +654,43 @@ span {
             var _st = _start_time.getHours().toString() + ":" + _start_time.getMinutes().toString();
             var _et = _end_time.getHours().toString() + ":" + _end_time.getMinutes().toString();
 
-            booking_data[i]["date"] = _date;
-            booking_data[i]["start_time"] = _st;
-            booking_data[i]["end_time"] = _et;
+            booking_data_1on1[i]["date"] = _date;
+            booking_data_1on1[i]["start_time"] = _st;
+            booking_data_1on1[i]["end_time"] = _et;
+        }
+
+        for (let i=0; i<booking_data_group.length; ++i) {
+            var _date = booking_data_group[i]["date"];
+            var _st = booking_data_group[i]["start_time"];
+            var _et = booking_data_group[i]["end_time"];
+            
+            var _start_time = new Date(_date);
+            _start_time.setHours(parseInt(_st.split(":")[0], parseInt(_st.split(":")[1]), 0));
+                
+            var _end_time = new Date(_date);
+            _end_time.setHours(parseInt(_et.split(":")[0], parseInt(_et.split(":")[1]), 0));
+            
+            // Convert
+            _start_time.setTime(_start_time.getTime() + utc_offset * 1000 * 60 * 60);
+            _end_time.setTime(_end_time.getTime() + utc_offset * 1000 * 60 * 60);
+
+            // Save
+            // Date
+            var y = _start_time.getFullYear().toString();
+            var m = _start_time.getMonth() + 1;
+            if (m < 10) m = "0" + m.toString();
+            else m = m.toString();
+            var d = _start_time.getDate();
+            if (d < 10) d = "0" + d.toString();
+            var _date = y + "-" + m + "-" + d;
+
+            // Time
+            var _st = _start_time.getHours().toString() + ":" + _start_time.getMinutes().toString();
+            var _et = _end_time.getHours().toString() + ":" + _end_time.getMinutes().toString();
+
+            booking_data_group[i]["date"] = _date;
+            booking_data_group[i]["start_time"] = _st;
+            booking_data_group[i]["end_time"] = _et;
         }
 
         setWeekDate(0);
@@ -708,6 +699,11 @@ span {
 
     // Set date
     function setWeekDate(direction) {
+        if (table_mode == 1) booking_data = booking_data_1on1;
+        else if (table_mode == 2) booking_data = booking_data_group;
+
+        alert(booking_data);
+
         // Direction
         if (direction == -1) {
             _date.setDate(_date.getDate()-14);
@@ -833,8 +829,6 @@ span {
     }
 
     function goBackTodayEvent() {
-        alert(booking_data);
-        alert(booking_keys);
         remove_all_display_booking_data();
         _date = new Date();
         _date.setDate(_date.getDate()-_date.getDay()+1);
@@ -964,6 +958,9 @@ span {
     // Book button event
     function bookButtonEvent() {
         alert("Enter bookButtonEvent!");
+
+        if (table_mode == 1) booking_data = booking_data_1on1;
+        else if (table_mode == 2) booking_data = booking_data_group;
         
         var ca_booking_name = booking_keys[parseInt(this.name)];
         var ca_booking_value = booking_data[parseInt(this.name)]["price"];
@@ -1046,31 +1043,36 @@ span {
             }
         }
 
-        if (mode == 1) button_1on1.classList.add("selected_button");
-        else if (mode == 2) button_group.classList.add("selected_button");
-        else if (mode == 3) button_history.classList.add("selected_button");
-
         var course_info_fields = document.getElementById("course_info_fields");
-        if (table_mode == 1) {
+        var book_info_fields = document.getElementById("student_book_history_info");
+
+        if (mode == 1) {
+            button_1on1.classList.add("selected_button");
             course_info_fields.style.display = "block";
-            Init();
+            book_info_fields.style.display = "none";
+            remove_all_display_booking_data();
+            setWeekDate(1);
         }
-        else if (table_mode == 2) {
+        else if (mode == 2) {
+            button_group.classList.add("selected_button");
             course_info_fields.style.display = "block";
-            Group_Init();
+            book_info_fields.style.display = "none";
+            remove_all_display_booking_data();
+            setWeekDate(1);
         }
-        else if (table_mode == 3) {
+        else if (mode == 3) {
+            button_history.classList.add("selected_button");
             course_info_fields.style.display = "none";
+            book_info_fields.style.display = "block";
         }
     }
 
     function bookHistoryMode(mode) {
         // Change button color
-        var student_book_history_button_on1 = document.getElementById("student_book_histroy_button_1on1");
+        var student_book_history_button_1on1 = document.getElementById("student_book_histroy_button_1on1");
         var student_book_histroy_button_group = document.getElementById("student_book_histroy_button_group");
 
-
-        const button_list = [student_book_history_button_on1, student_book_histroy_button_group];
+        const button_list = [student_book_history_button_1on1, student_book_histroy_button_group];
         button_list.forEach(removeAllButtonClass);
 
         function removeAllButtonClass(button) {
@@ -1079,11 +1081,15 @@ span {
             }
         }
 
+        // Clear table
+        var table_container = document.getElementById("student_book_history_table");
+        
+        while (table_container.rows.length > 1) table_container.deleteRow(1);
+
         if (mode == 1) student_book_histroy_button_1on1.classList.add("selected_button");
         else if (mode == 2) student_book_histroy_button_group.classList.add("selected_button");
 
         function setBookHistoryTable(data) {
-            let table_container = document.getElementById("student_book_history_table");
             let new_row = table_container.insertRow(-1);
             let course_cell = new_row.insertCell(0);
             let time_cell = new_row.insertCell(1);
@@ -1098,29 +1104,33 @@ span {
             teacher_cell.appendChild(course_teacher);
         }
 
-        $.ajax({
-            type: "POST",
-            url: ca_process_url,
-            data: {
-                "type": "get_student_book_history",
-            },
-            dataType: "json",
-            success: function(results) {
-                alert(results.message);
-                if (mode == 1) {
-                    results.one_by_one_data.forEach(setBookHistoryTable);
-                }
-                else {
-                    results.group_data.forEach(setBookHistoryTable);
-                }
-            },
-            error: function (xhr, s, error) {
-                alert(xhr.status);
-                alert(xhr.readyState);
-                alert(xhr.responseText);
-                alert(xhr.statusText);
-            },
-        });
+        var current_username = document.getElementById("user_name_field").innerHTML.split(" ")[1];
+        var current_user_1on1_book_data = [];
+        var current_user_group_book_data = [];
+
+        for (var i=0; i<booking_data_1on1.length; ++i) {
+            if (booking_data_1on1[i]["student_name"] == current_username) {
+                current_user_1on1_book_data.push([
+                    booking_keys_1on1[i],
+                    booking_data_1on1[i]["start_time"] + "-" + booking_data_1on1[i]["end_time"],
+                    booking_data_1on1[i]["teacher_name"]
+                ]);
+            }
+        }
+
+        // TODO: Group need to check in array!!!
+        for (var i=0; i<booking_data_group.length; ++i) {
+            if (booking_data_group[i]["student_name"] == current_username) {
+                current_user_group_book_data.push([
+                    booking_keys_group[i],
+                    booking_data_group[i]["start_time"] + "-" + booking_data_group[i]["end_time"],
+                    booking_data_group[i]["teacher_name"]
+                ]);
+            }
+        }
+
+        current_user_1on1_book_data.forEach(setBookHistoryTable);
+        current_user_group_book_data.forEach(setBookHistoryTable);
     }
 
     // Load the script
