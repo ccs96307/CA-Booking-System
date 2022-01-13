@@ -18,7 +18,7 @@ along with "CA Booking System". If not, see https://www.gnu.org/licenses/gpl-3.0
  * Plugin Name:       CA Booking System
  * Plugin URI:    
  * Description:       A easy-to-use booking system
- * Version:           0.0.6
+ * Version:           0.0.7
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Clay Atlas

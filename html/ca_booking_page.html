@@ -378,8 +378,6 @@ span {
                 // Hide the student max num field
                 document.getElementById("student_max_num_field").style.display = "none";
 
-                alert(init_data.booking_data_group);
-
                 booking_data_1on1 = convertBookingDataUTC(init_data.booking_data_1on1);
                 booking_keys_1on1 = init_data.booking_keys_1on1;
                 booking_data_group = convertBookingDataUTC(init_data.booking_data_group);
@@ -390,6 +388,9 @@ span {
 
                 // Book history
                 bookHistoryMode(1);
+
+                // Open course history
+                openHistory();
             },
             error: function (xhr, s, error) {
                 alert(xhr.status);
@@ -718,8 +719,6 @@ span {
         if (table_mode == 1) booking_data = booking_data_1on1;
         else if (table_mode == 2) booking_data = booking_data_group;
 
-        alert(booking_data);
-
         // Direction
         if (direction == -1) {
             _date.setDate(_date.getDate()-14);
@@ -1007,10 +1006,6 @@ span {
     }
 
     function payEvent(ca_booking_name, ca_booking_value) {
-        alert("Eneter pay event!");
-        alert(ca_booking_name);
-        alert(ca_booking_value);
-
         // PayPal button
         document.getElementById("ca_booking_name").value = ca_booking_name;
         document.getElementById("ca_booking_value").value = ca_booking_value;
@@ -1152,7 +1147,11 @@ span {
     }
 
     function openHistory() {
+        alert(1);
         var table_container = document.getElementById("teacher_open_history_table");
+        var current_username = document.getElementById("user_name_field").innerHTML.split(" ")[1];
+
+        alert(2);
 
         function setBookHistoryTable(data) {
             let new_row = table_container.insertRow(-1);
@@ -1170,11 +1169,13 @@ span {
             student_cell.appendChild(course_students);
         }
 
+        alert(3);
+
         var current_user_1on1_book_data = [];
         var current_user_group_book_data = [];
 
         for (var i=0; i<booking_data_1on1.length; ++i) {
-            if (booking_data_1on1[i]["teacher"] == current_username) {
+            if (booking_data_1on1[i]["teacher_name"] == current_username) {
                 var temp_data = [
                     booking_keys_1on1[i],
                     booking_data_1on1[i]["start_time"] + "-" + booking_data_1on1[i]["end_time"],
@@ -1190,19 +1191,27 @@ span {
                 current_user_1on1_book_data.push(temp_data);
             }
         }
+        alert(4);
 
         for (var i=0; i<booking_data_group.length; ++i) {
-            if (booking_data_group[i]["teacher"].includes(current_username)) {
+            if (booking_data_group[i]["teacher_name"] == current_username) {
+                alert(i);
                 current_user_group_book_data.push([
                     booking_keys_group[i],
                     booking_data_group[i]["start_time"] + "-" + booking_data_group[i]["end_time"],
-                    "("+booking_data_group[i]["student_names"].length+"/"+booking_data_group[i]["student_max_num"]+")"
+                    "("+booking_data_group[i]["student_names"].length.toString()+"/"+booking_data_group[i]["student_max_num"]+")"
                 ]);
             }
         }
+        alert(5);
 
+        // TODO: No any data display!!!
+        alert("current_user_group:");
+        alert(current_user_group_book_data);
         current_user_group_book_data.forEach(setBookHistoryTable);
         current_user_1on1_book_data.forEach(setBookHistoryTable);
+        alert(6);
+
     }
 
     // Load the script
