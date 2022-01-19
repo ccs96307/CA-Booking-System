@@ -151,7 +151,7 @@ function ca_booking_system_setting_page() {
                     $bookings = get_option( 'ca_booking_list_group' );
                     
                     if ( empty( $bookings) ) echo "It is NULL!<br>";
-                    echo json_encode( $bookings );
+                    else echo json_encode( $bookings ) . "<br><br>";
                     
                     foreach( $bookings as $key ) {
                         $data = get_option( $key );

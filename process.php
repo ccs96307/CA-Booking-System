@@ -247,9 +247,33 @@ else if ($_POST["type"] == "before_booking_check_group") {
 }
 
 
-// get_student_book_history
-else if ( $_POST["type"] == "get_student_book_history" ) {
+// Delete the course
+else if ( $_POST["type"] == "delete_course" ) {
+    // Init
+    $delete_key = $_POST["delete_course_key"];
 
+    // Get
+    $ca_booking_keys_1on1 = get_option( "ca_booking_list_1on1" );
+    $ca_booking_keys_group = get_option( "ca_booking_list_group" );
+
+    // Update
+    if ( in_array( $delete_key, $ca_booking_keys_1on1 ) ) {
+        $key_index = array_search( $delete_key, $ca_booking_keys_1on1);
+        array_splice( $ca_booking_keys_1on1, $key_index, 1 );
+        update_option( "ca_booking_list_1on1", $ca_booking_keys_1on1 );
+    }
+    else if ( in_array( $delete_key, $ca_booking_keys_group ) ) {
+        $key_index = array_search( $delete_key, $ca_booking_keys_group);
+        array_splice( $ca_booking_keys_group, $key_index, 1 );
+        update_option( "ca_booking_list_group", $ca_booking_keys_group );
+    }
+
+    // Delete
+    delete_option( $delete_key );
+
+    $results["results"] = "Delete finished.";
+
+    echo json_encode($results);
 }
 
  

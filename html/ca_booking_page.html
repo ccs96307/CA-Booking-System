@@ -5,27 +5,26 @@
 <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<!-- <link rel="stylesheet" href="https://allthing-can.com/wp-content/plugins/ca-booking-system/html/style.css"> -->
 
 <head>
-</head>
-
 <style>
 table, tr, td {
     border: 1px solid black;
     text-align: center;
 }
-
+    
 caption {
     text-align: center;
 }
-
+    
 .btn-pop {
     background-color: #ffd475;  
     border-radius: 10px;
     border:0px;
     zoom:200%;
 }
-        
+            
 #background-pop{
     display: none;
     position: fixed;
@@ -35,7 +34,7 @@ caption {
     height: 100%;
     background-color: rgba(0,0,0,0.5);
 }
-       
+           
 #div-pop{
     background:#ffffff;
     width:30%;
@@ -43,18 +42,18 @@ caption {
     margin: 12% auto;
     overflow: auto;
 }
-        
+            
 .div-top{
     width: 100%;
     height: auto;
     background-color: #28a3e7;
     color: #ffffff;
 }
-        
+            
 .div-top div {
     padding: 3px 5px 5px 8px;
- }
-        
+}
+            
 span {
     color: white;
     margin-bottom: 10px ;
@@ -62,25 +61,25 @@ span {
     cursor: pointer;
     float: right;
 }
-       
+           
 .div-content {
     width: auto;
     height: 200px;
     overflow: auto;
 }
-        
+            
 .div-footer {
     text-align: center;
     background-color: darkgray;
 }
-
+    
 .selected_button {
     background-color: white;
     border: solid;
     color: black;
 }
-
 </style>
+</head>
 
 <body>
     <!-- Switch to different table mode -->
@@ -288,6 +287,7 @@ span {
     let booking_keys_group;
     var current_utc;
     var table_mode = 1;
+    var teacher_names;
 
     const _months = [
         'January',
@@ -342,11 +342,21 @@ span {
         "-840": "UTC+14",
     };
 
+    const teacher_open_course_colors = [
+        "#ff8c00",
+        "#9932cc",
+        "#8b0000",
+        "#9400d3",
+        "#00ced1",
+        "#696969"
+    ];
+
     // Initialize the today date and move it to monday
     var _date = new Date();
 
     // AJAX
     function Init() {
+        alert(ca_process_url)
         $.ajax({
             type: "POST",
             url: ca_process_url,
@@ -367,6 +377,8 @@ span {
                 document.getElementById("user_email_field").innerHTML = "Email: " + init_data.current_user_email;
 
                 checkbox_init(init_data.teachers);
+                teacher_names = init_data.teachers;
+                alert(teacher_names);
 
                 // If user role is teacher, he/she can add the new course on the booking system
                 if (init_data.current_user_role == "um_teacher") {
@@ -515,10 +527,6 @@ span {
     }
 
     function Before_Booking_Check_Group(book_course_key, book_value, book_user_name, book_user_email) {
-        // var book_course_key = book_course_key;
-        // var book_user_name = book_user_name;
-        // var book_user_email = book_user_email;
-
         $.ajax({
             type: "POST",
             url: ca_process_url,
@@ -536,6 +544,31 @@ span {
                 else {
                     alert(check_results.results);
                 }
+            },
+            error: function (xhr, s, error) {
+                alert(xhr.status);
+                alert(xhr.readyState);
+                alert(xhr.responseText);
+                alert(xhr.statusText);
+            },
+        });
+    }
+
+    function Delete_Course(book_course_key) {
+        alert("The following course you want to delete:");
+        alert(book_course_key);
+
+        $.ajax({
+            type: "POST",
+            url: ca_process_url,
+            data: {
+                "type": "delete_course",
+                "delete_course_key": book_course_key,
+            },
+            dataType: "json",
+            success: function (results) {
+                alert("delete successfully!");
+                window.location.reload();
             },
             error: function (xhr, s, error) {
                 alert(xhr.status);
@@ -566,17 +599,22 @@ span {
             // Checkbox
             var checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            checkbox.name = names[i];
-            checkbox.value = i;
+            checkbox.name = "teacher_checkbox";
+            checkbox.value = names[i];
             checkbox.id = i;
+            checkbox.checked = true;
             checkbox.onclick = function() {
-                // TODO: Filter the different teacher's courses
+                remove_all_display_booking_data();
+                setWeekDate(0);
             };
         
             // Label
             var label = document.createElement("label");
             label.htmlFor = i;
-            label.appendChild(document.createTextNode(names[i]));
+            var text = document.createTextNode(names[i]);
+            label.appendChild(text);
+            label.style.color = teacher_open_course_colors[i];
+
             
             // <br> element
             var br = document.createElement("br");
@@ -745,6 +783,15 @@ span {
             'current_sun'
         ];
 
+        // Filter
+        var checkboxs = Array.from(document.getElementsByName("teacher_checkbox"));
+        var unchecked_teachers = [];
+        checkboxs.forEach( function(v){
+            if (v.checked == false) {
+                unchecked_teachers.push(v.value);
+            }
+        });
+
         for (let i=0; i<7; ++i) {
             document.getElementById(weekday_ids[i]).innerHTML = formatDate(_date);
             _date.setDate(_date.getDate()+1);
@@ -765,11 +812,15 @@ span {
             // Button template
             var button_num = 0;
             var td_container = document.getElementById(weekday_ids[i]+"_container");
-            //var book_button = document.createElement("input");
-            //book_button.type = "button";
 
             for (var j=0; j<booking_data.length; ++j) {
-            //for (var key in booking_data)
+                if (unchecked_teachers.includes(booking_data[j]["teacher_name"])) continue;
+                
+                var t = 0;
+                for (t=0; t<teacher_names.length; ++t) {
+                    if (teacher_names[t] == booking_data[j]["teacher_name"]) break;
+                }
+
                 if (cur_date == booking_data[j]["date"]) {
                     var st_h = booking_data[j]["start_time"].split(":")[0];
                     var st_m = booking_data[j]["start_time"].split(":")[1];
@@ -805,6 +856,9 @@ span {
                     // ------------------------------------------------
 
                     book_button.onclick = bookButtonEvent;
+
+                    // Button colors
+                    book_button.style.backgroundColor = teacher_open_course_colors[t];
 
                     td_container.appendChild(book_button);
                     ++button_num;
@@ -972,20 +1026,42 @@ span {
 
     // Book button event
     function bookButtonEvent() {
+        alert(document.getElementById("user_name_field").innerHTML.split(" ")[1]);
+        alert(booking_data[parseInt(this.name)]["teacher_name"]);
         alert("Enter bookButtonEvent!");
 
-        if (table_mode == 1) booking_data = booking_data_1on1;
-        else if (table_mode == 2) booking_data = booking_data_group;
+        if (table_mode == 1) {
+            booking_data = booking_data_1on1;
+            booking_keys = booking_keys_1on1;
+        }
+        else if (table_mode == 2) {
+            booking_data = booking_data_group;
+            booking_keys = booking_keys_group;
+        }
         
         var ca_booking_name = booking_keys[parseInt(this.name)];
         var ca_booking_value = booking_data[parseInt(this.name)]["price"];
 
-        if (document.getElementById("user_name_field").innerHTML == "Username: null") {
+        alert(ca_booking_name);
+        alert(ca_booking_value);
+
+
+
+
+        // If the current visitor has not login
+        if (document.getElementById("user_name_field").innerHTML == "Username: false") {
             alert("you must be logged in for booking.");
             location.replace("https://allthing-can.com/login/");
         }
+
+        // If the current user is the course teacher
+        else if (document.getElementById("user_name_field").innerHTML.split(" ")[1] == booking_data[parseInt(this.name)]["teacher_name"]) {
+            if (window.confirm("Do you want to delete the course?") == true) {
+                Delete_Course(ca_booking_name);
+            }
+        }
+
         else {
-            //window.confirm("Do you want to book?");
             if (window.confirm("Do you want to book?") == true) {
                 alert("YES!");
                 
@@ -1147,11 +1223,8 @@ span {
     }
 
     function openHistory() {
-        alert(1);
         var table_container = document.getElementById("teacher_open_history_table");
         var current_username = document.getElementById("user_name_field").innerHTML.split(" ")[1];
-
-        alert(2);
 
         function setBookHistoryTable(data) {
             let new_row = table_container.insertRow(-1);
@@ -1168,8 +1241,6 @@ span {
             time_cell.appendChild(course_time);
             student_cell.appendChild(course_students);
         }
-
-        alert(3);
 
         var current_user_1on1_book_data = [];
         var current_user_group_book_data = [];
@@ -1191,11 +1262,9 @@ span {
                 current_user_1on1_book_data.push(temp_data);
             }
         }
-        alert(4);
 
         for (var i=0; i<booking_data_group.length; ++i) {
             if (booking_data_group[i]["teacher_name"] == current_username) {
-                alert(i);
                 current_user_group_book_data.push([
                     booking_keys_group[i],
                     booking_data_group[i]["start_time"] + "-" + booking_data_group[i]["end_time"],
@@ -1203,15 +1272,9 @@ span {
                 ]);
             }
         }
-        alert(5);
 
-        // TODO: No any data display!!!
-        alert("current_user_group:");
-        alert(current_user_group_book_data);
         current_user_group_book_data.forEach(setBookHistoryTable);
         current_user_1on1_book_data.forEach(setBookHistoryTable);
-        alert(6);
-
     }
 
     // Load the script
