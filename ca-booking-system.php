@@ -18,7 +18,7 @@ along with "CA Booking System". If not, see https://www.gnu.org/licenses/gpl-3.0
  * Plugin Name:       CA Booking System
  * Plugin URI:    
  * Description:       A easy-to-use booking system
- * Version:           0.0.7
+ * Version:           0.0.8
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            Clay Atlas
@@ -86,6 +86,7 @@ function register_ca_booking_system_settings() {
     
     // Register our settings ()
     register_setting( 'tnt-settings-group', 'event_name' );
+    register_setting( 'tnt-settings-group', 'ca_backend_log' );
     register_setting( 'tnt-settings-group', 'ca_booking_list_1on1');
     register_setting( 'tnt-settings-group', 'ca_booking_list_group' );
 
@@ -93,6 +94,11 @@ function register_ca_booking_system_settings() {
     // update_option( 'event_name' , 'Hello' );
     // array_push( $ca_reserve_list, $test_array );
     // update_option( 'ca_booking_list_group', NULL );
+    $logs = get_option( 'ca_backend_log' );
+    if ( !is_array( $logs ) ) {
+        $logs = array();
+        update_option( 'ca_backend_log', $logs );
+    }
 }
 
 
@@ -146,17 +152,28 @@ function ca_booking_system_setting_page() {
                     //     echo json_encode( $data ) . "<br>";
                     // }
 
-                    echo "======================================" . "<br>";
+                    echo "======================================<br>";
 
-                    $bookings = get_option( 'ca_booking_list_group' );
+                    // Group
+                    // $bookings = get_option( 'ca_booking_list_group' );
                     
-                    if ( empty( $bookings) ) echo "It is NULL!<br>";
-                    else echo json_encode( $bookings ) . "<br><br>";
+                    // if ( empty( $bookings) ) echo "It is NULL!<br>";
+                    // else echo json_encode( $bookings ) . "<br><br>";
                     
-                    foreach( $bookings as $key ) {
-                        $data = get_option( $key );
-                        echo json_encode( $key ) . " ";
-                        echo json_encode( $data ) . "<br>";
+                    // foreach( $bookings as $key ) {
+                    //     $data = get_option( $key );
+                    //     echo json_encode( $key ) . " ";
+                    //     echo json_encode( $data ) . "<br>";
+                    // }
+
+                    // 1on1
+
+
+                    // LOG
+                    echo "BACKEND LOG: <br><br>";
+                    $logs = get_option( "ca_backend_log" );
+                    foreach ( $logs as $log ) {
+                        echo json_encode( $log ) . "<br>";
                     }
                 ?>
             </p>

@@ -64,6 +64,12 @@ else if ($_POST["type"] == "before_booking_check_1on1") {
 
         update_option( $book_course_key, $course_data );
 
+        // JUST THIS TIMING NEED TO WRITE INFO TO THE LOG !!!
+        $logs = get_option( "ca_backend_log" );
+        $new_log = $book_user_name . " want to book a new 1on1 course but not paid yet: " . $book_course_key;
+        array_push( $logs, $new_log );
+        update_option( "ca_backend_log", $logs );
+
         $results["results"] = "1on1 book ok";
     }
     else if ( $course_data["status"] == "booking" ) {
@@ -136,6 +142,12 @@ else if ($_POST["type"] == "add_new_course_1on1") {
     // Write to database (Key-Value table)
     update_option( $course_key, $course_value );
 
+    // Add info to LOG
+    $logs = get_option( "ca_backend_log" );
+    $new_log = "$teacher_name opened a new 1on1 course: $course_key";
+    array_push( $logs, $new_log );
+    update_option( "ca_backend_log", $logs );
+
     // Return
     $results["message"] = "1on1 course create OK!";
     echo json_encode($results);
@@ -199,6 +211,12 @@ else if ($_POST["type"] == "add_new_course_group") {
     // Write to database (Key-Value table)
     update_option( $course_key, $course_value );
 
+    // Add info to LOG
+    $logs = get_option( "ca_backend_log" );
+    $new_log = $teacher_name . " opened a new group course: " . $course_key;
+    array_push( $logs, $new_log );
+    update_option( "ca_backend_log", $logs );
+
     // Return
     $results["message"] = "Group course create OK!";
     echo json_encode($results);
@@ -236,6 +254,14 @@ else if ($_POST["type"] == "before_booking_check_group") {
         update_option( $book_course_key, $course_data );
 
         $results["results"] = "group course can book";
+
+
+        // JUST THIS TIMING NEED TO WRITE INFO TO THE LOG !!!
+        $logs = get_option( "ca_backend_log" );
+        $new_log = $book_user_name . " want to book a new group course but not paid yet: " . $book_course_key;
+        array_push( $logs, $new_log );
+        update_option( "ca_backend_log", $logs );
+
     }
 
     // The student not book but the course could not be booked
@@ -270,6 +296,12 @@ else if ( $_POST["type"] == "delete_course" ) {
 
     // Delete
     delete_option( $delete_key );
+
+    // LOGS
+    $logs = get_option( "ca_backend_log" );
+    $new_log = $delete_key . " deleted by the teacher";
+    array_push( $logs, $new_log );
+    update_option( "ca_backend_log", $logs );
 
     $results["results"] = "Delete finished.";
 

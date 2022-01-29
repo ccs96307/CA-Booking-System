@@ -1,13 +1,15 @@
 <html lang="en">
-<script src="//code.jquery.com/jquery-1.9.1.js"></script>
-<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
-<link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
-<!-- <link rel="stylesheet" href="https://allthing-can.com/wp-content/plugins/ca-booking-system/html/style.css"> -->
 
 <head>
+    <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment-with-locales.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data.min.js"></script>
+    <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+
 <style>
 table, tr, td {
     border: 1px solid black;
@@ -81,7 +83,31 @@ span {
 </style>
 </head>
 
+
 <body>
+    <div class="container">
+        <input type="datetime-local" id="pickerDateTime" />   
+        <select id="dropdownTimeZone"></select>
+        <input type="button" id="btnSubmit" onclick="submitDate()" value="Calculate" />
+    </div>
+
+    <div class="report">
+        <label>Browser/Local datetime</label>
+        <div id="divLocal"></div><br>    
+
+        <label>UTC of browser datetime</label>
+        <div id="divUTC"></div><br>
+
+        <label>Selected datetime with timezone</label>
+        <div id="divSelected"></div><br>
+
+        <label>UTC of selected datetime with timezone</label>
+        <div id="divUTCSelected"></div><br> 
+
+        <label>UTC convert into Local Time</label>
+        <div id="divUTCConverted"></div><br>
+    </div>
+
     <!-- Switch to different table mode -->
     <div>
         <button class="selected_button" style="width: 200px;" id="button_1on1" onclick="changeTableMode(1)">1on1</button>
@@ -962,7 +988,7 @@ span {
         else if (course_price_object.value == "") {
             alert("The price field cannot be empty!");
         }
-        else if (table_mode == 1 && course_student_max_num_object.value == "") {
+        else if (table_mode == 2 && course_student_max_num_object.value == "") {
             alert("The student max number cannot be empty!");
         }
         else if (isNumber(course_price_object.value) == false) {
@@ -1277,6 +1303,73 @@ span {
         current_user_1on1_book_data.forEach(setBookHistoryTable);
     }
 
+    function loadTimeZoneList() {
+        let select = document.getElementById("dropdownTimeZone");
+        select.innerHTML = ""; 
+
+        let browserTimeZone = moment.tz.guess();
+        let timeZones = moment.tz.names();
+
+        timeZones.forEach((timeZone) => {
+            option = document.createElement("option");      
+            option.textContent = `${timeZone} (GMT${moment.tz(timeZone).format('Z')})`; 
+            option.value = timeZone;
+     
+            if (timeZone == browserTimeZone){
+                option.selected = true;
+            }
+        
+            select.appendChild(option);
+        });
+    }
+
+    function loadDefaultDateTime() {
+        document.getElementById('pickerDateTime').value = moment().format('YYYY-MM-DDTHH:mm');
+    }
+
+    const DEFAULT_FORMAT = 'YYYY-MM-DD HH:mm:ss Z'; 
+
+    function formatdate(momentDate) {
+        return momentDate.format(DEFAULT_FORMAT);
+    }
+
+    function getUtcValue(localDateTime){
+        return moment(localDateTime).utc();
+    }
+
+    function getSelectedValue(localDateTime, timeZone) {
+        return moment.tz(localDateTime, timeZone);
+    }
+
+    function getSelectedUTCValue(localDateTime, timeZone) {
+        return moment.tz(localDateTime, timeZone).utc();
+    }
+
+    function getUTCConverted(utcDateTime, timeZone) {
+        var utcTime = moment.utc(utcDateTime).toDate();
+        return moment(utcTime).local("Asia/Taipei");
+    }
+
+    function submitDate() {
+        let localValue = document.getElementById("pickerDateTime").value;
+        let timeZoneValue = document.getElementById("dropdownTimeZone").value;
+        let local =  document.getElementById('divLocal');
+        
+        local.innerHTML = formatedate(moment(localValue));
+
+        let utc =  document.getElementById('divUTC');
+        utc.innerHTML = formatdate(getUtcValue(localValue));
+
+        let selected =  document.getElementById('divSelected');
+        selected.innerHTML = formatdate(getSelectedValue(localValue, timeZoneValue));
+
+        let utcSelected =  document.getElementById('divUTCSelected');
+        utcSelected.innerHTML = formatdate(getSelectedUTCValue(localValue, timeZoneValue));
+
+        let utcConverted = document.getElementById("divUTCConverted");
+        utcConverted.innerHTML = formatdate(getUTCConverted(utcSelected.innerHTML));
+    }
+
     // Load the script
     window.onload = function() {
         // Init
@@ -1286,6 +1379,10 @@ span {
         document.getElementById("timezone_field").innerHTML = "Location: " + Intl.DateTimeFormat().resolvedOptions().timeZone + " (" + _offset2UTC[offset.toString()] + ")";
         offset = -1 * offset / 60;
         autoSelectLocalUTC(offset);
+
+        loadDefaultDateTime();
+        loadTimeZoneList();
+        submitDate();
     }
 
 
