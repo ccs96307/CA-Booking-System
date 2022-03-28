@@ -1,0 +1,26 @@
+<style>   
+    body,p{margin: 0;}   
+    .parentWrap{   
+        overflow: hidden;   
+    }   
+    .parent{   
+        margin-right: -20px;   
+        overflow: hidden;   
+    }   
+    .child{   
+        float: left;   
+        height: 100px;   
+        width: 25%;   
+        padding-right: 20px;   
+        /* box-sizing: border-box;    */
+        background-clip: content-box;   
+    }   
+    </style>   
+      
+    <div class="parentWrap">  
+        <div class="parent">
+            <button class="child" style="background-color: lightblue;">1</button>  
+            <button class="child" style="background-color: lightgreen;">2</button>  
+            <button class="child" style="background-color: lightsalmon;">3</button>  
+        </div>       
+    </div>

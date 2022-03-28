@@ -1,25 +1,27 @@
 <html lang="en">
 
 <head>
-    <script src="//code.jquery.com/jquery-1.9.1.js"></script>
-    <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment-with-locales.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data.min.js"></script>
-    <link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.9.1.js"></script>
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment-with-locales.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data.min.js"></script>
+<link rel="stylesheet" href="http://jqueryui.com/resources/demos/style.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
 
 <style>
-table, tr, td {
-    border: 1px solid black;
-    text-align: center;
-}
-    
+/* For booking table*/
 caption {
     text-align: center;
 }
-    
+
+.bs_table, .bs_tr, .bs_td {
+    border: 1px solid black;
+    text-align: center;
+}
+
+/* For pop-up widget */
 .btn-pop {
     background-color: #ffd475;  
     border-radius: 10px;
@@ -74,24 +76,73 @@ span {
     text-align: center;
     background-color: darkgray;
 }
+
+/* For infomation card */
+#info_card {
+    display: inline-block;
+    background-color: #efeff5;
+    border: 2px solid black;
     
+    border-radius: 15px;
+    border-color: grey;
+    
+    padding: 12px;
+    
+    box-shadow: 4px 4px #e0e0eb;
+    margin: 10px;
+}
+
+#info_card_table { 
+    border-collapse: collapse; 
+}
+
+.info_card_tr + .info_card_tr {
+  border-top: 1px solid black;
+}
+
+/* For toggle 1on1-group-booking_history button */
 .selected_button {
     background-color: white;
-    border: solid;
-    color: black;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
 }
+
+.unselected_button {
+    background-color: grey;
+    border-radius: 50%;
+    height: 100px;
+    width: 100px;
+}
+
+.button_div {
+    border-radius: 50%;
+    background-color: grey; 
+    height: 120px; 
+    width: 120px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+}
+
+.test_button {
+    border-radius: 50%; 
+    background-color: #1eff5b; 
+    height: 100px; 
+    width: 100px;
+}
+
 </style>
 </head>
-
 
 <body>
     <div class="container">
         <input type="datetime-local" id="pickerDateTime" />   
-        <select id="dropdownTimeZone"></select>
+        <!-- <select id="dropdownTimeZone"></select> -->
         <input type="button" id="btnSubmit" onclick="submitDate()" value="Calculate" />
     </div>
 
-    <div class="report">
+    <div>
         <label>Browser/Local datetime</label>
         <div id="divLocal"></div><br>    
 
@@ -108,22 +159,67 @@ span {
         <div id="divUTCConverted"></div><br>
     </div>
 
-    <!-- Switch to different table mode -->
+    <!-- Personal Info (info card style) -->
     <div>
-        <button class="selected_button" style="width: 200px;" id="button_1on1" onclick="changeTableMode(1)">1on1</button>
-        <button style="width: 200px;" id="button_group" onclick="changeTableMode(2)">group</button>
-        <button style="width: 200px;" id="button_history" onclick="changeTableMode(3)">Booking History</button>
+    <div id="info_card">
+        <table id="info_card_table">
+            <tr class="info_card_tr">
+                <td>ID</td>
+                <td id="user_id_field" style="text-align: center"></td>
+            </tr>
+            <tr class="info_card_tr">
+                <td>Username</td>
+                <td id="user_name_field" style="text-align: center"></td>
+            </tr>
+            <tr class="info_card_tr">
+                <td>Role</td>
+                <td id="user_role_field" style="text-align: center"></td>
+            </tr>
+            <tr class="info_card_tr">
+                <td>Email</td>
+                <td id="user_email_field" style="text-align: center"></td>
+            </tr>
+            <tr class="info_card_tr">
+                <td>Location</td>
+                <td id="timeZoneField" style="text-align: right"> 
+                <select id="dropdownTimeZone" onchange="dropdownTimeZoneChangeEvent()">
+                </select>
+                </td>
+            </tr>
+        </table>
     </div>
 
+    <!-- Switch to different table mode -->
+    <div style="display: inline-block;">
+    <div class="button_div">
+        <button id="button_1on1" onclick="changeTableMode(1)">1on1</button>
+    </div>
+    <div class="button_div">
+        <button id="button_group" onclick="changeTableMode(2)">group</button>
+    </div>
+    <div class="button_div">
+        <button id="button_history" onclick="changeTableMode(3)">Booking History</button>
+    </div>
+    </div>
+    </div>
+
+    <div class="button_div">
+        <button class="test_button">1on1</button>
+    </div>
+
+
     <!-- Personal Info -->
-    <dl>
+    <!-- <dl class="info_card">
+        <dt id="user_id_field">ID: </dt>
         <dt id="user_name_field">Username: </dt>
         <dt id="user_role_field">Role: </dt>
-        <dt id="user_email_field">Email: </dt>
-        <dt id="timezone_field">Location: </dt>
+        <dt id="user_email_field">Email: </dt> -->
         
         <!-- UTC -->
-        <dt id="local_utc_field">UTC:
+        <!-- <dt id="timeZoneField">Location: 
+            <select id="dropdownTimeZone" onchange="dropdownTimeZoneChangeEvent()"></select>
+        </dt> -->
+        <!-- <dt id="local_utc_field">UTC:
             <select id="UTC_Timezone" onchange="utcChangeEvent()">
                 <option>UTC-12</option>
                 <option>UTC-11</option>
@@ -153,8 +249,8 @@ span {
                 <option>UTC+13</option>
                 <option>UTC+14</option>
             </select>
-        </dt>
-    </dl>
+        </dt> -->
+    <!-- </dl> -->
 
     <!-- Booking history table -->
     <div style="display: none" id="student_book_history_info">
@@ -163,16 +259,16 @@ span {
             <button class="selected_button" style="width: 200px;" id="student_book_histroy_button_1on1" onclick="bookHistoryMode(1)">1on1</button>
             <button style="width: 200px;" id="student_book_histroy_button_group" onclick="bookHistoryMode(2)">group</button>        
         </div>
-        <table id="student_book_history_table">
-            <tr>
-                <td>課程名稱</td>
-                <td>課程時間</td>
-                <td>授課老師</td>
+        <table class="bs_table" id="student_book_history_table">
+            <tr class="bs_tr">
+                <td class="bs_td">課程名稱</td>
+                <td class="bs_td">課程時間</td>
+                <td class="bs_td">授課老師</td>
             </tr>
-            <tr>
-                <td id="book_history_course_name_container"></td>
-                <td id="book_history_course_time_container"></td>
-                <td id="book_history_course_teacher_container"></td>
+            <tr class="bs_tr">
+                <td class="bs_td" id="book_history_course_name_container"></td>
+                <td class="bs_td" id="book_history_course_time_container"></td>
+                <td class="bs_td" id="book_history_course_teacher_container"></td>
             </tr>
         </table>
     </div>
@@ -208,34 +304,34 @@ span {
     </div>
     
     <!-- Weekly calendar -->
-    <table>
+    <table class="bs_table">
         <caption id="current_month"><h3></h3></caption>
-        <tr>
-            <td>Mon</td>
-            <td>Tue</td>
-            <td>Wed</td>
-            <td>Thu</td>
-            <td>Fri</td>
-            <td style="color: red">Sat</td>
-            <td style="color: red">Sun</td>
+        <tr class="bs_tr">
+            <td class="bs_td">Mon</td>
+            <td class="bs_td">Tue</td>
+            <td class="bs_td">Wed</td>
+            <td class="bs_td">Thu</td>
+            <td class="bs_td">Fri</td>
+            <td class="bs_td" style="color: red">Sat</td>
+            <td class="bs_td" style="color: red">Sun</td>
         </tr>
-        <tr>
-            <td id="current_mon"></td>
-            <td id="current_tue"></td>
-            <td id="current_wed"></td>
-            <td id="current_thu"></td>
-            <td id="current_fri"></td>
-            <td id="current_sat" style="color: red"></td>
-            <td id="current_sun" style="color: red"></td>
+        <tr class="bs_tr">
+            <td class="bs_td" id="current_mon"></td>
+            <td class="bs_td" id="current_tue"></td>
+            <td class="bs_td" id="current_wed"></td>
+            <td class="bs_td" id="current_thu"></td>
+            <td class="bs_td" id="current_fri"></td>
+            <td class="bs_td" id="current_sat" style="color: red"></td>
+            <td class="bs_td" id="current_sun" style="color: red"></td>
         </tr>
-        <tr>
-            <td id="current_mon_container"></td>
-            <td id="current_tue_container"></td>
-            <td id="current_wed_container"></td>
-            <td id="current_thu_container"></td>
-            <td id="current_fri_container"></td>
-            <td id="current_sat_container"></td>
-            <td id="current_sun_container"></td>
+        <tr class="bs_tr">
+            <td class="bs_td" id="current_mon_container"></td>
+            <td class="bs_td" id="current_tue_container"></td>
+            <td class="bs_td" id="current_wed_container"></td>
+            <td class="bs_td" id="current_thu_container"></td>
+            <td class="bs_td" id="current_fri_container"></td>
+            <td class="bs_td" id="current_sat_container"></td>
+            <td class="bs_td" id="current_sun_container"></td>
         </tr>
     </table>
 
@@ -314,6 +410,7 @@ span {
     var current_utc;
     var table_mode = 1;
     var teacher_names;
+    var teacher_ids;
 
     const _months = [
         'January',
@@ -338,6 +435,18 @@ span {
         'Friday',
         'Saturday',
     ];
+
+    let weekday_ids = [
+        "current_mon",
+        "current_tue",
+        "current_wed",
+        "current_thu",
+        "current_fri",
+        "current_sat",
+        "current_sun"
+    ];
+
+
     const _offset2UTC = {
         "0": "UTC+0",
         "60": "UTC-1",
@@ -380,9 +489,8 @@ span {
     // Initialize the today date and move it to monday
     var _date = new Date();
 
-    // AJAX
+    // Init() is the entry point
     function Init() {
-        alert(ca_process_url)
         $.ajax({
             type: "POST",
             url: ca_process_url,
@@ -391,20 +499,25 @@ span {
             },
             dataType: "json",
             success: function (init_data) {
+                alert("Yep?");
                 remove_all_display_booking_data();
+                changeTableMode(1);
+                alert("test");
                 
                 // Date set to monday (the start point of a new week)
                 _date = new Date();
-                if (_date.getDay() == 0) _date.setDate(_date.getDate() - 6);
+                if (_date.getDay() == 0) _date.setDate(_date.getDate()-6);
                 else _date.setDate(_date.getDate()-_date.getDay()+1);
 
-                document.getElementById("user_name_field").innerHTML = "Username: " + init_data.current_user_name;
-                document.getElementById("user_role_field").innerHTML = "Role: " + init_data.current_user_role;
-                document.getElementById("user_email_field").innerHTML = "Email: " + init_data.current_user_email;
+                document.getElementById("user_id_field").innerHTML = init_data.current_user_id;
+                document.getElementById("user_name_field").innerHTML = init_data.current_user_name;
+                document.getElementById("user_role_field").innerHTML = init_data.current_user_role;
+                document.getElementById("user_email_field").innerHTML = init_data.current_user_email;
 
-                checkbox_init(init_data.teachers);
+                // Initialize checkboxs
                 teacher_names = init_data.teachers;
-                alert(teacher_names);
+                teacher_ids = init_data.teachers_id;
+                checkbox_init(teacher_names, teacher_ids);
 
                 // If user role is teacher, he/she can add the new course on the booking system
                 if (init_data.current_user_role == "um_teacher") {
@@ -465,7 +578,7 @@ span {
             },
             dataType: "json",
             success: function(results) {
-                alert(results.message);
+                // alert(results.message);
             },
             error: function (xhr, s, error) {
                 alert(xhr.status);
@@ -503,7 +616,7 @@ span {
             },
             dataType: "json",
             success: function(results) {
-                alert(results.message);
+                // alert(results.message);
             },
             error: function (xhr, s, error) {
                 alert(xhr.status);
@@ -614,7 +727,7 @@ span {
     }
 
     // Checkbox init
-    function checkbox_init(names) {
+    function checkbox_init(names, ids) {
         var container = document.getElementById("checkbox_container");
         while (container.lastElementChild) {
             container.removeChild(container.lastElementChild);
@@ -627,20 +740,19 @@ span {
             checkbox.type = "checkbox";
             checkbox.name = "teacher_checkbox";
             checkbox.value = names[i];
-            checkbox.id = i;
+            checkbox.id = ids[i];
             checkbox.checked = true;
             checkbox.onclick = function() {
                 remove_all_display_booking_data();
                 setWeekDate(0);
             };
         
-            // Label
-            var label = document.createElement("label");
-            label.htmlFor = i;
-            var text = document.createTextNode(names[i]);
-            label.appendChild(text);
-            label.style.color = teacher_open_course_colors[i];
-
+            // Label (for displaying teacher name)
+            var name_label = document.createElement("label");
+            name_label.htmlFor = ids[i];
+            // var text = document.createTextNode(names[i]);
+            name_label.appendChild(document.createTextNode(names[i]));
+            name_label.style.color = teacher_open_course_colors[i];
             
             // <br> element
             var br = document.createElement("br");
@@ -798,16 +910,6 @@ span {
         // Current weekday
         months[0] = _date.getMonth();
         years[0] = _date.getFullYear();
-        
-        let weekday_ids = [
-            'current_mon',
-            'current_tue',
-            'current_wed',
-            'current_thu',
-            'current_fri',
-            'current_sat',
-            'current_sun'
-        ];
 
         // Filter
         var checkboxs = Array.from(document.getElementsByName("teacher_checkbox"));
@@ -864,10 +966,10 @@ span {
                     
                     if (table_mode == 1) {
                         if (booking_data[j]["status"] == "booked") {
-                            book_button.value += "\n(booked)";
+                            book_button.value += "\n(已預約)";
                         }
                         else if (booking_data[j]["status"] == "booking") {
-                            book_button.value += "\n(waiting for payment...)";
+                            book_button.value += "\n(等待付款中...)";
                         }
                     }
                     else if (table_mode == 2) {
@@ -931,16 +1033,6 @@ span {
     }
 
     function remove_all_display_booking_data() {
-        let weekday_ids = [
-            'current_mon',
-            'current_tue',
-            'current_wed',
-            'current_thu',
-            'current_fri',
-            'current_sat',
-            'current_sun'
-        ];
-
         for (let i=0; i<7; ++i) {
             var td_container = document.getElementById(weekday_ids[i]+"_container");
             while (td_container.lastElementChild) {
@@ -1151,9 +1243,7 @@ span {
         button_list.forEach(removeAllButtonClass);
 
         function removeAllButtonClass(button) {
-            if (button.classList.contains("selected_button")) {
-                button.classList.remove("selected_button");
-            }
+            button.className = "unselected_button";
         }
 
         var course_info_fields = document.getElementById("course_info_fields");
@@ -1161,7 +1251,8 @@ span {
         var teacher_open_fields = document.getElementById("teacher_open_history_info");
 
         if (mode == 1) {
-            button_1on1.classList.add("selected_button");
+            // button_1on1.classList.add("selected_button");
+            button_1on1.className = "selected_button";
             course_info_fields.style.display = "block";
             book_info_fields.style.display = "none";
             teacher_open_fields.style.display = "none";
@@ -1169,7 +1260,8 @@ span {
             setWeekDate(1);
         }
         else if (mode == 2) {
-            button_group.classList.add("selected_button");
+            // button_group.classList.add("selected_button");
+            button_group.className = "selected_button";
             course_info_fields.style.display = "block";
             book_info_fields.style.display = "none";
             teacher_open_fields.style.display = "none";
@@ -1177,7 +1269,8 @@ span {
             setWeekDate(1);
         }
         else if (mode == 3) {
-            button_history.classList.add("selected_button");
+            // button_history.classList.add("selected_button");
+            button_history.className = "selected_button";
             course_info_fields.style.display = "none";
             book_info_fields.style.display = "block";
             teacher_open_fields.style.display = "block";
@@ -1327,7 +1420,7 @@ span {
         document.getElementById('pickerDateTime').value = moment().format('YYYY-MM-DDTHH:mm');
     }
 
-    const DEFAULT_FORMAT = 'YYYY-MM-DD HH:mm:ss Z'; 
+    const DEFAULT_FORMAT = "YYYY-MM-DD HH:mm:ss Z"; 
 
     function formatdate(momentDate) {
         return momentDate.format(DEFAULT_FORMAT);
@@ -1346,47 +1439,40 @@ span {
     }
 
     function getUTCConverted(utcDateTime, timeZone) {
-        var utcTime = moment.utc(utcDateTime).toDate();
-        return moment(utcTime).local("Asia/Taipei");
+        var utcTime = moment(Date(utcDateTime));
+        return moment.tz(utcTime, timeZone);
     }
 
-    function submitDate() {
-        let localValue = document.getElementById("pickerDateTime").value;
+    function dropdownTimeZoneChangeEvent() {
+        // Initialize the browser local timezone
+        let localValue = moment().format('YYYY-MM-DDTHH:mm');
         let timeZoneValue = document.getElementById("dropdownTimeZone").value;
-        let local =  document.getElementById('divLocal');
-        
-        local.innerHTML = formatedate(moment(localValue));
 
-        let utc =  document.getElementById('divUTC');
-        utc.innerHTML = formatdate(getUtcValue(localValue));
-
-        let selected =  document.getElementById('divSelected');
-        selected.innerHTML = formatdate(getSelectedValue(localValue, timeZoneValue));
+        document.getElementById('divLocal').innerHTML = formatdate(moment(localValue));
+        document.getElementById('divUTC').innerHTML = formatdate(getUtcValue(localValue));
+        document.getElementById('divSelected').innerHTML = formatdate(getSelectedValue(localValue, timeZoneValue));
 
         let utcSelected =  document.getElementById('divUTCSelected');
         utcSelected.innerHTML = formatdate(getSelectedUTCValue(localValue, timeZoneValue));
 
         let utcConverted = document.getElementById("divUTCConverted");
-        utcConverted.innerHTML = formatdate(getUTCConverted(utcSelected.innerHTML));
+        utcConverted.innerHTML = formatdate(getUTCConverted(utcSelected.innerHTML, timeZoneValue));
     }
 
     // Load the script
     window.onload = function() {
-        // Init
         Init();
-        
         var offset = new Date().getTimezoneOffset();
-        document.getElementById("timezone_field").innerHTML = "Location: " + Intl.DateTimeFormat().resolvedOptions().timeZone + " (" + _offset2UTC[offset.toString()] + ")";
+
+        // document.getElementById("timezone_field").innerHTML = "Location: " + Intl.DateTimeFormat().resolvedOptions().timeZone + " (" + _offset2UTC[offset.toString()] + ")";
         offset = -1 * offset / 60;
-        autoSelectLocalUTC(offset);
+
+        // autoSelectLocalUTC(offset);
 
         loadDefaultDateTime();
         loadTimeZoneList();
-        submitDate();
+        dropdownTimeZoneChangeEvent();
     }
-
-
-
 </script>
 
 

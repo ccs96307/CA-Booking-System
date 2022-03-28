@@ -11,12 +11,14 @@ if ($_POST["type"] == "init") {
     // Get teacher list
     $users = get_users( array( 'fields' => array( 'ID' ) ) );
     $teachers = array();
+    $teachers_id = array();
 
     foreach( $users as $user ) {
         $_user = get_userdata( $user->ID );
 
         if ( in_array("um_teacher", $_user->roles) == true ) {
             array_push( $teachers, $_user->user_login );
+            array_push( $teachers_id, $user->ID );
         }
     }
 
@@ -38,9 +40,14 @@ if ($_POST["type"] == "init") {
 
     // Return results
     $results["teachers"] = $teachers;
+    $results["teachers_id"] = $teachers_id;
+    
+    $results["current_user_id"] = $current_user->ID;
     $results["current_user_name"] = $current_user->user_login;
-    $results["current_user_role"] = $current_user->roles;
+    // $results["current_user_role"] = preg_replace("/um_/", "", $current_user->roles);
+    $results["current_user_role"] = array_map("ucfirst", preg_replace("/um_/i", "", $current_user->roles));
     $results["current_user_email"] = $current_user->user_email;
+    
     $results["booking_data_1on1"] = $ca_booking_data_1on1;
     $results["booking_keys_1on1"] = $ca_booking_keys_1on1;
     $results["booking_data_group"] = $ca_booking_data_group;

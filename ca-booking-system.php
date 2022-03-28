@@ -55,33 +55,6 @@ function create_ca_booking_menu() {
 
 
 function register_ca_booking_system_settings() {
-    // Sample data
-    $course_1on1 = array(
-        'teacher_name'         => 'Clay',
-        'date'                 => '2021-10-20',
-        'start_time'           => '8:0',
-        'end_time'             => '9:0',
-        'price'                => '10',
-        'status'               => 'open', // open; processing; close;
-        'student_name'         => 'Chen Tung Chi',
-        'sudent_email'         => 'skyonsame@gmail.com',
-        'student_comment'      => 'I am not sure whether I book it or not'
-    );
-
-    $course_group = array(
-        'teacher_name'           => 'Clay',
-        'date'                   => '2021-12-02',
-        'start_time'             => '',
-        'end_time'               => '',
-        'price'                  => '30',
-        'status'                 => 'open', // open; processing; close;
-        'max_student'            => '30',
-        'current_student_number' => '5',
-        'student_names'          => array( '1', '2', '3', '4', '5' ),
-        'student_emails'         => array( '1', '2', '3', '4', '5' ),
-        'student_comments'       => array( '', '', '', '', '' ),
-    );
-
     $ca_booking_list = array();
     
     // Register our settings ()
@@ -91,14 +64,11 @@ function register_ca_booking_system_settings() {
     register_setting( 'tnt-settings-group', 'ca_booking_list_group' );
 
     // Update
-    // update_option( 'event_name' , 'Hello' );
-    // array_push( $ca_reserve_list, $test_array );
-    // update_option( 'ca_booking_list_group', NULL );
-    $logs = get_option( 'ca_backend_log' );
-    if ( !is_array( $logs ) ) {
-        $logs = array();
-        update_option( 'ca_backend_log', $logs );
-    }
+    // $times = get_option( "ca_backend_log" );
+    // if ( !is_integer( $times ) ) {
+    //     $times = 1;
+    //     update_option( "ca_backend_log", $times );
+    // }
 }
 
 
@@ -114,66 +84,63 @@ function ca_booking_system_setting_page() {
         <table class="form-table">
             <p>
                 <?php
-                    $ipn_data = get_option( 'event_name' );
+                    // $ipn_data = get_option( 'event_name' );
                     
-                    $ca_payment = false;
-                    $ca_course_key = "";
-                    foreach ( $ipn_data as $_data ) {
-                        echo json_encode($_data) . "<br>";
-                        // if ( $_data == "payment_status=Completed" ) {
-                        //     $ca_payment = true;
-                        // }
-
-                        // $item_name = explode( "=", $_data )[0];
-                        // $item_value = explode( "=", $_data )[1];
-
-                        // if ( $item_name == "item_name" ) {
-                        //     $item_value = str_replace( '+', ' ', $item_value );
-                        //     $item_value = str_replace( '%3A', ':', $item_value );
-                        //     $item_value = str_replace( '%28', '(', $item_value );
-                        //     $item_value = str_replace( '%29', ')', $item_value );
-
-                        //     //echo $item_value . "<br>";
-                        //     //echo json_encode( get_option( $item_value ) );
-                        //     //echo json_encode( get_option( "ca_booking_list_1on1" ) );
-                        // }    
-                        // echo $item_name . "=" . $item_value . "<br>";
-                        
-                    }
-
-                    // $bookings = get_option( 'ca_booking_list_1on1' );
-                    // if ( is_null( $bookings) ) echo "It is NULL!<br>";
-
-                    // echo json_encode( $bookings );
-                    
-                    // foreach( $bookings as $key ) {
-                    //     $data = get_option( $key );
-                    //     echo json_encode( $key ) . " ";
-                    //     echo json_encode( $data ) . "<br>";
+                    // $ca_payment = false;
+                    // $ca_course_key = "";
+                    // foreach ( $ipn_data as $_data ) {
+                    //     echo json_encode($_data) . "<br>";
                     // }
 
-                    echo "======================================<br>";
+                    // echo "======================================<br>";
 
-                    // Group
+                    // LOG
+                    echo "BACKEND LOG: <br>";
+                    $logs = get_option( "ca_backend_log" );
+                    echo json_encode( $logs ) . "<br>";
+
+                    // // Group
                     // $bookings = get_option( 'ca_booking_list_group' );
                     
                     // if ( empty( $bookings) ) echo "It is NULL!<br>";
-                    // else echo json_encode( $bookings ) . "<br><br>";
+                    // // else echo json_encode( $bookings ) . "<br><br>";
                     
                     // foreach( $bookings as $key ) {
                     //     $data = get_option( $key );
-                    //     echo json_encode( $key ) . " ";
+                    //     // echo json_encode( $key ) . " ";
                     //     echo json_encode( $data ) . "<br>";
                     // }
 
                     // 1on1
+                    $bookings = get_option( "ca_booking_list_1on1" );
 
+                    if ( empty( $bookings) ) echo "It is NULL!<br>";
+                    foreach( $bookings as $key ) {
+                        $data = get_option( $key );
+                        // echo json_encode( $key ) . " ";
+                        echo json_encode( $data ) . "<br>";
+                    }
 
-                    // LOG
-                    echo "BACKEND LOG: <br><br>";
-                    $logs = get_option( "ca_backend_log" );
-                    foreach ( $logs as $log ) {
-                        echo json_encode( $log ) . "<br>";
+                    // 1on1 sort
+                    $arr = array();
+
+                    foreach($bookings as $key) {
+                        $data = get_option($key);
+                        $date = $data['date'] . " " . $data['end_time'];
+                        array_push($arr, $date);
+                    }
+
+                    // Sort
+                    for ($i=0; $i<count($arr)-1; ++$i) {
+                        for ($j=0; $j<count($arr)-$i; ++$j) {
+                            if ($arr[$j+1] < $arr[$j]) {
+                                list($arr[$j], $arr[$j-1]) = array($arr[$j-1], $arr[$j]);
+                            }
+                        }
+                    }
+
+                    foreach($arr as $a) {
+                        echo json_encode($a);
                     }
                 ?>
             </p>
@@ -182,9 +149,8 @@ function ca_booking_system_setting_page() {
     </form>
 </div>
 
-<?php 
+<?php
 }
-
 
 // Try to edit the reseve page
 add_filter( 'the_content', 'ca_booking_system_page_init' );
@@ -193,7 +159,7 @@ function ca_booking_system_page_init( $content ) {
     if ( get_the_title() == 'Booking System' ) {
         // Content
         $content = file_get_contents( __DIR__ . '/html/ca_booking_page.html' );
-    }
+    } 
 
     return $content;
 }
@@ -375,6 +341,37 @@ function ca_paypal_ipn_callback() {
     // update_option( "event_name", $new_array );
     update_option( "event_name", $ipn_data );
 }
+
+
+// Cron Events
+function ca_custom_cron_schedule( $schedules ) {
+    $schedules['every_six_hours'] = array(
+        'interval' => 3, // Every 6 hours
+        'display'  => __( 'Every 6 hours' ),
+    );
+    return $schedules;
+}
+add_filter( 'cron_schedules', 'ca_custom_cron_schedule' );
+
+//Schedule an action if it's not already scheduled
+if ( ! wp_next_scheduled( 'ca_cron_hook' ) ) {
+    wp_schedule_event( time(), 'every_six_hours', 'ca_cron_hook' );
+}
+
+///Hook into that action that'll fire every six hours
+ add_action( 'ca_cron_hook', 'ca_cron_function' );
+
+//create your function, that runs on cron
+function ca_cron_function() {
+    date_default_timezone_set("UTC");
+    $timezone = date_default_timezone_get();
+    $logs = "Timezone: " . $timezone . "<br>";
+    $logs .= date("Y-m-d H:i:s", time());
+    update_option("ca_backend_log", $logs);
+}
+
+
+
 
 
 ?>
