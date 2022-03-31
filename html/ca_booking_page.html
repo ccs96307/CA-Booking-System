@@ -16,6 +16,41 @@ caption {
     text-align: center;
 }
 
+.booking_button {
+    box-shadow: 2px 3px 0px 0px #6dc754;
+	background: linear-gradient(to bottom, #44c767 5%, #b3e698 100%);
+	background-color: #44c767;
+	border-radius: 19px;
+	border: 1px solid #097a14;
+	display: inline-block;
+	cursor: pointer;
+	color: #ffffff;
+	font-family: Arial;
+	font-size: 20px;
+	padding: 12px 46px;
+	text-decoration: none;
+	text-shadow: 0px 1px 0px #2f6627;
+}
+
+.booking_button:hover {
+	background: linear-gradient(to bottom, #b3e698 5%, #44c767 100%);
+	background-color: #b3e698;
+}
+.booking_button:active {
+	position: relative;
+	top: 1px;
+}
+
+.booking_button:disabled,
+.booking_button[disabled] {
+    box-shadow: 2px 3px 0px 0px #777777;
+
+    border: 1px solid #999999;
+    background:linear-gradient(to bottom, grey 5%, grey 100%);
+    background-color: #cccccc;
+    color: #666666;
+}
+
 .bs_table, .bs_tr, .bs_td {
     border: 1px solid black;
     text-align: center;
@@ -102,34 +137,75 @@ span {
 
 /* For toggle 1on1-group-booking_history button */
 .selected_button {
-    background-color: white;
+    background-color: #595959;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    
+    border: solid 3px;
     border-radius: 50%;
+    border-color: white;
     height: 100px;
     width: 100px;
 }
 
 .unselected_button {
-    background-color: grey;
+    background-color: #cccccc;
+    color: #555555;
+    font-size: 20px;
+    font-weight: bold;
+    
+    border: solid 3px;
     border-radius: 50%;
+    border-color: white;
     height: 100px;
     width: 100px;
 }
 
-.button_div {
+.selected_button_div {
     border-radius: 50%;
-    background-color: grey; 
-    height: 120px; 
-    width: 120px; 
+    background-color: #595959; 
+    height: 110px; 
+    width: 110px; 
     display: flex; 
     align-items: center; 
     justify-content: center;
+    
+    box-shadow: 4px 4px #e0e0eb;
 }
 
-.test_button {
-    border-radius: 50%; 
-    background-color: #1eff5b; 
-    height: 100px; 
-    width: 100px;
+.unselected_button_div {
+    border-radius: 50%;
+    background-color: #cccccc;
+    
+    height: 110px; 
+    width: 110px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    
+    box-shadow: 4px 4px #eeeeee;
+}
+
+/* For the change date button */
+.changeDateButton {
+    background: linear-gradient(to bottom, #4d4d4d 50%, #bfbfbf 100%);
+    color: white;
+
+    font-size: 17px;
+	padding: 7px 25px;
+    
+    border: solid 1px black;
+    border-radius: 5px;
+}
+
+.changeDateButton:hover {
+    background: linear-gradient(to bottom, #bfbfbf 5%, #4d4d4d 100%);
+}
+
+.changeDateButton:active {
+    position: relative;
+    top: 1px;
 }
 
 </style>
@@ -160,27 +236,28 @@ span {
     </div>
 
     <!-- Personal Info (info card style) -->
-    <div>
+    <h3>登入資訊卡</h3>
+    <div style="display: flex; align-items: center;">
     <div id="info_card">
         <table id="info_card_table">
             <tr class="info_card_tr">
-                <td>ID</td>
+                <td style="font-weight: bold;">ID</td>
                 <td id="user_id_field" style="text-align: center"></td>
             </tr>
             <tr class="info_card_tr">
-                <td>Username</td>
+                <td style="font-weight: bold;">Username</td>
                 <td id="user_name_field" style="text-align: center"></td>
             </tr>
             <tr class="info_card_tr">
-                <td>Role</td>
+                <td style="font-weight: bold;">Role</td>
                 <td id="user_role_field" style="text-align: center"></td>
             </tr>
             <tr class="info_card_tr">
-                <td>Email</td>
+                <td style="font-weight: bold;">Email</td>
                 <td id="user_email_field" style="text-align: center"></td>
             </tr>
             <tr class="info_card_tr">
-                <td>Location</td>
+                <td style="font-weight: bold;">Location</td>
                 <td id="timeZoneField" style="text-align: right"> 
                 <select id="dropdownTimeZone" onchange="dropdownTimeZoneChangeEvent()">
                 </select>
@@ -190,67 +267,25 @@ span {
     </div>
 
     <!-- Switch to different table mode -->
-    <div style="display: inline-block;">
-    <div class="button_div">
-        <button id="button_1on1" onclick="changeTableMode(1)">1on1</button>
+    <h3>切換表格型態</h3>
+    <div style="width: auto;">
+        <div style="display: inline-block; margin: 10px;">
+            <div class="selected_button_div" id="button_1on1_div">
+                <button class="selected_button" id="button_1on1" onclick="changeTableMode(1)">1on1</button>
+            </div>
+        </div>
+        <div style="display: inline-block; margin: 10px;">
+            <div class="unselected_button_div" id="button_group_div">
+                <button class="unselected_button" id="button_group" onclick="changeTableMode(2)">group</button>
+            </div>
+        </div>
+        <div style="display: inline-block; margin: 10px;">
+            <div class="unselected_button_div" id="button_history_div">
+                <button class="unselected_button" id="button_history" onclick="changeTableMode(3)">History</button>
+            </div>
+        </div>
     </div>
-    <div class="button_div">
-        <button id="button_group" onclick="changeTableMode(2)">group</button>
     </div>
-    <div class="button_div">
-        <button id="button_history" onclick="changeTableMode(3)">Booking History</button>
-    </div>
-    </div>
-    </div>
-
-    <div class="button_div">
-        <button class="test_button">1on1</button>
-    </div>
-
-
-    <!-- Personal Info -->
-    <!-- <dl class="info_card">
-        <dt id="user_id_field">ID: </dt>
-        <dt id="user_name_field">Username: </dt>
-        <dt id="user_role_field">Role: </dt>
-        <dt id="user_email_field">Email: </dt> -->
-        
-        <!-- UTC -->
-        <!-- <dt id="timeZoneField">Location: 
-            <select id="dropdownTimeZone" onchange="dropdownTimeZoneChangeEvent()"></select>
-        </dt> -->
-        <!-- <dt id="local_utc_field">UTC:
-            <select id="UTC_Timezone" onchange="utcChangeEvent()">
-                <option>UTC-12</option>
-                <option>UTC-11</option>
-                <option>UTC-10</option>
-                <option>UTC-9</option>
-                <option>UTC-8</option>
-                <option>UTC-7</option>
-                <option>UTC-6</option>
-                <option>UTC-5</option>
-                <option>UTC-4</option>
-                <option>UTC-3</option>
-                <option>UTC-2</option>
-                <option>UTC-1</option>
-                <option>UTC+0</option>
-                <option>UTC+1</option>
-                <option>UTC+2</option>
-                <option>UTC+3</option>
-                <option>UTC+4</option>
-                <option>UTC+5</option>
-                <option>UTC+6</option>
-                <option>UTC+7</option>
-                <option>UTC+8</option>
-                <option>UTC+9</option>
-                <option>UTC+10</option>
-                <option>UTC+11</option>
-                <option>UTC+12</option>
-                <option>UTC+13</option>
-                <option>UTC+14</option>
-            </select>
-        </dt> -->
-    <!-- </dl> -->
 
     <!-- Booking history table -->
     <div style="display: none" id="student_book_history_info">
@@ -292,15 +327,20 @@ span {
     </div>
 
     <div id="course_info_fields">
+
     <!-- Teacher Checkboxs -->
+    <h3>選擇要顯示的老師課程預約時間表</h3>
     <div id="checkbox_container">
+        <form id="teacher_radio_button_form">
+        </form>
     </div>
     
     <!-- Change date button -->
+    <h3>預約時間表</h3>
     <div style="display: flex; justify-content: space-between;">
-        <button onclick="prevDateEvent()">PREV</button>
-        <button onclick="goBackTodayEvent()">Go Back To Today</button>
-        <button onclick="nextDateEvent()">NEXT</button>
+        <button class="changeDateButton" onclick="prevDateEvent()">PREV</button>
+        <button class="changeDateButton" onclick="goBackTodayEvent()">TODAY</button>
+        <button class="changeDateButton" onclick="nextDateEvent()">NEXT</button>
     </div>
     
     <!-- Weekly calendar -->
@@ -332,6 +372,582 @@ span {
             <td class="bs_td" id="current_fri_container"></td>
             <td class="bs_td" id="current_sat_container"></td>
             <td class="bs_td" id="current_sun_container"></td>
+        </tr>
+
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_00">00:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_00">00:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_00">00:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_00">00:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_00">00:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_00">00:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_00">00:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_01">01:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_01">01:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_01">01:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_01">01:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_01">01:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_01">01:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_01">01:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_02">02:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_02">02:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_02">02:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_02">02:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_02">02:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_02">02:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_02">02:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_03">03:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_03">03:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_03">03:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_03">03:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_03">03:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_03">03:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_03">03:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_04">04:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_04">04:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_04">04:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_04">04:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_04">04:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_04">04:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_04">04:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_05">05:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_05">05:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_05">05:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_05">05:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_05">05:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_05">05:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_05">05:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_06">06:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_06">06:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_06">06:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_06">06:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_06">06:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_06">06:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_06">06:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_07">07:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_07">07:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_07">07:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_07">07:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_07">07:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_07">07:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_07">07:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_08">08:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_08">08:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_08">08:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_08">08:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_08">08:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_08">08:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_08">08:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_09">09:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_09">09:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_09">09:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_09">09:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_09">09:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_09">09:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_09">09:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_10">10:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_10">10:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_10">10:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_10">10:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_10">10:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_10">10:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_10">10:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_11">11:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_11">11:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_11">11:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_11">11:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_11">11:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_11">11:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_11">11:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_12">12:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_12">12:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_12">12:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_12">12:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_12">12:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_12">12:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_12">12:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_13">13:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_13">13:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_13">13:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_13">13:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_13">13:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_13">13:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_13">13:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_14">14:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_14">14:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_14">14:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_14">14:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_14">14:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_14">14:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_14">14:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_15">15:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_15">15:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_15">15:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_15">15:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_15">15:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_15">15:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_15">15:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_16">16:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_16">16:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_16">16:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_16">16:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_16">16:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_16">16:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_16">16:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_17">17:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_17">17:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_17">17:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_17">17:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_17">17:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_17">17:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_17">17:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_18">18:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_18">18:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_18">18:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_18">18:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_18">18:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_18">18:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_18">18:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_19">19:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_19">19:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_19">19:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_19">19:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_19">19:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_19">19:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_19">19:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_20">20:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_20">20:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_20">20:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_20">20:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_20">20:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_20">20:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_20">20:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_21">21:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_21">21:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_21">21:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_21">21:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_21">21:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_21">21:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_21">21:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_22">22:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_22">22:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_22">22:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_22">22:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_22">22:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_22">22:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_22">22:00</button>
+            </td>
+        </tr>
+    
+        <tr class="bs_tr">
+            <td class="bs_td"">
+                <button disabled class="booking_button" id="mon_btn_23">23:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="tue_btn_23">23:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="wed_btn_23">23:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="thu_btn_23">23:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="fri_btn_23">23:00</button>
+            </td>
+            <td class="bs_td">                
+                <button disabled class="booking_button" id="sat_btn_23">23:00</button>
+            </td>
+            <td class="bs_td">
+                <button disabled class="booking_button" id="sun_btn_23">23:00</button>
+            </td>
         </tr>
     </table>
 
@@ -394,7 +1010,6 @@ span {
                         <img alt='' border='0' style='border:none;display:none;' src='https://www.paypal.com/EN_US/i/scr/pixel.gif' width='1' height='1'>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
@@ -499,10 +1114,7 @@ span {
             },
             dataType: "json",
             success: function (init_data) {
-                alert("Yep?");
                 remove_all_display_booking_data();
-                changeTableMode(1);
-                alert("test");
                 
                 // Date set to monday (the start point of a new week)
                 _date = new Date();
@@ -535,7 +1147,7 @@ span {
                 booking_keys_group = init_data.booking_keys_group;
 
                 setWeekDate(1);
-                current_utc = document.getElementById("UTC_Timezone").value;
+                // current_utc = document.getElementById("UTC_Timezone").value;
 
                 // Book history
                 bookHistoryMode(1);
@@ -728,7 +1340,7 @@ span {
 
     // Checkbox init
     function checkbox_init(names, ids) {
-        var container = document.getElementById("checkbox_container");
+        var container = document.getElementById("teacher_radio_button_form");
         while (container.lastElementChild) {
             container.removeChild(container.lastElementChild);
         }
@@ -736,13 +1348,17 @@ span {
         // Add checkboxs
         for (var i=0; i<names.length; ++i) {
             // Checkbox
-            var checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.name = "teacher_checkbox";
-            checkbox.value = names[i];
-            checkbox.id = ids[i];
-            checkbox.checked = true;
-            checkbox.onclick = function() {
+            var radio_button = document.createElement("input");
+            radio_button.type = "radio";
+            radio_button.name = "teacher_radio_button";
+            radio_button.value = names[i];
+            radio_button.id = ids[i];
+
+            if (i == 0) radio_button.checked = true;
+            else radio_button.checked = false;
+
+            radio_button.onchange = function() {
+                alert(this.value);
                 remove_all_display_booking_data();
                 setWeekDate(0);
             };
@@ -750,56 +1366,59 @@ span {
             // Label (for displaying teacher name)
             var name_label = document.createElement("label");
             name_label.htmlFor = ids[i];
-            // var text = document.createTextNode(names[i]);
             name_label.appendChild(document.createTextNode(names[i]));
             name_label.style.color = teacher_open_course_colors[i];
+
+            // Button style label (for displaying teacher name)
+            var name_button = document.createElement("button");
+            name_button.htmlFor = ids[i];
+            name_button.innerHTML = names[i];
+            // name_button.className = "booking_button";
+            name_button.style.border = "solid 1px";
+            name_button.style.borderRadius = "2px";
+            name_button.style.backgroundColor = "#66ff66";
+            name_button.style.padding = "5px";
+            name_button.style.marginLeft = "5px";
+            // name_button.style.fontSize = "15px";
             
+
             // <br> element
-            var br = document.createElement("br");
+            var newlineElement = document.createElement("br");
+            // var spaceElement = document.createElemet("p");
+            // spaceElement.innerText = "  ";
             
             // Append
-            container.appendChild(checkbox);
-            container.appendChild(label);
-            container.appendChild(br);
+            container.appendChild(radio_button);
+            // container.appendChild(name_label);
+            // container.appendChild(spaceElement);
+            container.appendChild(name_button);
+            container.appendChild(newlineElement);
         }
     }
 
     // Convert UTC
     function convertBookingDataUTC(booking_data) {
         for (let i=0; i<booking_data.length; ++i) {
-            var _date = booking_data[i]["date"];
+            var _d = booking_data[i]["date"];
             var _st = booking_data[i]["start_time"];
             var _et = booking_data[i]["end_time"];
             
-            var _start_time = new Date(_date);
-            _start_time.setHours(parseInt(_st.split(":")[0], parseInt(_st.split(":")[1]), 0));
-                
-            var _end_time = new Date(_date);
-            _end_time.setHours(parseInt(_et.split(":")[0], parseInt(_et.split(":")[1]), 0));
+            var _start_time = moment.utc(_d+" "+_st);
+            var _end_time = moment.utc(_d+" "+_et);
 
             // Current UTC
-            var selected_utc = document.getElementById("UTC_Timezone").value;
-            var utc_offset = parseInt(selected_utc.split("UTC")[1]);
+            let timeZoneValue = document.getElementById("dropdownTimeZone").value;
 
             // Convert
-            _start_time.setTime(_start_time.getTime() + utc_offset * 1000 * 60 * 60);
-            _end_time.setTime(_end_time.getTime() + utc_offset * 1000 * 60 * 60);
+            _start_time = moment.tz(_start_time, timeZoneValue);
+            _end_time = moment.tz(_end_time, timeZoneValue);
 
             // Save
-            // Date
-            var y = _start_time.getFullYear().toString();
-            var m = _start_time.getMonth() + 1;
-            if (m < 10) m = "0" + m.toString();
-            else m = m.toString();
-            var d = _start_time.getDate();
-            if (d < 10) d = "0" + d.toString();
-            var _date = y + "-" + m + "-" + d;
+            _d = _start_time.format("YYYY-MM-DD");
+            _st = _start_time.format("HH:mm");
+            _et = _end_time.format("HH:mm");
 
-            // Time
-            var _st = _start_time.getHours().toString() + ":" + _start_time.getMinutes().toString();
-            var _et = _end_time.getHours().toString() + ":" + _end_time.getMinutes().toString();
-
-            booking_data[i]["date"] = _date;
+            booking_data[i]["date"] = _d;
             booking_data[i]["start_time"] = _st;
             booking_data[i]["end_time"] = _et;
         }
@@ -914,7 +1533,7 @@ span {
         // Filter
         var checkboxs = Array.from(document.getElementsByName("teacher_checkbox"));
         var unchecked_teachers = [];
-        checkboxs.forEach( function(v){
+        checkboxs.forEach( function(v) {
             if (v.checked == false) {
                 unchecked_teachers.push(v.value);
             }
@@ -949,6 +1568,8 @@ span {
                     if (teacher_names[t] == booking_data[j]["teacher_name"]) break;
                 }
 
+                // alert(cur_date);
+                // alert(booking_data[j]["date"]);
                 if (cur_date == booking_data[j]["date"]) {
                     var st_h = booking_data[j]["start_time"].split(":")[0];
                     var st_m = booking_data[j]["start_time"].split(":")[1];
@@ -998,10 +1619,10 @@ span {
 
         // Current Month and Year
         if (months.length == 2 && years.length == 2) {
-            document.getElementById('current_month').innerHTML = _months[months[0]] + ' ' + years[0] + ' - ' + _months[months[1]] + years[1];
+            document.getElementById('current_month').innerHTML = _months[months[0]] + ' ' + years[0] + ' - ' + _months[months[1]] + " " + years[1];
         }
         else if (months.length == 2) {
-            document.getElementById('current_month').innerHTML = _months[months[0]] + ' ' + years[0] + ' - ' + _months[months[1]] + years[0];         
+            document.getElementById('current_month').innerHTML = _months[months[0]] + ' ' + years[0] + ' - ' + _months[months[1]] + " " + years[0];         
         }
         else {
             document.getElementById('current_month').innerHTML = _months[_date.getMonth()] + ' ' + _date.getFullYear();
@@ -1238,12 +1859,22 @@ span {
         var button_1on1 = document.getElementById("button_1on1");
         var button_group = document.getElementById("button_group");
         var button_history = document.getElementById("button_history");
+        var button_1on1_div = document.getElementById("button_1on1_div");
+        var button_group_div = document.getElementById("button_group_div");
+        var button_history_div = document.getElementById("button_history_div");
+
         const button_list = [button_1on1, button_group, button_history];
+        const button_div_list = [button_1on1_div, button_group_div, button_history_div];
 
         button_list.forEach(removeAllButtonClass);
+        button_div_list.forEach(removeAllButtonDivClass);
 
         function removeAllButtonClass(button) {
             button.className = "unselected_button";
+        }
+
+        function removeAllButtonDivClass(buttonDiv) {
+            buttonDiv.className = "unselected_button_div";
         }
 
         var course_info_fields = document.getElementById("course_info_fields");
@@ -1251,26 +1882,28 @@ span {
         var teacher_open_fields = document.getElementById("teacher_open_history_info");
 
         if (mode == 1) {
-            // button_1on1.classList.add("selected_button");
             button_1on1.className = "selected_button";
+            button_1on1_div.className = "selected_button_div";
             course_info_fields.style.display = "block";
             book_info_fields.style.display = "none";
             teacher_open_fields.style.display = "none";
             remove_all_display_booking_data();
-            setWeekDate(1);
+            setWeekDate(0);
         }
         else if (mode == 2) {
-            // button_group.classList.add("selected_button");
             button_group.className = "selected_button";
+            button_group_div.className = "selected_button_div";
+
             course_info_fields.style.display = "block";
             book_info_fields.style.display = "none";
             teacher_open_fields.style.display = "none";
             remove_all_display_booking_data();
-            setWeekDate(1);
+            setWeekDate(0);
         }
         else if (mode == 3) {
-            // button_history.classList.add("selected_button");
             button_history.className = "selected_button";
+            button_history_div.className = "selected_button_div";
+
             course_info_fields.style.display = "none";
             book_info_fields.style.display = "block";
             teacher_open_fields.style.display = "block";
@@ -1462,10 +2095,10 @@ span {
     // Load the script
     window.onload = function() {
         Init();
-        var offset = new Date().getTimezoneOffset();
+        // var offset = new Date().getTimezoneOffset();
 
         // document.getElementById("timezone_field").innerHTML = "Location: " + Intl.DateTimeFormat().resolvedOptions().timeZone + " (" + _offset2UTC[offset.toString()] + ")";
-        offset = -1 * offset / 60;
+        // offset = -1 * offset / 60;
 
         // autoSelectLocalUTC(offset);
 

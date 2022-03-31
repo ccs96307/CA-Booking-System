@@ -95,21 +95,24 @@ function ca_booking_system_setting_page() {
                     // echo "======================================<br>";
 
                     // LOG
-                    echo "BACKEND LOG: <br>";
-                    $logs = get_option( "ca_backend_log" );
-                    echo json_encode( $logs ) . "<br>";
+                    // echo "BACKEND LOG: <br>";
+                    // $logs = get_option( "ca_backend_log" );
+                    // echo json_encode( $logs ) . "<br>";
 
-                    // // Group
-                    // $bookings = get_option( 'ca_booking_list_group' );
+                    // Group
+                    $bookings = get_option( 'ca_booking_list_group' );
                     
-                    // if ( empty( $bookings) ) echo "It is NULL!<br>";
-                    // // else echo json_encode( $bookings ) . "<br><br>";
+                    if ( empty( $bookings) ) echo "It is NULL!<br>";
+                    // else echo json_encode( $bookings ) . "<br><br>";
                     
-                    // foreach( $bookings as $key ) {
-                    //     $data = get_option( $key );
-                    //     // echo json_encode( $key ) . " ";
-                    //     echo json_encode( $data ) . "<br>";
-                    // }
+                    foreach( $bookings as $key ) {
+                        $data = get_option( $key );
+                        // echo json_encode( $key ) . " ";
+                        // $data["start_time"] .= "0";
+                        // $data["end_time"] .= "0";
+                        echo json_encode( $data ) . "<br>";
+                        // update_option( $key, $data );
+                    }
 
                     // 1on1
                     $bookings = get_option( "ca_booking_list_1on1" );
@@ -118,7 +121,10 @@ function ca_booking_system_setting_page() {
                     foreach( $bookings as $key ) {
                         $data = get_option( $key );
                         // echo json_encode( $key ) . " ";
+                        // $data["start_time"] .= "0";
+                        // $data["end_time"] .= "0";
                         echo json_encode( $data ) . "<br>";
+                        // update_option( $key, $data );
                     }
 
                     // 1on1 sort
