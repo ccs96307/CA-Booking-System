@@ -1027,6 +1027,8 @@ span {
     var teacher_names;
     var teacher_ids;
 
+    var booking_buttons = [];
+
     const _months = [
         'January',
         'February',
@@ -1052,13 +1054,13 @@ span {
     ];
 
     let weekday_ids = [
-        "current_mon",
-        "current_tue",
-        "current_wed",
-        "current_thu",
-        "current_fri",
-        "current_sat",
-        "current_sun"
+        "mon",
+        "tue",
+        "wed",
+        "thu",
+        "fri",
+        "sat",
+        "sun"
     ];
 
 
@@ -1240,10 +1242,6 @@ span {
     }
 
     function Before_Booking_Check_1on1(book_course_key, book_value, book_user_name, book_user_email) {
-        // var book_course_key = book_course_key;
-        // var book_user_name = book_user_name;
-        // var book_user_email = book_user_email;
-
         $.ajax({
             type: "POST",
             url: ca_process_url,
@@ -1358,7 +1356,7 @@ span {
             else radio_button.checked = false;
 
             radio_button.onchange = function() {
-                alert(this.value);
+                // alert(this.value);
                 remove_all_display_booking_data();
                 setWeekDate(0);
             };
@@ -1410,13 +1408,20 @@ span {
             let timeZoneValue = document.getElementById("dropdownTimeZone").value;
 
             // Convert
+            // if (i == 0) alert(_start_time);
             _start_time = moment.tz(_start_time, timeZoneValue);
+
+            // if (i == 0) alert(_start_time);
             _end_time = moment.tz(_end_time, timeZoneValue);
 
             // Save
             _d = _start_time.format("YYYY-MM-DD");
             _st = _start_time.format("HH:mm");
             _et = _end_time.format("HH:mm");
+
+            // if (i == 0) alert(_d);
+            // if (i == 0) alert(_st);
+            // if (i == 0) alert(_et);
 
             booking_data[i]["date"] = _d;
             booking_data[i]["start_time"] = _st;
@@ -1508,7 +1513,6 @@ span {
         setWeekDate(0);
     }
 
-
     // Set date
     function setWeekDate(direction) {
         if (table_mode == 1) booking_data = booking_data_1on1;
@@ -1531,17 +1535,26 @@ span {
         years[0] = _date.getFullYear();
 
         // Filter
-        var checkboxs = Array.from(document.getElementsByName("teacher_checkbox"));
-        var unchecked_teachers = [];
+        var checkboxs = Array.from(document.getElementsByName("teacher_radio_button"));
+        var checked_teacher;
         checkboxs.forEach( function(v) {
-            if (v.checked == false) {
-                unchecked_teachers.push(v.value);
+            if (v.checked == true) {
+                checked_teacher = v.value;
             }
         });
 
+        // Clear enabled button
+        for (let i=0; i<booking_buttons.length; ++i) {
+            booking_buttons[i].disabled = true;
+        }
+        booking_buttons.length = 0;
+
         for (let i=0; i<7; ++i) {
-            document.getElementById(weekday_ids[i]).innerHTML = formatDate(_date);
-            _date.setDate(_date.getDate()+1);
+            // if (i == 0) alert(_date);
+
+            document.getElementById("current_"+weekday_ids[i]).innerHTML = formatDate(_date);
+            
+            // if (i == 0) alert(_date);
 
             if (months[0] != _date.getMonth()) months[1] = _date.getMonth();
             if (years[0] != _date.getFullYear()) years[1] = _date.getFullYear();
@@ -1556,13 +1569,16 @@ span {
             else d = d.toString();
             cur_date = y + "-" + m + "-" + d;
 
+            // if (i == 0) alert(cur_date);
+
             // Button template
             var button_num = 0;
-            var td_container = document.getElementById(weekday_ids[i]+"_container");
+            var td_container = document.getElementById("current_"+weekday_ids[i]+"_container");
 
             for (var j=0; j<booking_data.length; ++j) {
-                if (unchecked_teachers.includes(booking_data[j]["teacher_name"])) continue;
-                
+                // if (unchecked_teachers.includes(booking_data[j]["teacher_name"])) continue;
+                if (checked_teacher != booking_data[j]["teacher_name"]) continue;
+
                 var t = 0;
                 for (t=0; t<teacher_names.length; ++t) {
                     if (teacher_names[t] == booking_data[j]["teacher_name"]) break;
@@ -1571,15 +1587,19 @@ span {
                 // alert(cur_date);
                 // alert(booking_data[j]["date"]);
                 if (cur_date == booking_data[j]["date"]) {
+                    alert(cur_date);
+                    alert(booking_data[j]["date"]);
+                    alert(booking_data[j]["start_time"]);
+
                     var st_h = booking_data[j]["start_time"].split(":")[0];
                     var st_m = booking_data[j]["start_time"].split(":")[1];
                     var et_h = booking_data[j]["end_time"].split(":")[0];
                     var et_m = booking_data[j]["end_time"].split(":")[1];
                     
-                    if (parseInt(st_h) < 10) st_h = "0" + st_h;
-                    if (parseInt(st_m) < 10) st_m = "0" + st_m;
-                    if (parseInt(et_h) < 10) et_h = "0" + et_h;
-                    if (parseInt(et_m) < 10) et_m = "0" + et_m;
+                    // if (parseInt(st_h) < 10) st_h = "0" + st_h;
+                    // if (parseInt(st_m) < 10) st_m = "0" + st_m;
+                    // if (parseInt(et_h) < 10) et_h = "0" + et_h;
+                    // if (parseInt(et_m) < 10) et_m = "0" + et_m;
 
                     var book_button = document.createElement("input");
                     book_button.type = "button";
@@ -1611,10 +1631,20 @@ span {
 
                     td_container.appendChild(book_button);
                     ++button_num;
+
+                    // NEW BUTTON EVENT =================================================
+                    let btnid = weekday_ids[i]+"_btn_"+st_h;
+                    // alert(btnid);
+
+                    var btn = document.getElementById(btnid);
+                    btn.disabled = false;
+                    booking_buttons.push(btn);
+                    // NEW BUTTON EVENT =================================================
                 }
             }
             
-            // TODO: if button_num == 0 set a message
+            // Date forward
+            _date.setDate(_date.getDate()+1);
         }
 
         // Current Month and Year
@@ -1655,7 +1685,7 @@ span {
 
     function remove_all_display_booking_data() {
         for (let i=0; i<7; ++i) {
-            var td_container = document.getElementById(weekday_ids[i]+"_container");
+            var td_container = document.getElementById("current_"+weekday_ids[i]+"_container");
             while (td_container.lastElementChild) {
                 td_container.removeChild(td_container.lastElementChild);
             }
@@ -1784,11 +1814,8 @@ span {
         alert(ca_booking_name);
         alert(ca_booking_value);
 
-
-
-
         // If the current visitor has not login
-        if (document.getElementById("user_name_field").innerHTML == "Username: false") {
+        if (document.getElementById("user_name_field").innerHTML == "false") {
             alert("you must be logged in for booking.");
             location.replace("https://allthing-can.com/login/");
         }
@@ -2090,6 +2117,13 @@ span {
 
         let utcConverted = document.getElementById("divUTCConverted");
         utcConverted.innerHTML = formatdate(getUTCConverted(utcSelected.innerHTML, timeZoneValue));
+    
+        // Change to current timezone
+        booking_data_1on1 = convertBookingDataUTC(booking_data_1on1);
+        booking_data_group = convertBookingDataUTC(booking_data_group);
+
+        // Change setWeekDate()
+        setWeekDate(0);
     }
 
     // Load the script
