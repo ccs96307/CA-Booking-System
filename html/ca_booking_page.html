@@ -1394,24 +1394,23 @@ span {
         }
     }
 
-    // Convert UTC
+    // Convert to UTC
     function convertBookingDataUTC(booking_data) {
+        // Current UTC
+        let timeZoneValue = document.getElementById("dropdownTimeZone").value;
+
         for (let i=0; i<booking_data.length; ++i) {
             var _d = booking_data[i]["date"];
             var _st = booking_data[i]["start_time"];
             var _et = booking_data[i]["end_time"];
+            var _start_time;
+            var _end_time;
             
-            var _start_time = moment.utc(_d+" "+_st);
-            var _end_time = moment.utc(_d+" "+_et);
-
-            // Current UTC
-            let timeZoneValue = document.getElementById("dropdownTimeZone").value;
+            _start_time = moment.utc(_d+" "+_st);
+            _end_time = moment.utc(_d+" "+_et);
 
             // Convert
-            // if (i == 0) alert(_start_time);
             _start_time = moment.tz(_start_time, timeZoneValue);
-
-            // if (i == 0) alert(_start_time);
             _end_time = moment.tz(_end_time, timeZoneValue);
 
             // Save
@@ -1419,13 +1418,9 @@ span {
             _st = _start_time.format("HH:mm");
             _et = _end_time.format("HH:mm");
 
-            // if (i == 0) alert(_d);
-            // if (i == 0) alert(_st);
-            // if (i == 0) alert(_et);
-
-            booking_data[i]["date"] = _d;
-            booking_data[i]["start_time"] = _st;
-            booking_data[i]["end_time"] = _et;
+            // booking_data[i]["date"] = _d;
+            // booking_data[i]["start_time"] = _st;
+            // booking_data[i]["end_time"] = _et;
         }
 
         return booking_data;
@@ -1515,6 +1510,9 @@ span {
 
     // Set date
     function setWeekDate(direction) {
+        // Current timezone
+        let timeZoneValue = document.getElementById("dropdownTimeZone").value;
+
         if (table_mode == 1) booking_data = booking_data_1on1;
         else if (table_mode == 2) booking_data = booking_data_group;
 
@@ -1584,22 +1582,38 @@ span {
                     if (teacher_names[t] == booking_data[j]["teacher_name"]) break;
                 }
 
-                // alert(cur_date);
-                // alert(booking_data[j]["date"]);
-                if (cur_date == booking_data[j]["date"]) {
-                    alert(cur_date);
-                    alert(booking_data[j]["date"]);
-                    alert(booking_data[j]["start_time"]);
+                // Convert to selected timezone datetime
+                var _d = booking_data[j]["date"];
+                var _st = booking_data[j]["start_time"];
+                var _et = booking_data[j]["end_time"];
 
-                    var st_h = booking_data[j]["start_time"].split(":")[0];
-                    var st_m = booking_data[j]["start_time"].split(":")[1];
-                    var et_h = booking_data[j]["end_time"].split(":")[0];
-                    var et_m = booking_data[j]["end_time"].split(":")[1];
-                    
-                    // if (parseInt(st_h) < 10) st_h = "0" + st_h;
-                    // if (parseInt(st_m) < 10) st_m = "0" + st_m;
-                    // if (parseInt(et_h) < 10) et_h = "0" + et_h;
-                    // if (parseInt(et_m) < 10) et_m = "0" + et_m;
+                var _start_time = _d + " " + _st;
+                var _end_time = _d + " " + _et;
+            
+                _start_time = moment.utc(_start_time);
+                _end_time = moment.utc(_end_time);
+
+                // Convert
+                _start_time = moment.tz(_start_time, timeZoneValue);
+                _end_time = moment.tz(_end_time, timeZoneValue);
+
+                // Save
+                _d = _start_time.format("YYYY-MM-DD");
+                _st = _start_time.format("HH:mm");
+                _et = _end_time.format("HH:mm");
+
+                // if (cur_date == booking_data[j]["date"]) {
+                // alert(cur_date);
+                // alert(_d);
+                if (cur_date == _d) {
+                    // var st_h = booking_data[j]["start_time"].split(":")[0];
+                    // var st_m = booking_data[j]["start_time"].split(":")[1];
+                    // var et_h = booking_data[j]["end_time"].split(":")[0];
+                    // var et_m = booking_data[j]["end_time"].split(":")[1];
+                    var st_h = _st.split(":")[0];
+                    var st_m = _st.split(":")[1];
+                    var et_h = _et.split(":")[0];
+                    var et_m = _et.split(":")[1];
 
                     var book_button = document.createElement("input");
                     book_button.type = "button";
@@ -2091,6 +2105,12 @@ span {
     }
 
     function getSelectedValue(localDateTime, timeZone) {
+        if (moment.tz(localDateTime, timeZone).isDST()) {
+            alert("It's DST!");
+        }
+        else {
+            alert("It's not DST!");
+        }
         return moment.tz(localDateTime, timeZone);
     }
 
@@ -2117,12 +2137,13 @@ span {
 
         let utcConverted = document.getElementById("divUTCConverted");
         utcConverted.innerHTML = formatdate(getUTCConverted(utcSelected.innerHTML, timeZoneValue));
-    
+                
         // Change to current timezone
         booking_data_1on1 = convertBookingDataUTC(booking_data_1on1);
         booking_data_group = convertBookingDataUTC(booking_data_group);
 
         // Change setWeekDate()
+        remove_all_display_booking_data();
         setWeekDate(0);
     }
 
