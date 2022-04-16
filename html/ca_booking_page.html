@@ -51,6 +51,29 @@ caption {
     color: #666666;
 }
 
+.booking_button_disabled {
+    box-shadow: 2px 3px 0px 0px #6dc754;
+	background: linear-gradient(to bottom, #44c767 5%, #b3e698 100%);
+	background-color: #44c767;
+	border-radius: 19px;
+	border: 1px solid #097a14;
+	display: inline-block;
+	cursor: pointer;
+	color: #ffffff;
+	font-family: Arial;
+	font-size: 20px;
+	padding: 12px 46px;
+	text-decoration: none;
+	text-shadow: 0px 1px 0px #2f6627;
+
+    box-shadow: 2px 3px 0px 0px #777777;
+
+    border: 1px solid #999999;
+    background:linear-gradient(to bottom, grey 5%, grey 100%);
+    background-color: #cccccc;
+    color: #666666;
+}
+
 .bs_table, .bs_tr, .bs_td {
     border: 1px solid black;
     text-align: center;
@@ -60,8 +83,8 @@ caption {
 .btn-pop {
     background-color: #ffd475;  
     border-radius: 10px;
-    border:0px;
-    zoom:200%;
+    border: 0px;
+    zoom: 200%;
 }
             
 #background-pop{
@@ -76,7 +99,9 @@ caption {
            
 #div-pop{
     background:#ffffff;
-    width:30%;
+    border-radius: 15px;
+
+    width: 30%;
     z-index: 1;
     margin: 12% auto;
     overflow: auto;
@@ -84,8 +109,9 @@ caption {
             
 .div-top{
     width: 100%;
+    padding: 5px;
     height: auto;
-    background-color: #28a3e7;
+    background-color: #5f626b;
     color: #ffffff;
 }
             
@@ -111,6 +137,12 @@ span {
     text-align: center;
     background-color: darkgray;
 }
+
+div.pop_up_window {
+    resize: both;
+    overflow: auto;
+}
+
 
 /* For infomation card */
 #info_card {
@@ -206,6 +238,12 @@ span {
 .changeDateButton:active {
     position: relative;
     top: 1px;
+}
+
+.openCourseInfo {
+    width: 95%; 
+    margin-left: 2px;
+    padding: 2px;
 }
 
 </style>
@@ -376,577 +414,577 @@ span {
 
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_00">00:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_00">00:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_00">00:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_00">00:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_00">00:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_00">00:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_00">00:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_00">00:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_00">00:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_00">00:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_00">00:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_00">00:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_00">00:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_00">00:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_01">01:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_01">01:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_01">01:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_01">01:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_01">01:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_01">01:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_01">01:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_01">01:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_01">01:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_01">01:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_01">01:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_01">01:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_01">01:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_01">01:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_02">02:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_02">02:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_02">02:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_02">02:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_02">02:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_02">02:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_02">02:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_02">02:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_02">02:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_02">02:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_02">02:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_02">02:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_02">02:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_02">02:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_03">03:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_03">03:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_03">03:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_03">03:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_03">03:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_03">03:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_03">03:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_03">03:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_03">03:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_03">03:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_03">03:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_03">03:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_03">03:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_03">03:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_04">04:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_04">04:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_04">04:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_04">04:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_04">04:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_04">04:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_04">04:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_04">04:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_04">04:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_04">04:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_04">04:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_04">04:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_04">04:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_04">04:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_05">05:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_05">05:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_05">05:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_05">05:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_05">05:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_05">05:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_05">05:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_05">05:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_05">05:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_05">05:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_05">05:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_05">05:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_05">05:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_05">05:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_06">06:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_06">06:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_06">06:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_06">06:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_06">06:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_06">06:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_06">06:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_06">06:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_06">06:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_06">06:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_06">06:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_06">06:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_06">06:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_06">06:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_07">07:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_07">07:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_07">07:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_07">07:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_07">07:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_07">07:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_07">07:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_07">07:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_07">07:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_07">07:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_07">07:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_07">07:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_07">07:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_07">07:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_08">08:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_08">08:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_08">08:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_08">08:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_08">08:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_08">08:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_08">08:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_08">08:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_08">08:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_08">08:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_08">08:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_08">08:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_08">08:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_08">08:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_09">09:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_09">09:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_09">09:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_09">09:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_09">09:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_09">09:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_09">09:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_09">09:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_09">09:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_09">09:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_09">09:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_09">09:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_09">09:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_09">09:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_10">10:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_10">10:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_10">10:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_10">10:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_10">10:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_10">10:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_10">10:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_10">10:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_10">10:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_10">10:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_10">10:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_10">10:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_10">10:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_10">10:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_11">11:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_11">11:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_11">11:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_11">11:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_11">11:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_11">11:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_11">11:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_11">11:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_11">11:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_11">11:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_11">11:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_11">11:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_11">11:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_11">11:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_12">12:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_12">12:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_12">12:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_12">12:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_12">12:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_12">12:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_12">12:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_12">12:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_12">12:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_12">12:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_12">12:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_12">12:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_12">12:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_12">12:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_13">13:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_13">13:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_13">13:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_13">13:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_13">13:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_13">13:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_13">13:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_13">13:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_13">13:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_13">13:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_13">13:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_13">13:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_13">13:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_13">13:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_14">14:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_14">14:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_14">14:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_14">14:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_14">14:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_14">14:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_14">14:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_14">14:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_14">14:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_14">14:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_14">14:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_14">14:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_14">14:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_14">14:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_15">15:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_15">15:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_15">15:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_15">15:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_15">15:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_15">15:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_15">15:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_15">15:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_15">15:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_15">15:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_15">15:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_15">15:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_15">15:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_15">15:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_16">16:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_16">16:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_16">16:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_16">16:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_16">16:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_16">16:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_16">16:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_16">16:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_16">16:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_16">16:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_16">16:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_16">16:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_16">16:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_16">16:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_17">17:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_17">17:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_17">17:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_17">17:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_17">17:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_17">17:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_17">17:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_17">17:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_17">17:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_17">17:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_17">17:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_17">17:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_17">17:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_17">17:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_18">18:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_18">18:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_18">18:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_18">18:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_18">18:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_18">18:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_18">18:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_18">18:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_18">18:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_18">18:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_18">18:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_18">18:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_18">18:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_18">18:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_19">19:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_19">19:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_19">19:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_19">19:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_19">19:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_19">19:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_19">19:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_19">19:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_19">19:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_19">19:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_19">19:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_19">19:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_19">19:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_19">19:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_20">20:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_20">20:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_20">20:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_20">20:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_20">20:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_20">20:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_20">20:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_20">20:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_20">20:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_20">20:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_20">20:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_20">20:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_20">20:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_20">20:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_21">21:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_21">21:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_21">21:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_21">21:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_21">21:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_21">21:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_21">21:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_21">21:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_21">21:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_21">21:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_21">21:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_21">21:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_21">21:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_21">21:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_22">22:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_22">22:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_22">22:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_22">22:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_22">22:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_22">22:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_22">22:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_22">22:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_22">22:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_22">22:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_22">22:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_22">22:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_22">22:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_22">22:00</button>
             </td>
         </tr>
     
         <tr class="bs_tr">
             <td class="bs_td"">
-                <button disabled class="booking_button" id="mon_btn_23">23:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_23">23:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="tue_btn_23">23:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_23">23:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="wed_btn_23">23:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_23">23:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="thu_btn_23">23:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_23">23:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="fri_btn_23">23:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_23">23:00</button>
             </td>
             <td class="bs_td">                
-                <button disabled class="booking_button" id="sat_btn_23">23:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_23">23:00</button>
             </td>
             <td class="bs_td">
-                <button disabled class="booking_button" id="sun_btn_23">23:00</button>
+                <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_23">23:00</button>
             </td>
         </tr>
     </table>
@@ -958,7 +996,7 @@ span {
             <p>Teacher:<input type="text" id="tname" name="tname"></p>
         </dt>
         <dt>
-            <p>Date:<input type="text" class="datepicker" id="datepicker"></p>
+            <!-- <p>Date:<input type="text" class="datepicker" id="datepicker"></p> -->
         </dt>
         <dt>
             <p>Start Time:<input type="text" class="timepicker" id="course_start_time"></p>
@@ -973,18 +1011,18 @@ span {
             <p>Price:<input type="text" id="course_price"></p>
         </dt>
     </dl>
-        <button style="float: right;" onclick="add_new_course()">CREATE</button>
+        <button class="booking_button" style="float: auto;" onclick="add_new_course()">CREATE</button>
     </div>
     </div>
 
     <!-- Pop booking window -->
-    <div id="background-pop">
+    <div class="pop_up_window" id="background-pop">
         <div id="div-pop">
             <div class="div-top">
                 <span id="close-button">[X]</span>
                 <div>Check your user information...</div>
             </div>
-            <div class="div-content">
+            <div class="div-content" id="student_book">
                 <p>Username:<input type="text" id="pay_user_name"></p>
                 <p>Email:<input type="text" id="pay_user_email"></p>
             
@@ -1010,6 +1048,26 @@ span {
                         <img alt='' border='0' style='border:none;display:none;' src='https://www.paypal.com/EN_US/i/scr/pixel.gif' width='1' height='1'>
                     </form>
                 </div>
+            </div>
+
+            <!-- Open Course Area -->
+            <div class="div-content" id="teacher_open">
+                <div id="teacher_course_settings">
+                    <!-- Open Course Area -->
+                    <div class="div-content">
+                        <div id="teacher_course_settings">
+                            <form style="margin: auto; width: 95%;">
+                                <p>Teacher:<input type="text" class="openCourseInfo" name="tname"/></p>
+                                <p>Date:<input type="text" style="width: 95%; margin-left: 2px; padding: 2px;" class="datepicker" id="datepicker"></p>
+                                <p>Start Time:<input type="text" style="width: 95%; margin-left: 2px; padding: 2px;" class="timepicker" id="course_start_time"></p>
+                                <p>End Time:<input type="text" style="width: 95%; margin-left: 2px; padding: 2px;" class="timepicker" id="course_end_time"></p>
+                                <p>Student Max Number:<input type="text" class="openCourseInfo" id="student_max_num"></p>
+                                <p>Price:<input type="text" class="openCourseInfo" id="course_price"></p>
+                            </form>
+                        </div>
+                    </div>
+
+                    <button class="booking_button" style="float: autp;" onclick="add_new_course()">CREATE</button>
             </div>
         </div>
     </div>
@@ -1134,7 +1192,7 @@ span {
                 checkbox_init(teacher_names, teacher_ids);
 
                 // If user role is teacher, he/she can add the new course on the booking system
-                if (init_data.current_user_role == "um_teacher") {
+                if (init_data.current_user_role == "Teacher") {
                     document.getElementById("teacher_course_settings").style.display = "block";
                     document.getElementById("tname").value = init_data.current_user_name;
                     document.getElementById("tname").disabled = true;
@@ -1543,17 +1601,14 @@ span {
 
         // Clear enabled button
         for (let i=0; i<booking_buttons.length; ++i) {
-            booking_buttons[i].disabled = true;
+            booking_buttons[i].className = "booking_button_disabled";
+            booking_buttons[i].onclick = "bookButtonEvent";
         }
         booking_buttons.length = 0;
 
         for (let i=0; i<7; ++i) {
-            // if (i == 0) alert(_date);
-
             document.getElementById("current_"+weekday_ids[i]).innerHTML = formatDate(_date);
             
-            // if (i == 0) alert(_date);
-
             if (months[0] != _date.getMonth()) months[1] = _date.getMonth();
             if (years[0] != _date.getFullYear()) years[1] = _date.getFullYear();
 
@@ -1566,8 +1621,6 @@ span {
             if (d < 10) d = "0" + d.toString();
             else d = d.toString();
             cur_date = y + "-" + m + "-" + d;
-
-            // if (i == 0) alert(cur_date);
 
             // Button template
             var button_num = 0;
@@ -1651,7 +1704,8 @@ span {
                     // alert(btnid);
 
                     var btn = document.getElementById(btnid);
-                    btn.disabled = false;
+                    btn.className = "booking_button";
+                    btn.onclick = add_new_course;
                     booking_buttons.push(btn);
                     // NEW BUTTON EVENT =================================================
                 }
@@ -1714,7 +1768,8 @@ span {
         });
 
         $(".timepicker").timepicker({
-            "timeFormat": "H:mm"
+            "timeFormat": "H:mm",
+            "interval": 60,
         });
     });
 
@@ -1725,90 +1780,182 @@ span {
 
     // Add new course
     function add_new_course() {
-        // Instance
-        var datepicker_object = document.getElementById("datepicker");
-        var course_start_time_object = document.getElementById("course_start_time");
-        var course_end_time_object = document.getElementById("course_end_time");
-        var course_price_object = document.getElementById("course_price");
-        var course_student_max_num_object = document.getElementById("student_max_num");
+        alert("Enter Add New Course Event.");
 
-        // Check
-        if (datepicker_object.value == "") {
-            alert("The date field cannot be empty!");
-        }
-        else if (course_start_time_object.value == "") {
-            alert("The start time field cannot be empty!");
-        }
-        else if (course_end_time_object.value == "") {
-            alert("The end time field cannot be empty!");
-        }
-        else if (course_price_object.value == "") {
-            alert("The price field cannot be empty!");
-        }
-        else if (table_mode == 2 && course_student_max_num_object.value == "") {
-            alert("The student max number cannot be empty!");
-        }
-        else if (isNumber(course_price_object.value) == false) {
-            alert("The price must be a number!");
-        }
-        else {
-            var start_time = course_start_time_object.value;
-            var end_time = course_end_time_object.value;
-            var start_hour = parseInt(start_time.split(":")[0]);
-            var start_min = parseInt(start_time.split(":")[1]);
-            var end_hour = parseInt(end_time.split(":")[0]);
-            var end_min = parseInt(end_time.split(":")[1]);
+        // Show or Hide
+        var div = document.getElementById("background-pop");
+        var close = document.getElementById("close-button");
 
-            // Re-declare start_time and end_time
-            var start_time = new Date(datepicker_object.value);
-            var end_time = new Date(datepicker_object.value);
-            start_time.setHours(start_hour, start_min, 0);
-            end_time.setHours(end_hour, end_min, 0);
+        // User info
+        var book_user_name = document.getElementById("user_name_field").innerHTML.split(" ")[1];
+        var book_user_email = document.getElementById("user_email_field").innerHTML.split(" ")[1];
+        document.getElementById("pay_user_name").value = book_user_name;
+        document.getElementById("ca_booking_username").value = book_user_name;
+        document.getElementById("pay_user_email").value = book_user_email;
 
-            // Max student number
-            var student_max_num = 0;
-            if (table_mode == 2) {
-                student_max_num = course_student_max_num_object.value;
+        div.style.display = "block";
+
+        close.onclick = function close() {
+            div.style.display = "none";
+        }
+
+        window.onclick = function close(e) {
+            if (e.target == div) {
+                div.style.display = "none";
+            }
+        }
+
+        // Book event =====================================
+        // book(ca_book_name, book_user_name, book_user_email);
+
+        // // Instance
+        // var datepicker_object = document.getElementById("datepicker");
+        // var course_start_time_object = document.getElementById("course_start_time");
+        // var course_end_time_object = document.getElementById("course_end_time");
+        // var course_price_object = document.getElementById("course_price");
+        // var course_student_max_num_object = document.getElementById("student_max_num");
+
+        // // Check
+        // if (datepicker_object.value == "") {
+        //     alert("The date field cannot be empty!");
+        // }
+        // else if (course_start_time_object.value == "") {
+        //     alert("The start time field cannot be empty!");
+        // }
+        // else if (course_end_time_object.value == "") {
+        //     alert("The end time field cannot be empty!");
+        // }
+        // else if (course_price_object.value == "") {
+        //     alert("The price field cannot be empty!");
+        // }
+        // else if (table_mode == 2 && course_student_max_num_object.value == "") {
+        //     alert("The student max number cannot be empty!");
+        // }
+        // else if (isNumber(course_price_object.value) == false) {
+        //     alert("The price must be a number!");
+        // }
+        // else {
+        //     var start_time = course_start_time_object.value;
+        //     var end_time = course_end_time_object.value;
+        //     var start_hour = parseInt(start_time.split(":")[0]);
+        //     var start_min = parseInt(start_time.split(":")[1]);
+        //     var end_hour = parseInt(end_time.split(":")[0]);
+        //     var end_min = parseInt(end_time.split(":")[1]);
+
+        //     // Re-declare start_time and end_time
+        //     var start_time = new Date(datepicker_object.value);
+        //     var end_time = new Date(datepicker_object.value);
+        //     start_time.setHours(start_hour, start_min, 0);
+        //     end_time.setHours(end_hour, end_min, 0);
+
+        //     // Max student number
+        //     var student_max_num = 0;
+        //     if (table_mode == 2) {
+        //         student_max_num = course_student_max_num_object.value;
+        //     }
+
+        //     // Check
+        //     if (start_time < end_time) {
+        //         if (table_mode == 1) {
+        //             Add_New_Course_1on1(
+        //                 document.getElementById("tname").value,
+        //                 datepicker_object.value,
+        //                 start_time,
+        //                 end_time,
+        //                 course_price_object.value,
+        //             );
+        //         }
+        //         else if (table_mode == 2) {
+        //             Add_New_Course_Group(
+        //                 document.getElementById("tname").value,
+        //                 datepicker_object.value,
+        //                 start_time,
+        //                 end_time,
+        //                 student_max_num,
+        //                 course_price_object.value,
+        //             );
+        //         }
+
+        //         var successed_message = "The course " + datepicker_object.value + " " + course_start_time_object.value + "-" + course_end_time_object.value + " ($" + course_price_object.value + " USD) is add to the booking system!";
+        //         alert(successed_message);
+        //         datepicker_object.value = "";
+        //         course_start_time_object.value = "";
+        //         course_end_time_object.value = "";
+        //         course_price_object.value = "";
+        //         window.location.reload();
+        //     }
+        //     else {
+        //         alert("結束時間不可以設定得比開始時間早！");
+        //     }    
+        // }
+    }
+
+    // Add New Course (New version)
+    function bookButtonEvent(id) {
+        alert("Enter bookButtonEvent()!");
+        alert(id);
+
+        // Case 1: you are Teacher, but the list not yours
+        // Case 2: you are Teacher, and the list is yours and the course is opened
+        // Case 3: you are Teacher, and the list is yours but the course is not opened
+        // Case 4: you are not Teacher, but the course is not opened
+        // Case 5: you are not Teacher, and the course is opened but you never book
+        // Case 6: you are not Teacher, and the course is opened and you had booked but not pay.
+        // Case 7: you are not Teacher, and the course is opened and you had paid for booking.
+
+        var checkboxs = Array.from(document.getElementsByName("teacher_radio_button"));
+        var checked_teacher;
+
+        checkboxs.forEach( function(v) {
+            if (v.checked == true) {
+                checked_teacher = v.value;
+            }
+        })
+
+        // You are Teacher
+        if (document.getElementById("user_role_field").innerHTML == "Teacher") {
+            // Case 1: the list not yours
+            if (document.getElementById("user_name_field").innerHTML != checked_teacher) {
+                alert("You cannot operate this table.");
+            }
+            // Case 2: the list is yours and the course is opened.
+            else if (booking_buttons.includes(id)) {
+                alert("You can delete the course!");
             }
 
-            // Check
-            if (start_time < end_time) {
-                if (table_mode == 1) {
-                    Add_New_Course_1on1(
-                        document.getElementById("tname").value,
-                        datepicker_object.value,
-                        start_time,
-                        end_time,
-                        course_price_object.value,
-                    );
-                }
-                else if (table_mode == 2) {
-                    Add_New_Course_Group(
-                        document.getElementById("tname").value,
-                        datepicker_object.value,
-                        start_time,
-                        end_time,
-                        student_max_num,
-                        course_price_object.value,
-                    );
-                }
-
-                var successed_message = "The course " + datepicker_object.value + " " + course_start_time_object.value + "-" + course_end_time_object.value + " ($" + course_price_object.value + " USD) is add to the booking system!";
-                alert(successed_message);
-                datepicker_object.value = "";
-                course_start_time_object.value = "";
-                course_end_time_object.value = "";
-                course_price_object.value = "";
-                window.location.reload();
-            }
+            // Case 3: you are Teacher, and the list is yours but the course is not opened
             else {
-                alert("結束時間不可以設定得比開始時間早！");
-            }    
+                // Hide the booking area
+                document.getElementById("student_book").style.display = "none";
+
+                // Show or Hide
+                var div = document.getElementById("background-pop");
+                var close = document.getElementById("close-button");
+
+                // User info
+                var book_user_name = document.getElementById("user_name_field").innerHTML.split(" ")[1];
+                var book_user_email = document.getElementById("user_email_field").innerHTML.split(" ")[1];
+                document.getElementById("pay_user_name").value = book_user_name;
+                document.getElementById("ca_booking_username").value = book_user_name;
+                document.getElementById("pay_user_email").value = book_user_email;
+
+                div.style.display = "block";
+
+                close.onclick = function close() {
+                    div.style.display = "none";
+                }
+
+                window.onclick = function close(e) {
+                    if (e.target == div) {
+                        div.style.display = "none";
+                    }
+                }
+            }
         }
     }
 
     // Book button event
-    function bookButtonEvent() {
+    function de_bookButtonEvent() {
         alert(document.getElementById("user_name_field").innerHTML.split(" ")[1]);
         alert(booking_data[parseInt(this.name)]["teacher_name"]);
         alert("Enter bookButtonEvent!");
@@ -1862,6 +2009,8 @@ span {
     }
 
     function payEvent(ca_booking_name, ca_booking_value) {
+        alert("Enter payEvent");
+
         // PayPal button
         document.getElementById("ca_booking_name").value = ca_booking_name;
         document.getElementById("ca_booking_value").value = ca_booking_value;

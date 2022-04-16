@@ -7,25 +7,25 @@ def generate_table_button():
     raw_text = """
     <tr class="bs_tr">
         <td class="bs_td"">
-            <button disabled class="booking_button" id="mon_btn_HH">HH:00</button>
+            <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_HH">HH:00</button>
         </td>
         <td class="bs_td">
-            <button disabled class="booking_button" id="tue_btn_HH">HH:00</button>
+            <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="tue_btn_HH">HH:00</button>
         </td>
         <td class="bs_td">
-            <button disabled class="booking_button" id="wed_btn_HH">HH:00</button>
+            <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="wed_btn_HH">HH:00</button>
         </td>
         <td class="bs_td">
-            <button disabled class="booking_button" id="thu_btn_HH">HH:00</button>
+            <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="thu_btn_HH">HH:00</button>
         </td>
         <td class="bs_td">
-            <button disabled class="booking_button" id="fri_btn_HH">HH:00</button>
+            <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="fri_btn_HH">HH:00</button>
         </td>
         <td class="bs_td">                
-            <button disabled class="booking_button" id="sat_btn_HH">HH:00</button>
+            <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sat_btn_HH">HH:00</button>
         </td>
         <td class="bs_td">
-            <button disabled class="booking_button" id="sun_btn_HH">HH:00</button>
+            <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="sun_btn_HH">HH:00</button>
         </td>
     </tr>"""
 
