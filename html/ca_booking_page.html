@@ -74,6 +74,13 @@ caption {
     color: #666666;
 }
 
+.open_course_button {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+
 .bs_table, .bs_tr, .bs_td {
     border: 1px solid black;
     text-align: center;
@@ -94,7 +101,7 @@ caption {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
 }
            
 #div-pop{
@@ -102,6 +109,7 @@ caption {
     border-radius: 15px;
 
     width: 30%;
+    height: 50%;
     z-index: 1;
     margin: 12% auto;
     overflow: auto;
@@ -129,7 +137,7 @@ span {
            
 .div-content {
     width: auto;
-    height: 200px;
+    height: auto;
     overflow: auto;
 }
             
@@ -999,7 +1007,7 @@ div.pop_up_window {
             <!-- <p>Date:<input type="text" class="datepicker" id="datepicker"></p> -->
         </dt>
         <dt>
-            <p>Start Time:<input type="text" class="timepicker" id="course_start_time"></p>
+            <!-- <p>Start Time:<input type="text" class="timepicker" id="course_start_time"></p> -->
         </dt>
         <dt>
             <p>End Time:<input type="text" class="timepicker" id="course_end_time"></p>
@@ -1057,18 +1065,21 @@ div.pop_up_window {
                     <div class="div-content">
                         <div id="teacher_course_settings">
                             <form style="margin: auto; width: 95%;">
-                                <p>Teacher:<input type="text" class="openCourseInfo" name="tname"/></p>
+                                <p>Teacher:<input type="text" class="openCourseInfo" id="open_course_teacher"/></p>
                                 <p>Date:<input type="text" style="width: 95%; margin-left: 2px; padding: 2px;" class="datepicker" id="datepicker"></p>
                                 <p>Start Time:<input type="text" style="width: 95%; margin-left: 2px; padding: 2px;" class="timepicker" id="course_start_time"></p>
                                 <p>End Time:<input type="text" style="width: 95%; margin-left: 2px; padding: 2px;" class="timepicker" id="course_end_time"></p>
                                 <p>Student Max Number:<input type="text" class="openCourseInfo" id="student_max_num"></p>
                                 <p>Price:<input type="text" class="openCourseInfo" id="course_price"></p>
+                                <div style="text-align: center;">
+                                    <button class="booking_button" id="open_course_button" onclick="add_new_course()">CREATE</button>
+                                </div>
                             </form>
                         </div>
                     </div>
 
-                    <button class="booking_button" style="float: autp;" onclick="add_new_course()">CREATE</button>
-            </div>
+                    
+                </div>
         </div>
     </div>
 </body>
@@ -1895,6 +1906,7 @@ div.pop_up_window {
         alert("Enter bookButtonEvent()!");
         alert(id);
 
+        // Case 0: you had not login
         // Case 1: you are Teacher, but the list not yours
         // Case 2: you are Teacher, and the list is yours and the course is opened
         // Case 3: you are Teacher, and the list is yours but the course is not opened
@@ -1912,8 +1924,13 @@ div.pop_up_window {
             }
         })
 
+        // Case 0: Has not login
+        if (document.getElementById("user_name_field").innerHTML == "false") {
+            alert("you must be logged in for booking.");
+            location.replace("https://allthing-can.com/login/");
+        }
         // You are Teacher
-        if (document.getElementById("user_role_field").innerHTML == "Teacher") {
+        else if (document.getElementById("user_role_field").innerHTML == "Teacher") {
             // Case 1: the list not yours
             if (document.getElementById("user_name_field").innerHTML != checked_teacher) {
                 alert("You cannot operate this table.");
@@ -1940,6 +1957,10 @@ div.pop_up_window {
                 document.getElementById("pay_user_email").value = book_user_email;
 
                 div.style.display = "block";
+
+                // Open info
+                document.getElementById("open_course_teacher").value = document.getElementById("user_name_field").innerHTML;
+                document.getElementById("course_start_time").value = id.split("_")[2]+":00"; 
 
                 close.onclick = function close() {
                     div.style.display = "none";
