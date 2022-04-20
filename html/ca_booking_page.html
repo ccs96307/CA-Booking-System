@@ -12,10 +12,6 @@
 
 <style>
 /* For booking table*/
-caption {
-    text-align: center;
-}
-
 .booking_button {
     box-shadow: 2px 3px 0px 0px #6dc754;
 	background: linear-gradient(to bottom, #44c767 5%, #b3e698 100%);
@@ -151,7 +147,6 @@ div.pop_up_window {
     overflow: auto;
 }
 
-
 /* For infomation card */
 #info_card {
     display: inline-block;
@@ -258,79 +253,55 @@ div.pop_up_window {
 </head>
 
 <body>
-    <div class="container">
-        <input type="datetime-local" id="pickerDateTime" />   
-        <!-- <select id="dropdownTimeZone"></select> -->
-        <input type="button" id="btnSubmit" onclick="submitDate()" value="Calculate" />
-    </div>
-
-    <div>
-        <label>Browser/Local datetime</label>
-        <div id="divLocal"></div><br>    
-
-        <label>UTC of browser datetime</label>
-        <div id="divUTC"></div><br>
-
-        <label>Selected datetime with timezone</label>
-        <div id="divSelected"></div><br>
-
-        <label>UTC of selected datetime with timezone</label>
-        <div id="divUTCSelected"></div><br> 
-
-        <label>UTC convert into Local Time</label>
-        <div id="divUTCConverted"></div><br>
-    </div>
-
     <!-- Personal Info (info card style) -->
-    <h3>登入資訊卡</h3>
+    <h3>User Info Card</h3> 
     <div style="display: flex; align-items: center;">
-    <div id="info_card">
-        <table id="info_card_table">
-            <tr class="info_card_tr">
-                <td style="font-weight: bold;">ID</td>
-                <td id="user_id_field" style="text-align: center"></td>
-            </tr>
-            <tr class="info_card_tr">
-                <td style="font-weight: bold;">Username</td>
-                <td id="user_name_field" style="text-align: center"></td>
-            </tr>
-            <tr class="info_card_tr">
-                <td style="font-weight: bold;">Role</td>
-                <td id="user_role_field" style="text-align: center"></td>
-            </tr>
-            <tr class="info_card_tr">
-                <td style="font-weight: bold;">Email</td>
-                <td id="user_email_field" style="text-align: center"></td>
-            </tr>
-            <tr class="info_card_tr">
-                <td style="font-weight: bold;">Location</td>
-                <td id="timeZoneField" style="text-align: right"> 
-                <select id="dropdownTimeZone" onchange="dropdownTimeZoneChangeEvent()">
-                </select>
-                </td>
-            </tr>
-        </table>
-    </div>
+        <div id="info_card">
+            <table id="info_card_table">
+                <tr class="info_card_tr">
+                    <td style="font-weight: bold;">ID</td>
+                    <td id="user_id_field" style="text-align: center"></td>
+                </tr>
+                <tr class="info_card_tr">
+                    <td style="font-weight: bold;">Username</td>
+                    <td id="user_name_field" style="text-align: center"></td>
+                </tr>
+                <tr class="info_card_tr">
+                    <td style="font-weight: bold;">Role</td>
+                    <td id="user_role_field" style="text-align: center"></td>
+                </tr>
+                <tr class="info_card_tr">
+                    <td style="font-weight: bold;">Email</td>
+                    <td id="user_email_field" style="text-align: center"></td>
+                </tr>
+                <tr class="info_card_tr">
+                    <td style="font-weight: bold;">Location</td>
+                    <td id="timeZoneField" style="text-align: right"> 
+                    <select id="dropdownTimezone" onchange="dropdownTimezoneChangeEvent()">
+                    </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-    <!-- Switch to different table mode -->
-    <h3>切換表格型態</h3>
-    <div style="width: auto;">
-        <div style="display: inline-block; margin: 10px;">
-            <div class="selected_button_div" id="button_1on1_div">
-                <button class="selected_button" id="button_1on1" onclick="changeTableMode(1)">1on1</button>
+        <!-- Switch to different table mode -->
+        <div style="width: auto;">
+            <div style="display: inline-block; margin: 10px;">
+                <div class="selected_button_div" id="button_1on1_div">
+                    <button class="selected_button" id="button_1on1" onclick="changeTableMode(1)">1on1</button>
+                </div>
+            </div>
+            <div style="display: inline-block; margin: 10px;">
+                <div class="unselected_button_div" id="button_group_div">
+                    <button class="unselected_button" id="button_group" onclick="changeTableMode(2)">group</button>
+                </div>
+            </div>
+            <div style="display: inline-block; margin: 10px;">
+                <div class="unselected_button_div" id="button_history_div">
+                    <button class="unselected_button" id="button_history" onclick="changeTableMode(3)">History</button>
+                </div>
             </div>
         </div>
-        <div style="display: inline-block; margin: 10px;">
-            <div class="unselected_button_div" id="button_group_div">
-                <button class="unselected_button" id="button_group" onclick="changeTableMode(2)">group</button>
-            </div>
-        </div>
-        <div style="display: inline-block; margin: 10px;">
-            <div class="unselected_button_div" id="button_history_div">
-                <button class="unselected_button" id="button_history" onclick="changeTableMode(3)">History</button>
-            </div>
-        </div>
-    </div>
     </div>
 
     <!-- Booking history table -->
@@ -375,14 +346,14 @@ div.pop_up_window {
     <div id="course_info_fields">
 
     <!-- Teacher Checkboxs -->
-    <h3>選擇要顯示的老師課程預約時間表</h3>
+    <h3>Teacher List</h3>
     <div id="checkbox_container">
         <form id="teacher_radio_button_form">
         </form>
     </div>
     
     <!-- Change date button -->
-    <h3>預約時間表</h3>
+    <!-- <h3>預約時間表</> -->
     <div style="display: flex; justify-content: space-between;">
         <button class="changeDateButton" onclick="prevDateEvent()">PREV</button>
         <button class="changeDateButton" onclick="goBackTodayEvent()">TODAY</button>
@@ -391,7 +362,7 @@ div.pop_up_window {
     
     <!-- Weekly calendar -->
     <table class="bs_table">
-        <caption id="current_month"><h3></h3></caption>
+        <caption style="text-align: center;" id="current_month"><h3></h3></caption>
         <tr class="bs_tr">
             <td class="bs_td">Mon</td>
             <td class="bs_td">Tue</td>
@@ -421,7 +392,7 @@ div.pop_up_window {
         </tr>
 
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_00">00:00</button>
             </td>
             <td class="bs_td">
@@ -445,7 +416,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_01">01:00</button>
             </td>
             <td class="bs_td">
@@ -469,7 +440,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_02">02:00</button>
             </td>
             <td class="bs_td">
@@ -493,7 +464,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_03">03:00</button>
             </td>
             <td class="bs_td">
@@ -517,7 +488,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_04">04:00</button>
             </td>
             <td class="bs_td">
@@ -541,7 +512,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_05">05:00</button>
             </td>
             <td class="bs_td">
@@ -565,7 +536,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_06">06:00</button>
             </td>
             <td class="bs_td">
@@ -589,7 +560,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_07">07:00</button>
             </td>
             <td class="bs_td">
@@ -613,7 +584,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_08">08:00</button>
             </td>
             <td class="bs_td">
@@ -637,7 +608,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_09">09:00</button>
             </td>
             <td class="bs_td">
@@ -661,7 +632,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_10">10:00</button>
             </td>
             <td class="bs_td">
@@ -685,7 +656,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_11">11:00</button>
             </td>
             <td class="bs_td">
@@ -709,7 +680,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_12">12:00</button>
             </td>
             <td class="bs_td">
@@ -733,7 +704,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_13">13:00</button>
             </td>
             <td class="bs_td">
@@ -757,7 +728,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_14">14:00</button>
             </td>
             <td class="bs_td">
@@ -781,7 +752,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_15">15:00</button>
             </td>
             <td class="bs_td">
@@ -805,7 +776,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_16">16:00</button>
             </td>
             <td class="bs_td">
@@ -829,7 +800,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_17">17:00</button>
             </td>
             <td class="bs_td">
@@ -853,7 +824,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_18">18:00</button>
             </td>
             <td class="bs_td">
@@ -877,7 +848,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_19">19:00</button>
             </td>
             <td class="bs_td">
@@ -901,7 +872,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_20">20:00</button>
             </td>
             <td class="bs_td">
@@ -925,7 +896,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_21">21:00</button>
             </td>
             <td class="bs_td">
@@ -949,7 +920,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_22">22:00</button>
             </td>
             <td class="bs_td">
@@ -973,7 +944,7 @@ div.pop_up_window {
         </tr>
     
         <tr class="bs_tr">
-            <td class="bs_td"">
+            <td class="bs_td">
                 <button class="booking_button_disabled" onclick="bookButtonEvent(this.id)" id="mon_btn_23">23:00</button>
             </td>
             <td class="bs_td">
@@ -996,32 +967,6 @@ div.pop_up_window {
             </td>
         </tr>
     </table>
-
-    <!-- Teacher can set the course info
-    <div style="display: none" id="teacher_course_settings">
-    <dl>
-        <dt>
-            <p>Teacher:<input type="text" id="tname" name="tname"></p>
-        </dt>
-        <dt>
-            <p>Date:<input type="text" class="datepicker" id="datepicker"></p>
-        </dt>
-        <dt>
-            <p>Start Time:<input type="text" class="timepicker" id="course_start_time"></p>
-        </dt>
-        <dt>
-            <p>End Time:<input type="text" class="timepicker" id="course_end_time"></p>
-        </dt>
-        <dt style="display: none" id="student_max_num_field">
-            <p>Student Max Number:<input type="text" id="student_max_num"></p>
-        </dt>
-        <dt>
-            <p>Price:<input type="text" id="course_price"></p>
-        </dt>
-    </dl>
-        <button class="booking_button" style="float: auto;" onclick="add_new_course()">CREATE</button>
-    </div> -->
-    </div>
 
     <!-- Pop booking window -->
     <div class="pop_up_window" id="background-pop">
@@ -1090,7 +1035,6 @@ div.pop_up_window {
     let booking_keys_1on1;
     let booking_data_group;
     let booking_keys_group;
-    var current_utc;
     var table_mode = 1;
     var teacher_names;
     var teacher_ids;
@@ -1111,15 +1055,6 @@ div.pop_up_window {
         'November',
         'December'
     ];
-    const _weekdays = [
-        'Sunday',
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thrusday',
-        'Friday',
-        'Saturday',
-    ];
 
     let weekday_ids = [
         "mon",
@@ -1130,37 +1065,6 @@ div.pop_up_window {
         "sat",
         "sun"
     ];
-
-
-    const _offset2UTC = {
-        "0": "UTC+0",
-        "60": "UTC-1",
-        "120": "UTC-2",
-        "180": "UTC-3",
-        "240": "UTC-4",
-        "300": "UTC-5",
-        "360": "UTC-6",
-        "420": "UTC-7",
-        "480": "UTC-8",
-        "540": "UTC-9",
-        "600": "UTC-10",
-        "660": "UTC-11",
-        "720": "UTC-12",
-        "-60": "UTC+1",
-        "-120": "UTC+2",
-        "-180": "UTC+3",
-        "-240": "UTC+4",
-        "-300": "UTC+5",
-        "-360": "UTC+6",
-        "-420": "UTC+7",
-        "-480": "UTC+8",
-        "-540": "UTC+9",
-        "-600": "UTC+10",
-        "-660": "UTC+11",
-        "-720": "UTC+12",
-        "-780": "UTC+13",
-        "-840": "UTC+14",
-    };
 
     const teacher_open_course_colors = [
         "#ff8c00",
@@ -1184,6 +1088,7 @@ div.pop_up_window {
             },
             dataType: "json",
             success: function (init_data) {
+                loadTimezoneList();
                 remove_all_display_booking_data();
                 
                 // Date set to monday (the start point of a new week)
@@ -1211,13 +1116,13 @@ div.pop_up_window {
                 // Hide the student max num field
                 // document.getElementById("student_max_num_field").style.display = "none";
 
-                booking_data_1on1 = convertBookingDataUTC(init_data.booking_data_1on1);
+                booking_data_1on1 = init_data.booking_data_1on1;
                 booking_keys_1on1 = init_data.booking_keys_1on1;
-                booking_data_group = convertBookingDataUTC(init_data.booking_data_group);
+                booking_data_group = init_data.booking_data_group;
                 booking_keys_group = init_data.booking_keys_group;
 
+                dropdownTimezoneChangeEvent();
                 setWeekDate(1);
-                // current_utc = document.getElementById("UTC_Timezone").value;
 
                 // Book history
                 bookHistoryMode(1);
@@ -1236,7 +1141,7 @@ div.pop_up_window {
 
     function Add_New_Course_1on1(tname, _date, start_time, end_time, price) {
         // Current UTC
-        let timeZoneValue = document.getElementById("dropdownTimeZone").value;
+        let timeZoneValue = document.getElementById("dropdownTimezone").value;
         let local_start_time = moment(start_time).format('YYYY-MM-DDTHH:mm');
         let local_end_time = moment(end_time).format('YYYY-MM-DDTHH:mm');
         
@@ -1248,19 +1153,6 @@ div.pop_up_window {
         _d = _start_time.format("YYYY-MM-DD");
         _st = _start_time.format("HH:mm");
         _et = _end_time.format("HH:mm");
-
-
-        // var selected_utc = document.getElementById("UTC_Timezone").value;
-        // var utc_offset = -1 * parseInt(selected_utc.split("UTC")[1]);
-        // var start_time_timestamps = start_time.getTime();
-        // var end_time_timestamps = end_time.getTime();
-
-        // start_time.setTime(start_time_timestamps + utc_offset * 1000 * 60 * 60);
-        // end_time.setTime(end_time_timestamps + utc_offset * 1000 * 60 * 60);
-        
-        // // Time
-        // var _st = start_time.getHours().toString() + ":" + start_time.getMinutes().toString();
-        // var _et = end_time.getHours().toString() + ":" + end_time.getMinutes().toString();
 
         $.ajax({
             type: "POST",
@@ -1287,17 +1179,19 @@ div.pop_up_window {
     }
 
     function Add_New_Course_Group(tname, _date, start_time, end_time, student_max_num, price) {
-        var selected_utc = document.getElementById("UTC_Timezone").value;
-        var utc_offset = -1 * parseInt(selected_utc.split("UTC")[1]);
-        var start_time_timestamps = start_time.getTime();
-        var end_time_timestamps = end_time.getTime();
-
-        start_time.setTime(start_time_timestamps + utc_offset * 1000 * 60 * 60);
-        end_time.setTime(end_time_timestamps + utc_offset * 1000 * 60 * 60);
+        // Current UTC
+        let timeZoneValue = document.getElementById("dropdownTimezone").value;
+        let local_start_time = moment(start_time).format('YYYY-MM-DDTHH:mm');
+        let local_end_time = moment(end_time).format('YYYY-MM-DDTHH:mm');
         
-        // Time
-        var _st = start_time.getHours().toString() + ":" + start_time.getMinutes().toString();
-        var _et = end_time.getHours().toString() + ":" + end_time.getMinutes().toString();
+        // Convert
+        var _start_time = moment.tz(local_start_time, timeZoneValue).utc();
+        var _end_time = moment.tz(local_end_time, timeZoneValue).utc();
+
+        // Save
+        _d = _start_time.format("YYYY-MM-DD");
+        _st = _start_time.format("HH:mm");
+        _et = _end_time.format("HH:mm");
 
         $.ajax({
             type: "POST",
@@ -1488,121 +1382,34 @@ div.pop_up_window {
     // Convert to UTC
     function convertBookingDataUTC(booking_data) {
         // Current UTC
-        let timeZoneValue = document.getElementById("dropdownTimeZone").value;
+        let timezoneValue = document.getElementById("dropdownTimezone").value;
 
         for (let i=0; i<booking_data.length; ++i) {
             var _d = booking_data[i]["date"];
             var _st = booking_data[i]["start_time"];
             var _et = booking_data[i]["end_time"];
-            var _start_time;
-            var _end_time;
-            
-            _start_time = moment.utc(_d+" "+_st);
-            _end_time = moment.utc(_d+" "+_et);
+            var _start_time = moment.utc(_d+" "+_st);
+            var _end_time = moment.utc(_d+" "+_et);
 
             // Convert
-            _start_time = moment.tz(_start_time, timeZoneValue);
-            _end_time = moment.tz(_end_time, timeZoneValue);
+            _start_time = moment.tz(_start_time, timezoneValue);
+            _end_time = moment.tz(_end_time, timezoneValue);
 
             // Save
-            _d = _start_time.format("YYYY-MM-DD");
-            _st = _start_time.format("HH:mm");
-            _et = _end_time.format("HH:mm");
+            booking_data[i]["date"] = _start_time.format("YYYY-MM-DD");
+            booking_data[i]["start_time"] = _start_time.format("HH:mm");
+            booking_data[i]["end_time"] = _end_time.format("HH:mm");
 
-            // booking_data[i]["date"] = _d;
-            // booking_data[i]["start_time"] = _st;
-            // booking_data[i]["end_time"] = _et;
+            alert(_d+" "+_st+"\n"+booking_data[i]["date"]+" "+booking_data[i]["start_time"]);
         }
 
         return booking_data;
     }
 
-    // Convert UTC from current to new
-    function utcChangeEvent() {
-        remove_all_display_booking_data();
-        var selected_utc = document.getElementById("UTC_Timezone").value;
-        var new_utc = parseInt(selected_utc.split("UTC")[1]);
-        var old_utc = parseInt(current_utc.split("UTC")[1]);
-        var utc_offset = new_utc - old_utc;
-
-        // Update
-        current_utc = selected_utc;
-        
-        for (let i=0; i<booking_data_1on1.length; ++i) {
-            var _date = booking_data_1on1[i]["date"];
-            var _st = booking_data_1on1[i]["start_time"];
-            var _et = booking_data_1on1[i]["end_time"];
-            
-            var _start_time = new Date(_date);
-            _start_time.setHours(parseInt(_st.split(":")[0], parseInt(_st.split(":")[1]), 0));
-                
-            var _end_time = new Date(_date);
-            _end_time.setHours(parseInt(_et.split(":")[0], parseInt(_et.split(":")[1]), 0));
-            
-            // Convert
-            _start_time.setTime(_start_time.getTime() + utc_offset * 1000 * 60 * 60);
-            _end_time.setTime(_end_time.getTime() + utc_offset * 1000 * 60 * 60);
-
-            // Save
-            // Date
-            var y = _start_time.getFullYear().toString();
-            var m = _start_time.getMonth() + 1;
-            if (m < 10) m = "0" + m.toString();
-            else m = m.toString();
-            var d = _start_time.getDate();
-            if (d < 10) d = "0" + d.toString();
-            var _date = y + "-" + m + "-" + d;
-
-            // Time
-            var _st = _start_time.getHours().toString() + ":" + _start_time.getMinutes().toString();
-            var _et = _end_time.getHours().toString() + ":" + _end_time.getMinutes().toString();
-
-            booking_data_1on1[i]["date"] = _date;
-            booking_data_1on1[i]["start_time"] = _st;
-            booking_data_1on1[i]["end_time"] = _et;
-        }
-
-        for (let i=0; i<booking_data_group.length; ++i) {
-            var _date = booking_data_group[i]["date"];
-            var _st = booking_data_group[i]["start_time"];
-            var _et = booking_data_group[i]["end_time"];
-            
-            var _start_time = new Date(_date);
-            _start_time.setHours(parseInt(_st.split(":")[0], parseInt(_st.split(":")[1]), 0));
-                
-            var _end_time = new Date(_date);
-            _end_time.setHours(parseInt(_et.split(":")[0], parseInt(_et.split(":")[1]), 0));
-            
-            // Convert
-            _start_time.setTime(_start_time.getTime() + utc_offset * 1000 * 60 * 60);
-            _end_time.setTime(_end_time.getTime() + utc_offset * 1000 * 60 * 60);
-
-            // Save
-            // Date
-            var y = _start_time.getFullYear().toString();
-            var m = _start_time.getMonth() + 1;
-            if (m < 10) m = "0" + m.toString();
-            else m = m.toString();
-            var d = _start_time.getDate();
-            if (d < 10) d = "0" + d.toString();
-            var _date = y + "-" + m + "-" + d;
-
-            // Time
-            var _st = _start_time.getHours().toString() + ":" + _start_time.getMinutes().toString();
-            var _et = _end_time.getHours().toString() + ":" + _end_time.getMinutes().toString();
-
-            booking_data_group[i]["date"] = _date;
-            booking_data_group[i]["start_time"] = _st;
-            booking_data_group[i]["end_time"] = _et;
-        }
-
-        setWeekDate(0);
-    }
-
     // Set date
     function setWeekDate(direction) {
         // Current timezone
-        let timeZoneValue = document.getElementById("dropdownTimeZone").value;
+        let timeZoneValue = document.getElementById("dropdownTimezone").value;
 
         if (table_mode == 1) booking_data = booking_data_1on1;
         else if (table_mode == 2) booking_data = booking_data_group;
@@ -2282,8 +2089,8 @@ div.pop_up_window {
         current_user_1on1_book_data.forEach(setBookHistoryTable);
     }
 
-    function loadTimeZoneList() {
-        let select = document.getElementById("dropdownTimeZone");
+    function loadTimezoneList() {
+        let select = document.getElementById("dropdownTimezone");
         select.innerHTML = ""; 
 
         let browserTimeZone = moment.tz.guess();
@@ -2302,10 +2109,6 @@ div.pop_up_window {
         });
     }
 
-    function loadDefaultDateTime() {
-        document.getElementById('pickerDateTime').value = moment().format('YYYY-MM-DDTHH:mm');
-    }
-
     const DEFAULT_FORMAT = "YYYY-MM-DD HH:mm:ss Z"; 
 
     function formatdate(momentDate) {
@@ -2317,11 +2120,6 @@ div.pop_up_window {
     }
 
     function getSelectedValue(localDateTime, timeZone) {
-        // alert(localDateTime);
-        // alert(timeZone);
-        // alert(moment.tz(localDateTime, timeZone));
-        // alert(moment.tz(localDateTime, timeZone).utc());
-
         if (moment.tz(localDateTime, timeZone).isDST()) {
             alert("It's DST!");
         }
@@ -2340,25 +2138,7 @@ div.pop_up_window {
         return moment.tz(utcTime, timeZone);
     }
 
-    function dropdownTimeZoneChangeEvent() {
-        // Initialize the browser local timezone
-        let localValue = moment().format('YYYY-MM-DDTHH:mm');
-        let timeZoneValue = document.getElementById("dropdownTimeZone").value;
-
-        document.getElementById('divLocal').innerHTML = formatdate(moment(localValue));
-        document.getElementById('divUTC').innerHTML = formatdate(getUtcValue(localValue));
-        document.getElementById('divSelected').innerHTML = formatdate(getSelectedValue(localValue, timeZoneValue));
-
-        let utcSelected =  document.getElementById('divUTCSelected');
-        utcSelected.innerHTML = formatdate(getSelectedUTCValue(localValue, timeZoneValue));
-
-        let utcConverted = document.getElementById("divUTCConverted");
-        utcConverted.innerHTML = formatdate(getUTCConverted(utcSelected.innerHTML, timeZoneValue));
-                
-        // Change to current timezone
-        booking_data_1on1 = convertBookingDataUTC(booking_data_1on1);
-        booking_data_group = convertBookingDataUTC(booking_data_group);
-
+    function dropdownTimezoneChangeEvent() {
         // Change setWeekDate()
         remove_all_display_booking_data();
         setWeekDate(0);
@@ -2367,12 +2147,6 @@ div.pop_up_window {
     // Load the script
     window.onload = function() {
         Init();
-
-        loadDefaultDateTime();
-        loadTimeZoneList();
-        dropdownTimeZoneChangeEvent();
     }
 </script>
-
-
 </html>
