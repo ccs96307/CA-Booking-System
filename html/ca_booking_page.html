@@ -997,17 +997,17 @@ div.pop_up_window {
         </tr>
     </table>
 
-    <!-- Teacher can set the course info -->
+    <!-- Teacher can set the course info
     <div style="display: none" id="teacher_course_settings">
     <dl>
         <dt>
             <p>Teacher:<input type="text" id="tname" name="tname"></p>
         </dt>
         <dt>
-            <!-- <p>Date:<input type="text" class="datepicker" id="datepicker"></p> -->
+            <p>Date:<input type="text" class="datepicker" id="datepicker"></p>
         </dt>
         <dt>
-            <!-- <p>Start Time:<input type="text" class="timepicker" id="course_start_time"></p> -->
+            <p>Start Time:<input type="text" class="timepicker" id="course_start_time"></p>
         </dt>
         <dt>
             <p>End Time:<input type="text" class="timepicker" id="course_end_time"></p>
@@ -1020,7 +1020,7 @@ div.pop_up_window {
         </dt>
     </dl>
         <button class="booking_button" style="float: auto;" onclick="add_new_course()">CREATE</button>
-    </div>
+    </div> -->
     </div>
 
     <!-- Pop booking window -->
@@ -1077,9 +1077,8 @@ div.pop_up_window {
                             </form>
                         </div>
                     </div>
-
-                    
                 </div>
+            </div>
         </div>
     </div>
 </body>
@@ -1203,14 +1202,14 @@ div.pop_up_window {
                 checkbox_init(teacher_names, teacher_ids);
 
                 // If user role is teacher, he/she can add the new course on the booking system
-                if (init_data.current_user_role == "Teacher") {
-                    document.getElementById("teacher_course_settings").style.display = "block";
-                    document.getElementById("tname").value = init_data.current_user_name;
-                    document.getElementById("tname").disabled = true;
-                }
-                    
+                // if (init_data.current_user_role == "Teacher") {
+                //     document.getElementById("teacher_course_settings").style.display = "block";
+                //     document.getElementById("user_name_field").value = init_data.current_user_name;
+                //     document.getElementById("user_name_field").disabled = true;
+                // }
+
                 // Hide the student max num field
-                document.getElementById("student_max_num_field").style.display = "none";
+                // document.getElementById("student_max_num_field").style.display = "none";
 
                 booking_data_1on1 = convertBookingDataUTC(init_data.booking_data_1on1);
                 booking_keys_1on1 = init_data.booking_keys_1on1;
@@ -1236,17 +1235,32 @@ div.pop_up_window {
     }
 
     function Add_New_Course_1on1(tname, _date, start_time, end_time, price) {
-        var selected_utc = document.getElementById("UTC_Timezone").value;
-        var utc_offset = -1 * parseInt(selected_utc.split("UTC")[1]);
-        var start_time_timestamps = start_time.getTime();
-        var end_time_timestamps = end_time.getTime();
-
-        start_time.setTime(start_time_timestamps + utc_offset * 1000 * 60 * 60);
-        end_time.setTime(end_time_timestamps + utc_offset * 1000 * 60 * 60);
+        // Current UTC
+        let timeZoneValue = document.getElementById("dropdownTimeZone").value;
+        let local_start_time = moment(start_time).format('YYYY-MM-DDTHH:mm');
+        let local_end_time = moment(end_time).format('YYYY-MM-DDTHH:mm');
         
-        // Time
-        var _st = start_time.getHours().toString() + ":" + start_time.getMinutes().toString();
-        var _et = end_time.getHours().toString() + ":" + end_time.getMinutes().toString();
+        // Convert
+        var _start_time = moment.tz(local_start_time, timeZoneValue).utc();
+        var _end_time = moment.tz(local_end_time, timeZoneValue).utc();
+
+        // Save
+        _d = _start_time.format("YYYY-MM-DD");
+        _st = _start_time.format("HH:mm");
+        _et = _end_time.format("HH:mm");
+
+
+        // var selected_utc = document.getElementById("UTC_Timezone").value;
+        // var utc_offset = -1 * parseInt(selected_utc.split("UTC")[1]);
+        // var start_time_timestamps = start_time.getTime();
+        // var end_time_timestamps = end_time.getTime();
+
+        // start_time.setTime(start_time_timestamps + utc_offset * 1000 * 60 * 60);
+        // end_time.setTime(end_time_timestamps + utc_offset * 1000 * 60 * 60);
+        
+        // // Time
+        // var _st = start_time.getHours().toString() + ":" + start_time.getMinutes().toString();
+        // var _et = end_time.getHours().toString() + ":" + end_time.getMinutes().toString();
 
         $.ajax({
             type: "POST",
@@ -1291,7 +1305,7 @@ div.pop_up_window {
             data: {
                 "type": "add_new_course_group",
                 "teacher_name": tname,
-                "date": _date,
+                "date": _d,
                 "start_time": _st,
                 "end_time": _et,
                 "student_max_num": student_max_num,
@@ -1299,7 +1313,7 @@ div.pop_up_window {
             },
             dataType: "json",
             success: function(results) {
-                // alert(results.message);
+                alert(results.message);
             },
             error: function (xhr, s, error) {
                 alert(xhr.status);
@@ -1397,12 +1411,20 @@ div.pop_up_window {
         });
     }
 
-    // Format method
+    // Format method MM/DD
     function formatDate(format_date) {
         let month = (1 + format_date.getMonth()).toString().padStart(2, '0');
         let day = format_date.getDate().toString().padStart(2, '0');
 
         return month + '/' + day;
+    }
+
+    function formatDateYYYY_MM_DD(format_date) {
+        let year = format_date.getFullYear().toString();
+        let month = (1 + format_date.getMonth()).toString().padStart(2, '0');
+        let day = format_date.getDate().toString().padStart(2, '0');
+
+        return year + "-" + month + "-" + day;
     }
 
     // Checkbox init
@@ -1779,7 +1801,7 @@ div.pop_up_window {
         });
 
         $(".timepicker").timepicker({
-            "timeFormat": "H:mm",
+            "timeFormat": "HH:mm",
             "interval": 60,
         });
     });
@@ -1819,92 +1841,102 @@ div.pop_up_window {
         // Book event =====================================
         // book(ca_book_name, book_user_name, book_user_email);
 
-        // // Instance
-        // var datepicker_object = document.getElementById("datepicker");
-        // var course_start_time_object = document.getElementById("course_start_time");
-        // var course_end_time_object = document.getElementById("course_end_time");
-        // var course_price_object = document.getElementById("course_price");
-        // var course_student_max_num_object = document.getElementById("student_max_num");
+        // Instance
+        var datepicker_object = document.getElementById("datepicker");
+        var course_start_time_object = document.getElementById("course_start_time");
+        var course_end_time_object = document.getElementById("course_end_time");
+        var course_price_object = document.getElementById("course_price");
+        var course_student_max_num_object = document.getElementById("student_max_num");
 
-        // // Check
-        // if (datepicker_object.value == "") {
-        //     alert("The date field cannot be empty!");
-        // }
-        // else if (course_start_time_object.value == "") {
-        //     alert("The start time field cannot be empty!");
-        // }
-        // else if (course_end_time_object.value == "") {
-        //     alert("The end time field cannot be empty!");
-        // }
-        // else if (course_price_object.value == "") {
-        //     alert("The price field cannot be empty!");
-        // }
-        // else if (table_mode == 2 && course_student_max_num_object.value == "") {
-        //     alert("The student max number cannot be empty!");
-        // }
-        // else if (isNumber(course_price_object.value) == false) {
-        //     alert("The price must be a number!");
-        // }
-        // else {
-        //     var start_time = course_start_time_object.value;
-        //     var end_time = course_end_time_object.value;
-        //     var start_hour = parseInt(start_time.split(":")[0]);
-        //     var start_min = parseInt(start_time.split(":")[1]);
-        //     var end_hour = parseInt(end_time.split(":")[0]);
-        //     var end_min = parseInt(end_time.split(":")[1]);
+        // Check
+        if (datepicker_object.value == "") {
+            alert("The date field cannot be empty!");
+        }
+        else if (course_start_time_object.value == "") {
+            alert("The start time field cannot be empty!");
+        }
+        else if (course_end_time_object.value == "") {
+            alert("The end time field cannot be empty!");
+        }
+        else if (course_price_object.value == "") {
+            alert("The price field cannot be empty!");
+        }
+        else if (table_mode == 2 && course_student_max_num_object.value == "") {
+            alert("The student max number cannot be empty!");
+        }
+        else if (isNumber(course_price_object.value) == false) {
+            alert("The price must be a number!");
+        }
+        else {
+            var start_time = course_start_time_object.value;
+            var end_time = course_end_time_object.value;
+            var start_hour = parseInt(start_time.split(":")[0]);
+            var start_min = parseInt(start_time.split(":")[1]);
+            var end_hour = parseInt(end_time.split(":")[0]);
+            var end_min = parseInt(end_time.split(":")[1]);
 
-        //     // Re-declare start_time and end_time
-        //     var start_time = new Date(datepicker_object.value);
-        //     var end_time = new Date(datepicker_object.value);
-        //     start_time.setHours(start_hour, start_min, 0);
-        //     end_time.setHours(end_hour, end_min, 0);
+            // Re-declare start_time and end_time
+            var start_time = new Date(datepicker_object.value);
+            var end_time = new Date(datepicker_object.value);
+            start_time.setHours(start_hour, start_min, 0);
+            end_time.setHours(end_hour, end_min, 0);
 
-        //     // Max student number
-        //     var student_max_num = 0;
-        //     if (table_mode == 2) {
-        //         student_max_num = course_student_max_num_object.value;
-        //     }
+            // Max student number
+            var student_max_num = 0;
+            if (table_mode == 2) {
+                student_max_num = course_student_max_num_object.value;
+            }
 
-        //     // Check
-        //     if (start_time < end_time) {
-        //         if (table_mode == 1) {
-        //             Add_New_Course_1on1(
-        //                 document.getElementById("tname").value,
-        //                 datepicker_object.value,
-        //                 start_time,
-        //                 end_time,
-        //                 course_price_object.value,
-        //             );
-        //         }
-        //         else if (table_mode == 2) {
-        //             Add_New_Course_Group(
-        //                 document.getElementById("tname").value,
-        //                 datepicker_object.value,
-        //                 start_time,
-        //                 end_time,
-        //                 student_max_num,
-        //                 course_price_object.value,
-        //             );
-        //         }
+            // Check
+            if (start_time < end_time) {
+                if (table_mode == 1) {
+                    Add_New_Course_1on1(
+                        document.getElementById("open_course_teacher").value,
+                        datepicker_object.value,
+                        start_time,
+                        end_time,
+                        course_price_object.value,
+                    );
+                }
+                else if (table_mode == 2) {
+                    Add_New_Course_Group(
+                        document.getElementById("open_course_teacher").value,
+                        datepicker_object.value,
+                        start_time,
+                        end_time,
+                        student_max_num,
+                        course_price_object.value,
+                    );
+                }
 
-        //         var successed_message = "The course " + datepicker_object.value + " " + course_start_time_object.value + "-" + course_end_time_object.value + " ($" + course_price_object.value + " USD) is add to the booking system!";
-        //         alert(successed_message);
-        //         datepicker_object.value = "";
-        //         course_start_time_object.value = "";
-        //         course_end_time_object.value = "";
-        //         course_price_object.value = "";
-        //         window.location.reload();
-        //     }
-        //     else {
-        //         alert("結束時間不可以設定得比開始時間早！");
-        //     }    
-        // }
+                var successed_message = "The course " + datepicker_object.value + " " + course_start_time_object.value + "-" + course_end_time_object.value + " ($" + course_price_object.value + " USD) is add to the booking system!";
+                alert(successed_message);
+                datepicker_object.value = "";
+                course_start_time_object.value = "";
+                course_end_time_object.value = "";
+                course_price_object.value = "";
+                window.location.reload();
+            }
+            else {
+                alert("結束時間不可以設定得比開始時間早！");
+            }    
+        }
     }
 
     // Add New Course (New version)
     function bookButtonEvent(id) {
-        alert("Enter bookButtonEvent()!");
-        alert(id);
+        // Click button date
+        var curr_date = new Date(_date);
+        var curr_date_yyyymmdd;
+        var curr_date_weekday = id.split("_")[0];
+
+        for (var i=0; i<weekday_ids.length; ++i) {
+            if (curr_date_weekday == weekday_ids[i]) {
+                curr_date.setDate(curr_date.getDate()-7+i);
+                curr_date_yyyymmdd = formatDateYYYY_MM_DD(curr_date);
+                break;
+            }
+        }
 
         // Case 0: you had not login
         // Case 1: you are Teacher, but the list not yours
@@ -1960,7 +1992,17 @@ div.pop_up_window {
 
                 // Open info
                 document.getElementById("open_course_teacher").value = document.getElementById("user_name_field").innerHTML;
-                document.getElementById("course_start_time").value = id.split("_")[2]+":00"; 
+                document.getElementById("datepicker").value = curr_date_yyyymmdd;
+                document.getElementById("course_start_time").value = id.split("_")[2]+":00";
+
+                if (table_mode == 1) {
+                    document.getElementById("student_max_num").value = "1";
+                    document.getElementById("student_max_num").disabled = true;
+                }
+                else if (table_mode == 2) {
+                    document.getElementById("student_max_num").value = "15";
+                    document.getElementById("student_max_num").disabled = false;
+                }
 
                 close.onclick = function close() {
                     div.style.display = "none";
@@ -2275,6 +2317,11 @@ div.pop_up_window {
     }
 
     function getSelectedValue(localDateTime, timeZone) {
+        // alert(localDateTime);
+        // alert(timeZone);
+        // alert(moment.tz(localDateTime, timeZone));
+        // alert(moment.tz(localDateTime, timeZone).utc());
+
         if (moment.tz(localDateTime, timeZone).isDST()) {
             alert("It's DST!");
         }
@@ -2320,12 +2367,6 @@ div.pop_up_window {
     // Load the script
     window.onload = function() {
         Init();
-        // var offset = new Date().getTimezoneOffset();
-
-        // document.getElementById("timezone_field").innerHTML = "Location: " + Intl.DateTimeFormat().resolvedOptions().timeZone + " (" + _offset2UTC[offset.toString()] + ")";
-        // offset = -1 * offset / 60;
-
-        // autoSelectLocalUTC(offset);
 
         loadDefaultDateTime();
         loadTimeZoneList();
