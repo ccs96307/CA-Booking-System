@@ -277,7 +277,7 @@ div.pop_up_window {
                 <tr class="info_card_tr">
                     <td style="font-weight: bold;">Location</td>
                     <td id="timeZoneField" style="text-align: right"> 
-                    <select id="dropdownTimezone" onchange="dropdownTimezoneChangeEvent()">
+                    <select id="dropdownTimezone" onchange="setWeekDate(0)">
                     </select>
                     </td>
                 </tr>
@@ -381,7 +381,7 @@ div.pop_up_window {
             <td class="bs_td" id="current_sat" style="color: red"></td>
             <td class="bs_td" id="current_sun" style="color: red"></td>
         </tr>
-        <tr class="bs_tr">
+        <!-- <tr class="bs_tr">
             <td class="bs_td" id="current_mon_container"></td>
             <td class="bs_td" id="current_tue_container"></td>
             <td class="bs_td" id="current_wed_container"></td>
@@ -389,7 +389,7 @@ div.pop_up_window {
             <td class="bs_td" id="current_fri_container"></td>
             <td class="bs_td" id="current_sat_container"></td>
             <td class="bs_td" id="current_sun_container"></td>
-        </tr>
+        </tr> -->
 
         <tr class="bs_tr">
             <td class="bs_td">
@@ -1030,13 +1030,16 @@ div.pop_up_window {
 
 
 <script>
+    // Initialize the today date and move it to monday
+    var _date = new Date();
+
     // Settings
-    let booking_data_1on1;
-    let booking_keys_1on1;
-    let booking_data_group;
-    let booking_keys_group;
+    var booking_data_1on1 = [];
+    var booking_keys_1on1 = [];
+    var booking_data_group = [];
+    var booking_keys_group = [];
     var table_mode = 1;
-    var teacher_names;
+    var teacher_names = [];
     var teacher_ids;
 
     var booking_buttons = [];
@@ -1075,9 +1078,6 @@ div.pop_up_window {
         "#696969"
     ];
 
-    // Initialize the today date and move it to monday
-    var _date = new Date();
-
     // Init() is the entry point
     function Init() {
         $.ajax({
@@ -1089,7 +1089,7 @@ div.pop_up_window {
             dataType: "json",
             success: function (init_data) {
                 loadTimezoneList();
-                remove_all_display_booking_data();
+                // remove_all_display_booking_data();
                 
                 // Date set to monday (the start point of a new week)
                 _date = new Date();
@@ -1121,7 +1121,7 @@ div.pop_up_window {
                 booking_data_group = init_data.booking_data_group;
                 booking_keys_group = init_data.booking_keys_group;
 
-                dropdownTimezoneChangeEvent();
+                // dropdownTimezoneChangeEvent();
                 setWeekDate(1);
 
                 // Book history
@@ -1342,7 +1342,7 @@ div.pop_up_window {
 
             radio_button.onchange = function() {
                 // alert(this.value);
-                remove_all_display_booking_data();
+                // remove_all_display_booking_data();
                 setWeekDate(0);
             };
         
@@ -1464,7 +1464,7 @@ div.pop_up_window {
 
             // Button template
             var button_num = 0;
-            var td_container = document.getElementById("current_"+weekday_ids[i]+"_container");
+            // var td_container = document.getElementById("current_"+weekday_ids[i]+"_container");
 
             for (var j=0; j<booking_data.length; ++j) {
                 // if (unchecked_teachers.includes(booking_data[j]["teacher_name"])) continue;
@@ -1536,7 +1536,7 @@ div.pop_up_window {
                     // Button colors
                     book_button.style.backgroundColor = teacher_open_course_colors[t];
 
-                    td_container.appendChild(book_button);
+                    // td_container.appendChild(book_button);
                     ++button_num;
 
                     // NEW BUTTON EVENT =================================================
@@ -1575,30 +1575,30 @@ div.pop_up_window {
 
     // Move display week event
     function nextDateEvent() {
-        remove_all_display_booking_data();
+        // remove_all_display_booking_data();
         setWeekDate(1);
     }
 
     function prevDateEvent() {
-        remove_all_display_booking_data();
+        // remove_all_display_booking_data();
         setWeekDate(-1);
     }
 
     function goBackTodayEvent() {
-        remove_all_display_booking_data();
+        // remove_all_display_booking_data();
         _date = new Date();
         _date.setDate(_date.getDate()-_date.getDay()+1);
         setWeekDate(1);
     }
 
-    function remove_all_display_booking_data() {
-        for (let i=0; i<7; ++i) {
-            var td_container = document.getElementById("current_"+weekday_ids[i]+"_container");
-            while (td_container.lastElementChild) {
-                td_container.removeChild(td_container.lastElementChild);
-            }
-        }
-    }
+    // function remove_all_display_booking_data() {
+    //     for (let i=0; i<7; ++i) {
+    //         var td_container = document.getElementById("current_"+weekday_ids[i]+"_container");
+    //         while (td_container.lastElementChild) {
+    //             td_container.removeChild(td_container.lastElementChild);
+    //         }
+    //     }
+    // }
 
 
     // Calendar widget
@@ -1947,7 +1947,7 @@ div.pop_up_window {
             course_info_fields.style.display = "block";
             book_info_fields.style.display = "none";
             teacher_open_fields.style.display = "none";
-            remove_all_display_booking_data();
+            // remove_all_display_booking_data();
             setWeekDate(0);
         }
         else if (mode == 2) {
@@ -1957,7 +1957,7 @@ div.pop_up_window {
             course_info_fields.style.display = "block";
             book_info_fields.style.display = "none";
             teacher_open_fields.style.display = "none";
-            remove_all_display_booking_data();
+            // remove_all_display_booking_data();
             setWeekDate(0);
         }
         else if (mode == 3) {
@@ -2138,11 +2138,11 @@ div.pop_up_window {
         return moment.tz(utcTime, timeZone);
     }
 
-    function dropdownTimezoneChangeEvent() {
-        // Change setWeekDate()
-        remove_all_display_booking_data();
-        setWeekDate(0);
-    }
+    // function dropdownTimezoneChangeEvent() {
+    //     // Change setWeekDate()
+    //     // remove_all_display_booking_data();
+    //     setWeekDate(0);
+    // }
 
     // Load the script
     window.onload = function() {
